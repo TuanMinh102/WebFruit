@@ -1,0 +1,96 @@
+#container-checkout {
+    display: flex;
+    width: 100%;
+}
+
+#menu-checkout {
+    width: 15%;
+}
+
+#content-checkout {
+    width: 60%;
+    margin-left: 15%;
+}
+
+#total-checkout {
+    width: 25%;
+    height: 350px;
+    box-shadow: 2px 2px 2px 2px gray;
+    background-color: #f5f7fa;
+    margin-right: 10%;
+}
+
+#menu-checkout li {
+    list-style: none;
+    margin-top: 50px;
+    font-size: 17px;
+}
+
+li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.active {
+    font-size: 20px;
+    color: #ffb700;
+}
+
+h1 {
+    margin-left: 25px;
+    margin-top: 15px;
+}
+
+
+.row-input>input,
+.col-input>input,
+textarea,
+select {
+    padding: 20px;
+    background-color: #f5f7fa;
+    border: none;
+    margin-top: 10px;
+    box-shadow: 2px 2px 2px 0px gray;
+}
+
+.row-input {
+    display: inline;
+}
+
+.row-input>input {
+    width: 25%;
+}
+
+.col-input>input,
+textarea {
+    width: 56%;
+}
+
+.summary-table li {
+    list-style: none;
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+.btn-checkout {
+    margin-left: 10%;
+    font-size: 24px;
+    background-color: #116452;
+    width: 80%;
+    height: 50px;
+    color: #f5f7fa;
+    border: none;
+}
+
+.btn-checkout:hover {
+    background-color: black;
+}
+
+.cost {
+    color: red;
+}
+
+.payment-method div {
+    margin-left: 10%;
+}

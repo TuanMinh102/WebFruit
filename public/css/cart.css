@@ -1,0 +1,151 @@
+#child {
+    z-index: 1;
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    width: 70%;
+    height: 400px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    border: 1px solid;
+    overflow-y: auto;
+    display: none;
+}
+
+#cancel {
+    float: right;
+    width: 20px;
+    height: 20px;
+    border: none;
+}
+
+#cancel:hover {
+    color: red;
+}
+
+#container-cart {
+    display: flex;
+    width: 100%;
+    height: auto;
+    margin-top: 40px;
+}
+
+.tr:nth-child(odd) {
+    background-color: rgb(231, 231, 231);
+}
+
+.tr td {
+    width: 14%;
+}
+
+#content-cart {
+    width: 55%;
+}
+
+#total-checkout {
+    width: 30%;
+    height: 300px;
+    background-color: #f5f7fa;
+    box-shadow: 2px 2px 2px 2px gray;
+}
+
+th {
+    padding: 7px;
+}
+
+td {
+    text-align: center;
+    width: 20%;
+    padding-top: 20px;
+}
+
+/* Shadow on the header row*/
+thead {
+    background-color: #f5f7fa;
+    box-shadow: 2px 2px 2px 0px gray;
+}
+
+.summary-table li {
+    list-style: none;
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+.bt {
+    margin-left: 10%;
+    font-size: 24px;
+    background-color: #116452;
+    width: 80%;
+    height: 50px;
+    color: #f5f7fa;
+    border: none;
+}
+
+.bt:hover {
+    background-color: black;
+}
+
+.cost {
+    color: red;
+}
+
+.del-his a {
+    text-decoration: none;
+    font-size: 15px;
+}
+
+#menu-cart {
+    width: 15%;
+}
+
+#menu-cart li {
+    list-style: none;
+    margin-top: 50px;
+    font-size: 17px;
+}
+
+li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.active {
+    font-size: 20px;
+    color: #ffb700;
+}
+
+
+h1 {
+    margin-left: 25px;
+    margin-top: 15px;
+}
+
+.img-cart {
+    width: 120px;
+    height: 120px;
+}
+
+.substract-add input {
+    width: 35px;
+    text-align: center;
+    height: 32px;
+    border: 1px solid black;
+    font-size: 15px;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    color: black;
+}
+
+.substract-add button {
+    font-size: 15px;
+    border: 1px solid gray;
+    width: 30px;
+    height: 30px;
+    background-color: #f5f7fa;
+}
+
+.substract-add button:hover {
+    color: white;
+    background-color: gray;
+}

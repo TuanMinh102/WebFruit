@@ -1,0 +1,100 @@
+#container-login {
+    display: flex;
+    width: 100%;
+}
+
+#form-container {
+    margin-left: 20%;
+    margin-top: 2%;
+    height: 500px;
+    width: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: 1px solid;
+    overflow-y: auto;
+}
+
+#menu-login {
+    width: 15%;
+}
+
+#content-login {
+    width: 100%;
+}
+
+#loginform {
+    width: 100%;
+}
+
+#signUpform,
+#recoverPassform,
+#OTPform,
+#newPassform {
+    width: 100%;
+    display: none;
+}
+
+form>div:not(.tiltle, .submit, .inputs) {
+    margin-top: 15px;
+    margin-left: 90px;
+}
+
+.submit {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.submit>button {
+    width: 80%;
+}
+
+.option {
+    margin-top: 0px !important;
+}
+
+.tiltle {
+    text-align: center;
+}
+
+#OTPform p {
+    text-align: center;
+}
+
+input {
+    width: 81%;
+    height: 40px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.inputs {
+    display: flex;
+    justify-content: center;
+    justify-content: space-around;
+}
+
+.input-otp {
+    width: 40px;
+    border: none;
+    border-bottom: 3px solid grey;
+    text-align: center;
+}
+
+.input-otp:focus {
+    outline: none;
+}
+
+div>button {
+    display: inline;
+}
+
+#menu-login li {
+    list-style: none;
+    margin-top: 50px;
+    font-size: 17px;
+}
+
+li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
