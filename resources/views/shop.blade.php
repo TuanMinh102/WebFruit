@@ -23,7 +23,7 @@
                 <div class="catagory-product mr-4">
                     <form action="#" method="get">
                         <select name="select" id="catagoryProduct">
-                            <option value="catagory">Catagory</option>
+                            <option value="catagory">Loại Trái Cây</option>
                             @foreach($cats as $row)
                             <option value="{{$row->MaLoai}}">{{$row->TenLoai}}</option>
                             @endforeach
@@ -33,7 +33,7 @@
                 <div class="brands-product mr-4">
                     <form action="#" method="get">
                         <select name="select" id="brandsProduct">
-                            <option value="brands">Brands</option>
+                            <option value="brands">Nhà Cung Cấp</option>
                             @foreach($brand as $row)
                             <option value="{{$row->MaNcc}}">{{$row->TenNcc}}</option>
                             @endforeach
@@ -41,7 +41,7 @@
                     </form>
                 </div>
                 <div class="price-nb">
-                    <div class=""><span>Price: $ </span><span id="price-count"></span></div>
+                    <div class=""><span>Giá: $ </span><span id="price-count"></span></div>
                     <input type="range" min="1" max="1000" value="50" class="price-slider" id="priceRange">
 
                 </div>
@@ -51,13 +51,13 @@
                             <option value="value">Chế độ xem</option>
                             <option value="value">Nổi bật</option>
                             <option value="value">Bán chạy</option>
+                            <option value="sale">Giảm giá</option>
                         </select>
                     </form>
                 </div>
                 <div class="search-wrapper section-padding-100">
                     <div class="search-content">
-
-                        <input type="search" name="search" id="search" placeholder="Type your keyword...">
+                        <input type="search" name="search" id="search" placeholder="Nhập từ khóa...">
                         <div class="btn btn-primary">
                             <i class="fa fa-search"></i>
                         </div>
@@ -85,10 +85,14 @@
             @include('cart-popup')
         </div>
     </div>
-
+    @include('footer2')
     <style>
     #cart-popup {
         display: none;
+    }
+
+    .chiaPage .pagination {
+        justify-content: center;
     }
     </style>
     <script src="js/jquery/jquery-2.2.4.min.js"></script>

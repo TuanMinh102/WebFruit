@@ -9,7 +9,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Amado - Furniture Ecommerce Template | Cart</title>
+    <title>TD Shop | Giỏ hàng</title>
 
     <!-- Favicon  -->
     <link rel="stylesheet" href="css/cart.css">
@@ -23,16 +23,16 @@
         <a href="home"><img src="img/logo2.jpg" alt=""></a>
     </div>
     <div>
-        <h1>Shopping Cart</h1>
+        <h1>GIỎ HÀNG</h1>
     </div>
     <div id="container-cart">
         <div id="menu-cart">
             <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="shop">Shop</a></li>
-                <li><a href="ct">Product</a></li>
-                <li><a>=> </a><a class="active" href="gh">Cart</a></li>
-                <li><a href="tt">Checkout</a></li>
+                <li><a href="home">Trang Chủ</a></li>
+                <li><a href="shop">Trái Cây</a></li>
+                <li><a href="ct">Sản Phẩm</a></li>
+                <li><a>=> </a><a class="active" href="gh">Giỏ Hàng</a></li>
+                <li><a href="tt">Thanh Toán</a></li>
             </ul>
         </div>
         <div id="content-cart">
@@ -43,13 +43,13 @@
             </div>
             <div id="result">
                 <div id="my">
-                    <table style="width:100%;">
+                    <table class="cart-table">
                         <thead>
                             <tr>
-                                <th>Picture</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quatity</th>
+                                <th class="th">Ảnh</th>
+                                <th class="th">Tên</th>
+                                <th class="th">Giá</th>
+                                <th class="th">Số Lượng</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,7 +62,7 @@
                                     <h3>{{$row->TenTraiCay}}</h3>
                                 </td>
                                 <td>
-                                    <span>${{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}</span>
+                                    <span>${{$row->GiaBan}}</span>
                                 </td>
                                 <td>
                                     <div class="qty">
@@ -93,15 +93,15 @@
         <div id="total-checkout">
             <div class="summary-table">
                 <div>
-                    <h2 style="text-align:center;">Checkout Total</h2>
+                    <h2 style="text-align:center;">Tổng Thanh Toán</h2>
                 </div>
                 <ul>
-                    <li><span>Subtotal:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                    <li><span>Delivery:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
-                    <li><span>Total:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
+                    <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
+                    <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
+                    <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
                 </ul>
                 <br><br>
-                <button class="bt" onclick="location.href='tt'">Checkout</button>
+                <button class="bt" onclick="location.href='tt'">Thanh Toán</button>
             </div>
         </div>
     </div>
@@ -110,38 +110,61 @@
         <div style="text-align:center;">
             <h3>Lịch sử thanh toán</h3>
         </div>
-        <div>
-            <table style="width:100%; border-collapse: collapse;">
-                <thead style="background-color:#f8f9fa;">
-                    <tr>
-                        <th>Mã các sản phẩm</th>
-                        <th>Tên người nhận</th>
-                        <th>Tổng số lượng</th>
-                        <th>Đơn giá</th>
-                        <th>Ngày Lập</th>
-                        <th>Nơi nhận</th>
-                        <th>Tình trạng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($bill as $row)
-                    <tr class="tr">
-                        <td>{{$row->MaTraiCay}}</td>
-                        <td>{{$row->HoTen}}</td>
-                        <td>{{$row->SoLuong}}</td>
-                        <td>${{$row->DonGia}}</td>
-                        <td>{{$row->NgayLapHD}}</td>
-                        <td>{{$row->NoiChuyen}}</td>
-                        <td>{{$row->TinhTrang}}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div id="container-invoices-table">
+            <div id="invoices-table">
+                <table class="invoices">
+                    <thead style="background-color:#f8f9fa;">
+                        <tr>
+                            <th>Tên người nhận</th>
+                            <th>Tổng giá</th>
+                            <th>Ngày mua</th>
+                            <th>Nơi nhận</th>
+                            <th>Số điện thoại</th>
+                            <th>Tình trạng</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($bill as $row)
+                        <tr class="tr">
+                            <td>{{$row->HoTen}}</td>
+                            <td>${{$row->TongGia}}</td>
+                            <td>{{$row->NgayLapHD}}</td>
+                            <td>{{$row->DiaChiGiaoHang}}</td>
+                            <td>{{$row->Phone}}</td>
+                            <td>{{$row->TinhTrang}}</td>
+                            <td>
+                                @if($row->DanhGia=='false')
+                                <a href="javascript:reviewProduct({{$row->MaHD}})" style="color:blue">Đánh giá</a>
+                                <br>
+                                @endif
+                                <a href="javascript:getdetailInvoices({{$row->MaHD}})" style="color:blue">Chi Tiết</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
+    </div>
+    <div id="detail-invoices">
+
     </div>
     @include("footer2")
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/cart.js"></script>
+    <script>
+    function setstar(id, n) {
+        document.getElementById('star' + id).value = n;
+        var elm = document.getElementsByClassName("ngoisao" + id);
+        for (var i = 0; i < 5; i++) {
+            if (i < n) {
+                elm[i].style.color = "#ffc300";
+            } else
+                elm[i].style.color = "white";
+        }
+    }
+    </script>
 </body>
 
 </html>

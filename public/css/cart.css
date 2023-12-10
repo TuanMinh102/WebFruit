@@ -12,14 +12,19 @@
     display: none;
 }
 
-#cancel {
-    float: right;
-    width: 20px;
-    height: 20px;
+#cancel,
+#cancel-detail,
+#review-btn-cancel {
+    background-color: white;
     border: none;
+    position: absolute;
+    top: 0px;
+    right: 1px;
 }
 
-#cancel:hover {
+#cancel:hover,
+#cancel-detail:hover,
+#review-btn-cancel:hover {
     color: red;
 }
 
@@ -30,12 +35,17 @@
     margin-top: 40px;
 }
 
+/* Bảng giỏ hàng  */
+.cart-table {
+    width: 100%;
+}
+
 .tr:nth-child(odd) {
     background-color: rgb(231, 231, 231);
 }
 
 .tr td {
-    width: 14%;
+    width: 13%;
 }
 
 #content-cart {
@@ -49,21 +59,23 @@
     box-shadow: 2px 2px 2px 2px gray;
 }
 
-th {
+.th {
     padding: 7px;
 }
 
-td {
+.cart-table td,
+.invoices td {
     text-align: center;
-    width: 20%;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 /* Shadow on the header row*/
-thead {
+.cart-table>thead {
     background-color: #f5f7fa;
     box-shadow: 2px 2px 2px 0px gray;
 }
+
+/* Kết thúc bảng giỏ hàng  */
 
 .summary-table li {
     list-style: none;
@@ -148,4 +160,115 @@ h1 {
 .substract-add button:hover {
     color: white;
     background-color: gray;
+}
+
+/* Bảng hóa đơn*/
+.invoices {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoices th {
+    padding: 10px;
+}
+
+/* Kết thúc bảng hóa đơn*/
+#detail-invoices {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    max-width: 430px;
+    height: 500px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
+    top: 7%;
+    left: 50%;
+    padding: 10px;
+    padding-top: 30px;
+    border: 1px solid black;
+    overflow-y: auto;
+    transform: translateX(-50%);
+    display: none;
+}
+
+.header-invoices {
+    display: flex;
+}
+
+.info-detail {
+    width: 80%;
+    font-size: 12px;
+}
+
+.info-detail>div {
+    text-align: end;
+    margin-right: 10px;
+}
+
+.logo-detail {
+    width: 20%;
+}
+
+/* Bảng chi tiết hóa đơn */
+.invoices-table table,
+.invoices-table th,
+.invoices-table td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+.info-cost {
+    text-align: start !important;
+}
+
+.invoices-table {
+    margin-top: 7px;
+    border-collapse: collapse;
+}
+
+.date-invoices {
+    text-align: end;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.invoices-table td,
+.invoices-table th {
+    padding: 5px;
+}
+
+/* Kết thúc bảng chi tiết hóa đơn */
+.textarea-expanded {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 85%;
+    height: 85%;
+    background-color: #fffffff2;
+    color: black;
+    resize: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.div-expanded {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    width: 85%;
+    height: 85%;
+    background-color: #fffffff2;
+    color: black;
+    resize: none;
+    overflow-y: auto;
+}
+
+a {
+    text-decoration: none;
 }

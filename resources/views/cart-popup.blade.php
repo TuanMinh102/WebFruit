@@ -1,5 +1,5 @@
 <div style="float:right;"><a style="color:red" href="javascript:show_hide(1)">X</a></div>
-<h3 class="text-center">Cart popup</h3>
+<h3 class="text-center">Giỏ hàng</h3>
 <div id="mycartpopup">
     <div id="listcontainer">
         @foreach($cart as $row)
@@ -18,7 +18,7 @@
                     <button onclick="tang_giam(1,{{$row->MaTraiCay}});">+</button>
                 </div>
             </div>
-            <div style="margin-top:20px;">${{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}} /Kg</div>
+            <div style="margin-top:20px;">${{$row->GiaBan}} /Kg</div>
             <div style="margin-top:20px;"><a href="javascript:delProduct({{$row->MaTraiCay}});" class="fa fa-trash"
                     style="color:red;"></a></div>
         </div>

@@ -8,19 +8,17 @@
 <!-- <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script> -->
 <script src="{{asset('ckeditor5-build-classic/ckeditor.js')}}"></script>
 <script src="js/jquery/jquery-2.2.4.min.js"></script>
-
 <script>
 var data;
 ClassicEditor
     .create(document.querySelector('#editor'))
     .then(editor => {
-        console.log(editor);
+        // console.log(editor);
         data = editor;
     })
     .catch(error => {
         console.error(error);
     });
-
 
 function insert() {
     var data2 = {

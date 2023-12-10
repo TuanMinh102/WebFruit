@@ -12,6 +12,7 @@ class HomeController extends Controller
     {   
      return view('welcome');
     }
+  
     public function homeview()
     {
         $muahe=DB::table('traicay')->where('MaLoai',1)->select('*')->get();

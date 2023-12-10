@@ -1,6 +1,9 @@
 #container-login {
     display: flex;
     width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("../img/bg4.jpg");
 }
 
 #form-container {

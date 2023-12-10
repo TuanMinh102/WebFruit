@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
 class ProductController extends Controller
 {
@@ -51,7 +51,11 @@ class ProductController extends Controller
          $maloai=DB::table('traicay')->where('MaTraiCay',$id)->select('traicay.MaLoai')->get();
          foreach($maloai as $row)$maloai=$row->MaLoai;
          $cungloai = DB::table('traicay')->where('MaLoai',$maloai)->select('*')->get();
-         $comments=DB::table('review')->join('taikhoan','taikhoan.MaTaiKhoan','=','review.MaTk')->where('MaSp',$id)->select('*')->get();
+         $comments=DB::table('review')
+         ->join('taikhoan','taikhoan.MaTaiKhoan','=','review.MaTk')
+         ->where('MaSp',$id)
+         ->select('*')
+         ->get();
          $product=DB::table('traicay')->where('MaTraiCay',$id)->select('*')->get();
          $gallery=DB::table('gallery')->where('MaTCay',$id)->select('*')->get();
            return view("detail",compact('product','cungloai','gallery','comments'));
@@ -59,23 +63,27 @@ class ProductController extends Controller
        // Phan loai san pham
        public function Shopview(Request $request)
        {
+           $routeName=$request->path();
            $cats = DB::table('loaitraicay')->select('*')->get();
            $brand = DB::table('nhacungcap')->select('*')->get();
-           $products = DB::table('traicay')->paginate(8);
+          if($routeName=='basket')
+            $products = DB::table('traicay')->where('MaLoai',3)->paginate(8);
+          else
+            $products = DB::table('traicay')->paginate(8);
            if(isset($_COOKIE['id'])){
             $cart = DB::table('traicay')
             ->join('giohang', 'traiCay.MaTraiCay', '=', 'giohang.MaSanPham')->where('MaTaiKhoan',$_COOKIE['id'])
             ->select('traicay.*', 'giohang.SoLuong')
             ->get();
             $count=$this->count_products();
-            return view('shop', compact('cats', 'brand', 'products','count','cart'));
+            return view('shop', compact('cats', 'brand', 'products','count','cart'),['name'=>$routeName]);
             }
             else
             {
                 $cart = DB::table('traicay')->whereIn('MaTraiCay',session()->get('cart',[]))->get();
                 $sl=session()->get('sl',[]);
                 $count=$this->count_products();
-            return view('shop', compact('cats', 'brand', 'products','count','cart','sl'));
+            return view('shop', compact('cats', 'brand', 'products','count','cart','sl'),['name'=>$routeName]);
             }
        }
        // tim kiem san pham bang tu khoa
@@ -91,11 +99,12 @@ class ProductController extends Controller
       {  
            if ($request->ajax()) {
                $products = DB::table('traicay')
-               ->whereBetween(DB::raw('GiaBan - round(GiaBan * Discount / 100)'),[1,$request->price])
-               ->orderBy(DB::raw('GiaBan - round(GiaBan * Discount / 100)'),'asc')->paginate(8);
+               ->whereBetween(('GiaBan'),[1,$request->price])
+               ->orderBy('GiaBan','asc')->paginate(8);
                return view('data', compact('products'))->render();
            }
    }
+   //
 public function product_item($products)
 {
     $string='';
@@ -147,6 +156,7 @@ public function product_item($products)
     }
     return $count;
     }
+    //
     public function insertReview(Request $request)
     {
         DB::table('review')->insert(
@@ -155,7 +165,12 @@ public function product_item($products)
                 'MaSp'=>$request->idsp,
                 'Comment'=>$request->text,
                 'Rating'=>$request->star,
-                'NgayThang'=>Carbon::now()
+                'NgayThang'=>Carbon::now(),
+                'TinhTrang'=>'true',
             ));
+            DB::table('hoadon')->where('MaHD','=',$request->mahd)
+            ->update([
+                'DanhGia'=>'true',
+            ]);
     }
 }

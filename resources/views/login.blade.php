@@ -9,7 +9,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Amado - Furniture Ecommerce Template | Checkout</title>
+    <title>TD Shop | Đăng nhập</title>
 
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/home.css">
@@ -23,11 +23,11 @@
     <div id="container-login">
         <div id="menu-login">
             <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="shop">Shop</a></li>
-                <li><a href="ct">Product</a></li>
-                <li><a href="gh">Cart</a></li>
-                <li><a href="tt">Checkout</a></li>
+                <li><a href="home">Trang Chủ</a></li>
+                <li><a href="shop">Trái Cây</a></li>
+                <li><a href="ct">Chi Tiết</a></li>
+                <li><a href="gh">Giỏ Hàng</a></li>
+                <li><a href="tt">Thanh Toán</a></li>
             </ul>
         </div>
         <div id="content-login">
@@ -36,7 +36,7 @@
                 <div id="loginform">
                     <form>
                         <div class="tiltle">
-                            <h2>Login</h2>
+                            <h2>Đăng Nhập</h2>
                         </div>
                         <div>
                             <b>Tài khoản <a style="color:red;">*</a></b><br>
@@ -68,7 +68,7 @@
                 <div id="signUpform">
                     <form>
                         <div class="tiltle">
-                            <h2>Sign up</h2>
+                            <h2>Đăng Ký</h2>
                         </div>
                         <div>
                             <b>Tài khoản<a style="color:red;">*</a></b><br>

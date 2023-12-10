@@ -21,6 +21,10 @@
 
     @include("function")
 </head>
+<?php
+
+    use Intervention\Image\Facades\Image;
+?>
 
 <body>
     <div class="header">
@@ -93,14 +97,15 @@
                 <div class="item-sanpham">
                     <div class="container-sanphan">
                         <div class="img-sanpham scale-img">
-                            <img src="img/fruit/{{$row->Anh}}" alt="">
+                            <img src="{{ Image::make(public_path('img/fruit/'.$row->Anh))->resize(300,300)->encode('data-url') }}"
+                                alt="">
                         </div>
                         <a class="name-sanpham text-decoration-none" href="ct{{$row->MaTraiCay}}">
                             <h3>{{$row->TenTraiCay}}</h3>
                         </a>
                         <div class="price-sanpham">
                             <span><span>Giá:
-                                </span>{{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}VND/KG</span>
+                                </span>{{$row->GiaBan}}VND/KG</span>
                         </div>
                     </div>
                 </div>
@@ -170,14 +175,15 @@
                 <div class="item-sanpham">
                     <div class="container-sanphan">
                         <div class="img-sanpham scale-img">
-                            <img src="img/fruit/{{$row->Anh}}" alt="">
+                            <img src="{{ Image::make(public_path('img/fruit/'.$row->Anh))->resize(300,300)->encode('data-url') }}"
+                                alt="">
                         </div>
                         <a class="name-sanpham text-decoration-none" href="ct{{$row->MaTraiCay}}">
                             <h3>{{$row->TenTraiCay}}</h3>
                         </a>
                         <div class="price-sanpham">
                             <span><span>Giá:
-                                </span>{{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}VND/KG</span>
+                                </span>{{$row->GiaBan}}VND/KG</span>
                         </div>
                     </div>
                 </div>
@@ -195,14 +201,15 @@
                 <div class="item-sanpham">
                     <div class="container-sanphan">
                         <div class="img-sanpham scale-img">
-                            <img src="img/fruit/{{$row->Anh}}" alt="">
+                            <img src="{{ Image::make(public_path('img/fruit/'.$row->Anh))->resize(300,300)->encode('data-url') }}"
+                                alt="">
                         </div>
                         <a class="name-sanpham text-decoration-none" href="ct{{$row->MaTraiCay}}">
                             <h3>{{$row->TenTraiCay}}</h3>
                         </a>
                         <div class="price-sanpham">
                             <span><span>Giá:
-                                </span>{{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}VND/KG</span>
+                                </span>{{$row->GiaBan}}VND/KG</span>
                         </div>
                     </div>
                 </div>
@@ -250,7 +257,8 @@
                     <div class="library-img">
                         <a class="scale-img " data-fancybox="images2" href data-src="img/album/{{$row->HinhAnh}}"
                             title="">
-                            <img src="img/album/{{$row->HinhAnh}}" alt="">
+                            <img src="{{ Image::make(public_path('img/album/'.$row->HinhAnh))->resize(393,308)->encode('data-url') }}"
+                                alt="">
                         </a>
                     </div>
                 </div>
@@ -262,21 +270,7 @@
         <div class="fotorama" data-nav="thumbs" data-width="100%" data-width="100%" data-thumbmargin="10"
             data-height="330" data-fit="cover" data-thumbwidth="140" data-thumbheight="80" data-allowfullscreen="true"
             data-nav="thumbs">
-            <a href="https://youtube.com/watch?v=<?= getYoutube("https://www.youtube.com/watch?v=nidTI-XxXgc") ?>"
-                data-img="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=nidTI-XxXgc") ?>/0.jpg">
-                <img
-                    src="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=nidTI-XxXgc") ?>/0.jpg">
-            </a>
-            <a href="https://youtube.com/watch?v=<?= getYoutube("https://www.youtube.com/watch?v=tDpu3JRg8WY") ?>"
-                data-img="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=tDpu3JRg8WY") ?>/0.jpg">
-                <img
-                    src="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=tDpu3JRg8WY") ?>/0.jpg">
-            </a>
-            <a href="https://youtube.com/watch?v=<?= getYoutube("https://www.youtube.com/watch?v=tuWvTMsTJrQ") ?>"
-                data-img="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=tuWvTMsTJrQ") ?>/0.jpg">
-                <img
-                    src="http://img.youtube.com/vi/<?= getYoutube("https://www.youtube.com/watch?v=tuWvTMsTJrQ") ?>/0.jpg">
-            </a>
+
         </div>
     </div>
     <div class="footer">

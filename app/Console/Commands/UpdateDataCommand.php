@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class UpdateDataCommand extends Command
 {
@@ -26,6 +27,8 @@ class UpdateDataCommand extends Command
      */
     public function handle()
     {
-        //  DB::table('giohang')->where("MaGioHang",25)->delete();
+        $ngayHienTai = new DateTime();
+        $ngayHienTai= $ngayHienTai->format('Y-m-d');
+        DB::table('discount')->where("NgayKetThuc",$ngayHienTai)->delete();
     }
 }

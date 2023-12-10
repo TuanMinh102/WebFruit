@@ -118,7 +118,7 @@ public  function gettotal()
     ->get();
     foreach($products as $row)
     {
-        $sum2=($row->SoLuong*round($row->GiaBan-(($row->GiaBan*$row->Discount)/100)));
+        $sum2=($row->SoLuong*$row->GiaBan);
         $sum+=$sum2;
     }
    }
@@ -130,7 +130,7 @@ public  function gettotal()
     ->get();
     foreach($products as $row)
     {
-        $sum2=($sl[$row->MaTraiCay]*round($row->GiaBan-(($row->GiaBan*$row->Discount)/100)));
+        $sum2=($sl[$row->MaTraiCay]*$row->GiaBan);
         $sum+=$sum2;
     }
    }
@@ -156,15 +156,39 @@ public function get_historyBill()
 {
  if(isset($_COOKIE['id']))
  {
-   $his=DB::table('hoadon')->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')->where('MaTaiKhoan',$_COOKIE['id'])
-  ->select('hoadon.*', 'ct_hoadon.MaTraiCay','ct_hoadon.SoLuong','ct_hoadon.DonGia','ct_hoadon.HoTen')
-  ->get();
+   $his=DB::table('hoadon')
+   ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
+   ->where('MaTaiKhoan',$_COOKIE['id'])
+   ->select('hoadon.*','ct_hoadon.HoTen','ct_hoadon.TongGia')
+   ->take(1)->get();
  } 
  else{
      $his=DB::table('hoadon')->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')->where('MaTaiKhoan',0)
-     ->select('hoadon.*', 'ct_hoadon.MaTraiCay','ct_hoadon.SoLuong','ct_hoadon.DonGia','ct_hoadon.HoTen')
+     ->select('hoadon.*')
      ->get();
  }
    return $his;
+}
+public function get_detailBill(Request $request)
+{
+    $detail=DB::table('hoadon')
+    ->where('hoadon.MaHD','=',$request->id)
+    ->where('MaTaiKhoan',$_COOKIE['id'])
+    ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
+    ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')
+   ->select('hoadon.*','ct_hoadon.*','traicay.TenTraiCay','traicay.MaTraiCay')
+   ->get();
+   $info=DB::table('hoadon')
+   ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
+   ->where('hoadon.MaHD','=',$request->id)->select('hoadon.*','ct_hoadon.HoTen')
+   ->take(1)->get();
+   return view('detail-invoices',compact('detail','info'));
+}
+public function reviewProduct(Request $request)
+{
+    $list_products=DB::table('ct_hoadon')
+    ->where('MaHD','=',$request->id)
+    ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')->select('*')->get();
+    return view('review_products',compact('list_products'));
 }
 }

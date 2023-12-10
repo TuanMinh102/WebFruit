@@ -63,9 +63,99 @@ function show_hide(n) {
     else
         document.getElementById("child").style.display = "inline-block";
 }
-
-
-
+// Ẩn hiện chi tiết hóa đơn
+function show_hide_detail() {
+    document.getElementById("detail-invoices").style.display = "none";
+}
+function getdetailInvoices(id) {
+    data2 = {
+        'id': id,
+    };
+    $.ajax({
+        type: "get",
+        dataType: "html",
+        url: "getDetailInvoices",
+        data: data2,
+        success: function (response) {
+            $('#detail-invoices').html(response);
+            document.getElementById("detail-invoices").style.display = "inline-block";
+        }
+    });
+}
+function reviewProduct(id) {
+    data2 = {
+        'id': id,
+    };
+    $.ajax({
+        type: "get",
+        dataType: "html",
+        url: "reviewProduct",
+        data: data2,
+        success: function (response) {
+            $('#detail-invoices').html(response);
+            document.getElementById("detail-invoices").style.display = "inline-block";
+        }
+    });
+}
+//
+function show_hide_review(n) {
+    if (n == 1)
+        document.getElementById("detail-invoices").style.display = "none";
+}
+//
+function checkKeyword(arr) {
+    var keyword = ['lol', 'dm', 'fuck', 'cc', 'lon', 'cac', 'clm', 'cm', 'chet', 'mm', 'cho chet', 'me may',
+        'dmm', 'bitch'
+    ];
+    for (var i = 0; i < arr.length; i++) {
+        var text = document.getElementById('text_review' + arr[i]).value;
+        for (var y = 0; y < keyword.length; y++) {
+            if (text.indexOf(keyword[y]) !== -1) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+function checkNull(arr) {
+    for (var i = 0; i < arr.length; i++) {
+        var text = document.getElementById('text_review' + arr[i]).value;
+        if (text == '')
+            return false;
+    }
+    return true;
+}
+//
+function reviewProducts_insert(arr, mahd) {
+    if (checkKeyword(arr) == false)
+        alert('Nội dung có chứa từ nhạy cảm!');
+    else if (checkNull(arr) == false)
+        alert('Vui lòng nhập đầy đủ!');
+    else {
+        for (var i = 0; i < arr.length; i++) {
+            var text = document.getElementById('text_review' + arr[i]).value;
+            var star = document.getElementById('star' + arr[i]).value;
+            var data2 = {
+                'text': text,
+                'idsp': arr[i],
+                'star': star,
+                'mahd': mahd,
+            };
+            $.ajax({
+                type: "get",
+                dataType: "html",
+                url: "review",
+                data: data2,
+                success: function () {
+                    document.getElementById("detail-invoices").style.display = "none";
+                    document.getElementById("child").style.display = "none";
+                }
+            });
+        }
+        alert('Nhận xét thành công.');
+        $('#container-invoices-table').load(location.href + ' #invoices-table');
+    }
+}
 
 //   var cursor=document.getElementById("child");
 //   document.addEventListener("mousemove",function(e)

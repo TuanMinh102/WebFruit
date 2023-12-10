@@ -11,7 +11,8 @@
                     <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                         <h3><b>{{$row->TenTraiCay}}</b></h3>
                     </a>
-                    <p class="product-price">${{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}</p>
+                    <p class="product-price">${{$row->GiaBan}} @if($row->Discount!=0) <s
+                            style="color:grey;font-size:11px">${{$row->GiaGoc}}</s>@endif</p>
                 </div>
                 <div class="ratings-cart">
                     <div class="ratings">
@@ -31,4 +32,4 @@
         @endforeach
     </div>
 </div>
-<span>{{ $products->links() }}</span>
+<div class="chiaPage">{{ $products->links() }}</div>

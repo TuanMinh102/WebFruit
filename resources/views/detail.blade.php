@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>TD Shop | Chi tiết</title>
 </head>
 
 <body>
@@ -23,9 +24,9 @@
         <div class="col-12">
             <nav aria-label="breadcrumb" style="width:90%">
                 <ol class="breadcrumb mt-50">
-                    <li class="breadcrumb-item"><a href="home"><i class="fa fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="shop">Products</a></li>
-                    <li class="breadcrumb-item"><a href="ct">Detail</a></li>
+                    <li class="breadcrumb-item"><a href="home"><i class="fa fa-home"></i> Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="shop">Trái cây</a></li>
+                    <li class="breadcrumb-item"><a href="ct">Chi tiết</a></li>
                 </ol>
             </nav>
         </div>
@@ -63,13 +64,13 @@
                     </span>/KG</span><br><br>
                 @else
                 <div style="display:flex;">
-                    <div><span class="price-product-ct"><b>Giá gốc: </b><span><s>${{$row->GiaBan}}.000 VND</s>
+                    <div><span class="price-product-ct"><b>Giá gốc: </b><span><s>${{$row->GiaGoc}}.000 VND</s>
                             </span>/KG</span></div>
                     <div class="rotateDiscount">Giảm {{$row->Discount}}%</div>
                     <br><br>
                 </div>
                 <span class="price-product-ct"><b>Giá sau khi giảm:</b>
-                    <span>${{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}.000 VND
+                    <span>${{$row->GiaBan}}.000 VND
                     </span>/KG</span><br><br>
                 @endif
                 <span><b>Tình Trạng:</b>@if($row->TinhTrang=='true')<span> Còn
@@ -118,7 +119,7 @@
                             <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                                 <h3>{{$row->TenTraiCay}}</h3>
                             </a>
-                            <p class="product-price">${{round($row->GiaBan-(($row->GiaBan*$row->Discount)/100))}}</p>
+                            <p class="product-price">${{$row->GiaBan}}</p>
                         </div>
                         <div class="ratings-cart">
                             <div class="ratings">
@@ -149,7 +150,7 @@
         </div>
         <br>
         <div class="user-input">
-            <div><img class="img-review" src="https://ptetutorials.com/images/user-profile.png" alt=""></div>
+            <div><img class="img-review" src="img/user-profile.png" alt=""></div>
             <div class="input-review"><input type="text" id="comment-input" placeholder="Viết nội dung...">
                 <div class="ratings">
                     Đánh Giá:
@@ -165,10 +166,32 @@
         <div class="container-comments">
             <div class="comments">
                 @foreach($comments as $row)
+                @if($row->TinhTrang=='true')
                 <div style="display:flex;height:auto">
-                    <div><img class="img-review" src="https://ptetutorials.com/images/user-profile.png" alt=""></div>
+                    <div><img class="img-review" src="img/user-profile.png" alt=""></div>
                     <div style="margin-left:10px">
-                        <div><b>{{$row->TaiKhoan}}</b> {{$row->NgayThang}}</div>
+                        <div><b>{{$row->TaiKhoan}}</b>
+                            <span style="color:#606060">
+                                @php
+                                $date= new DateTime($row->NgayThang);
+                                $now= new DateTime(now());
+                                @endphp
+                                <?php $interval = $date->diff($now); 
+                            if($interval->format('%y')!=0)
+                            echo($interval->format('%y năm trước'));
+                            else if($interval->format('%m')!=0)
+                            echo($interval->format('%m tháng trước'));
+                            else if($interval->format('%d')!=0)
+                            echo($interval->format('%d ngày trước'));
+                            else if($interval->format('%h')!=0)
+                            echo($interval->format('%h giờ trước'));
+                            else if($interval->format('%i')!=0)
+                            echo($interval->format('%i phút trước'));
+                            else{
+                                if($interval->format('%s')==0)echo('vài giây trước');
+                                else echo($interval->format('%s giây trước'));}?>
+                            </span>
+                        </div>
                         <div class="ratings">
                             @for($i = 1; $i <= 5; $i++) @if($i<=$row->Rating)
                                 <i class="fa fa-star" aria-hidden="true" style="color:#ffc300"></i>
@@ -183,6 +206,7 @@
                     </div>
                 </div>
                 <br>
+                @endif
                 @endforeach
             </div>
         </div>
@@ -239,25 +263,42 @@
             if (text == '') {
                 element.style = "border-bottom:1px solid red";
             } else {
-                element.style = "border-bottom:1px solid #989292";
-                var data = {
-                    'text': text,
-                    'idsp': masp,
-                    'star': star,
-                }
-                $.ajax({
-                    type: 'get',
-                    url: "/review",
-                    data: data,
-                    success: function(response) {
-                        element.value = '';
-                        $('.container-comments').load(document.URL + ' .comments');
-                        $('.bao-qtysort').load(document.URL + ' .qty-sort');
+                if (checkKeyword(text) == false) {
+                    element.style = "border-bottom:1px solid red";
+                    alert('Nội dung không hợp lệ');
+                } else {
+                    element.style = "border-bottom:1px solid #989292";
+                    var data = {
+                        'text': text,
+                        'idsp': masp,
+                        'star': star,
                     }
-                });
+                    $.ajax({
+                        type: 'get',
+                        url: "/review",
+                        data: data,
+                        success: function(response) {
+                            element.value = '';
+                            $('.container-comments').load(document.URL + ' .comments');
+                            $('.bao-qtysort').load(document.URL + ' .qty-sort');
+                        }
+                    });
+                }
             }
         }
     });
+
+    function checkKeyword(text) {
+        var arr = ['lol', 'dm', 'fuck', 'cc', 'lon', 'cac', 'clm', 'cm', 'chet', 'mm', 'cho chet', 'me may',
+            'dmm', 'bitch'
+        ];
+        for (var i = 0; i < arr.length; i++) {
+            if (text.indexOf(arr[i]) !== -1) {
+                return false;
+            }
+        }
+        return true;
+    }
     </script>
     <script src="magiczoomplus/magiczoomplus.js"></script>
 </body>

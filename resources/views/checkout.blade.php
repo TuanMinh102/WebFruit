@@ -9,7 +9,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Amado - Furniture Ecommerce Template | Checkout</title>
+    <title>TD Shop | Thanh Toán</title>
 
     <!-- Favicon  -->
     <link rel="icon" href="img/core-img/favicon.ico">
@@ -25,72 +25,73 @@
         <a href="home"><img src="img/logo2.jpg" alt=""></a>
     </div>
     <div>
-        <h1>Checkout</h1>
+        <h1>THANH TOÁN</h1>
     </div>
     <div id="container-checkout">
         <div id="menu-checkout">
             <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="shop">Shop</a></li>
-                <li><a href="ct">Product</a></li>
-                <li><a href="gh">Cart</a></li>
-                <li><a>=> </a><a class="active" href="tt">Checkout</a></li>
+                <li><a href="home">Trang Chủ</a></li>
+                <li><a href="shop">Trái Cây</a></li>
+                <li><a href="ct">Sản Phẩm</a></li>
+                <li><a href="gh">Giỏ Hàng</a></li>
+                <li><a>=> </a><a class="active" href="tt">Thanh Toán</a></li>
             </ul>
         </div>
         <div id="content-checkout">
             <form action="ttoan" method="get">
                 <div class="row">
                     <div class="row-input">
-                        <input type="text" name="first_name" id="first_name" value="" placeholder="First Name" required>
+                        <input type="text" name="first_name" id="first_name" value="" placeholder="Họ" required>
                     </div>
                     <div class="row-input">
-                        <input type="text" id="last_name" value="" placeholder="Last Name" required>
+                        <input type="text" id="last_name" value="" placeholder="Tên" required>
                     </div>
                     <div class="col-input">
-                        <input type="text" id="company" placeholder="Company Name" value="">
+                        <input type="text" id="company" placeholder="Công ty" value="">
                     </div>
                     <div class="col-input">
                         <input type="email" name="email" id="email" placeholder="Email" value="">
                     </div>
                     <div class="col-input">
-                        <select class="w-100" id="country">
-                            <option value="usa">United States</option>
-                            <option value="uk">United Kingdom</option>
-                            <option value="ger">Germany</option>
-                            <option value="fra">France</option>
-                            <option value="ind">India</option>
-                            <option value="aus">Australia</option>
-                            <option value="bra">Brazil</option>
-                            <option value="cana">Canada</option>
+                        <select class="w-100" id="Quận">
+                            <option value="usa">Bình Tân</option>
+                            <option value="uk">Tân Phú</option>
+                            <option value="ger">Quận Gò Vấp</option>
+                            <option value="fra">Quận 1</option>
+                            <option value="ind">Quận 2</option>
+                            <option value="aus">Quận 3</option>
+                            <option value="bra">Quận 4</option>
+                            <option value="cana">Quận 5</option>
                         </select>
                     </div>
                     <div class="col-input">
-                        <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Address"
+                        <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Địa chỉ"
                             value="">
                     </div>
                     <div class="col-input">
-                        <input type="text" id="city" placeholder="Town" value="">
+                        <input type="text" id="city" placeholder="Thành Phố" value="">
                     </div>
                     <div class="row-input">
-                        <input type="text" id="zipCode" placeholder="Zip Code" value="">
+                        <input type="text" id="zipCode" placeholder="Mã Zip" value="">
                     </div>
                     <div class="row-input">
-                        <input type="number" name="phone" id="phone_number" min="0" placeholder="Phone No" value="">
+                        <input type="number" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại"
+                            value="">
                     </div>
                     <div class="col-input">
                         <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10"
-                            placeholder="Leave a comment about your order"></textarea>
+                            placeholder="Nhận xét"></textarea>
                     </div>
                 </div>
         </div>
         <div id="total-checkout">
             <div>
-                <h2 style="text-align:center;">Checkout Total</h2>
+                <h2 style="text-align:center;">Tổng Thanh Toán</h2>
             </div>
             <ul class="summary-table">
-                <li><span>Subtotal:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                <li><span>Delivery:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
-                <li><span>Total:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
+                <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
+                <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
+                <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
             </ul>
             <div class="payment-method">
                 <!-- Cash on delivery -->
@@ -107,7 +108,7 @@
                 </div>
             </div>
             <br><br>
-            <button class="btn-checkout">Checkout</button>
+            <button class="btn-checkout">Thanh Toán</button>
         </div>
         </form>
     </div>

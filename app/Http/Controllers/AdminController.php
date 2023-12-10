@@ -9,45 +9,45 @@ class AdminController extends Controller
 {
     public function AdminView(Request $request)
     {
-        $tmp=0;
-        if($request->ajax())
-        {
-            if($request->tmp=='m')
-            {
-                  $dulieu=DB::table('hoadon')
-              ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
-             ->whereMonth('hoadon.NgayLapHD',$request->m)
-             ->select('hoadon.*','ct_hoadon.DonGia')->get();
-           $tmp=0;
-            }
-            else{
-                $dulieu=[];
-                for($i=1;$i<=12;$i++)
-                {
-                    $dulieu[$i]=DB::table('hoadon')
-                ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
-                ->whereMonth('hoadon.NgayLapHD',$i)
-               ->whereYear('hoadon.NgayLapHD',$request->y)
-              ->sum('ct_hoadon.DonGia');
-                }
-               $tmp=1;
-            }
-        return view('chart',compact('tmp'),['dulieu'=>$dulieu]);
-        }
-        else{
-          $dulieu=DB::table('hoadon')
-          ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
-          ->whereMonth('hoadon.NgayLapHD',1)
-          ->select('hoadon.*','ct_hoadon.DonGia')->get();
-          return view('admin',compact('dulieu','tmp'));
-        }
-      //  return view("login-admin");
+        // $tmp=0;
+        // if($request->ajax())
+        // {
+        //     if($request->tmp=='m')
+        //     {
+        //           $dulieu=DB::table('hoadon')
+        //       ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
+        //      ->whereMonth('hoadon.NgayLapHD',$request->m)
+        //      ->select('hoadon.*','ct_hoadon.DonGia')->get();
+        //    $tmp=0;
+        //     }
+        //     else{
+        //         $dulieu=[];
+        //         for($i=1;$i<=12;$i++)
+        //         {
+        //             $dulieu[$i]=DB::table('hoadon')
+        //         ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
+        //         ->whereMonth('hoadon.NgayLapHD',$i)
+        //        ->whereYear('hoadon.NgayLapHD',$request->y)
+        //       ->sum('ct_hoadon.DonGia');
+        //         }
+        //        $tmp=1;
+        //     }
+        // return view('chart',compact('tmp'),['dulieu'=>$dulieu]);
+        // }
+        // else{
+        //   $dulieu=DB::table('hoadon')
+        //   ->join('ct_hoadon','ct_hoadon.MaHD','=','hoadon.MaHD')
+        //   ->whereMonth('hoadon.NgayLapHD',1)
+        //   ->select('hoadon.*','ct_hoadon.DonGia')->get();
+        //   return view('admin',compact('dulieu','tmp'));
+        // }
+        return view("login-admin");
     }
     public function login(Request $request)
     {
         $username=$request->input('username');
         $password=$request->input('password');
-        $tk=DB::table('taikhoan')->select("*")->get();
+        $tk=DB::table('taikhoan')->where('IsAdmin','=',1)->select("*")->get();
         $flag=0;
         foreach($tk as $row)
         {
@@ -63,4 +63,5 @@ class AdminController extends Controller
         }
         return view('login-admin',['flag'=>$flag]);
     }
+   
 }

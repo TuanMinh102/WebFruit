@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Events\PusherBroadcast;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class ChatController extends Controller
