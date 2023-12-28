@@ -9,11 +9,16 @@
 #form-container {
     margin-left: 20%;
     margin-top: 2%;
+    padding-top: 1%;
+    margin-bottom: 2%;
     height: 500px;
     width: 50%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border: 1px solid;
+    border: 1px solid white;
     overflow-y: auto;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: rgba(255, 255, 255, 0.6);
+    /* backdrop-filter: blur(55px); */
 }
 
 #menu-login {
@@ -33,7 +38,6 @@
 #OTPform,
 #newPassform {
     width: 100%;
-    display: none;
 }
 
 form>div:not(.tiltle, .submit, .inputs) {
@@ -47,7 +51,8 @@ form>div:not(.tiltle, .submit, .inputs) {
 }
 
 .submit>button {
-    width: 80%;
+    border-radius: 20px;
+    width: 75%;
 }
 
 .option {
@@ -77,8 +82,6 @@ input {
 
 .input-otp {
     width: 40px;
-    border: none;
-    border-bottom: 3px solid grey;
     text-align: center;
 }
 
@@ -100,4 +103,12 @@ li a {
     text-decoration: none;
     color: black;
     font-weight: bold;
+}
+
+input {
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid grey;
+    border-radius: 15px;
+    background-color: transparent;
 }

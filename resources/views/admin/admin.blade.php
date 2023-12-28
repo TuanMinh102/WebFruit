@@ -22,6 +22,7 @@
 
 <body>
     <a href="pusher">Go to Chat</a>
+    <a href="admin-logout">Dang xuat</a>
     <!-- <h2>Bieu do thong ke:</h2>
     <select id="month">
         <option value="1">Tháng 1</option>
@@ -43,7 +44,7 @@
         @endfor
     </select>
     <div id="loadchart">
-        @include('') //chart
+        include('') //chart
     </div>
     <?php $count=1; ?>
     <div id="demo">

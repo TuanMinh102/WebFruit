@@ -41,9 +41,30 @@
                     </form>
                 </div>
                 <div class="price-nb">
-                    <div class=""><span>Giá: $ </span><span id="price-count"></span></div>
+                    <div class=""><span>Giá:</span><span id="price-count"></span><u>đ</u></div>
                     <input type="range" min="1" max="1000" value="50" class="price-slider" id="priceRange">
-
+                </div>
+                <div class="price-check">
+                    <div>
+                        <input type="radio" id="radio1" name="choice" data-min="0" data-max="100"
+                            onclick="uncheckOthers('radio1')"> 0 - 100<u>đ</u>
+                    </div>
+                    <div>
+                        <input type="radio" id="radio2" name="choice" data-min="100" data-max="200"
+                            onclick="uncheckOthers('radio2')"> 100 - 200<u>đ</u>
+                    </div>
+                    <div>
+                        <input type="radio" id="radio3" name="choice" data-min="200" data-max="300"
+                            onclick="uncheckOthers('radio3')"> 200 - 300<u>đ</u>
+                    </div>
+                    <div>
+                        <input type="radio" id="radio4" name="choice" data-min="300" data-max="400"
+                            onclick="uncheckOthers('radio4')"> 300 - 400<u>đ</u>
+                    </div>
+                    <div>
+                        <input type="radio" id="radio5" name="choice" data-min="400" data-max="500"
+                            onclick="uncheckOthers('radio5')"> 400 - 500<u>đ</u>
+                    </div>
                 </div>
                 <div class="view-product d-flex align-items-center mr-4 ml-4">
                     <form action="#" method="get">
@@ -70,7 +91,7 @@
 
         </div>
         <div id="item-lists">
-            @include('data')
+            @include('shop/data')
         </div>
     </div>
 
@@ -82,7 +103,7 @@
             <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
         </a>
         <div id="cart-popup">
-            @include('cart-popup')
+            @include('cart/cart-popup')
         </div>
     </div>
     @include('footer2')
@@ -98,7 +119,16 @@
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/products.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
-    <script type="text/javascript">
+    <script>
+    //
+    function uncheckOthers(selectedId) {
+        const radios = document.getElementsByName('choice');
+        radios.forEach(radio => {
+            if (radio.id !== selectedId) {
+                radio.checked = false;
+            }
+        });
+    }
     //An hien cart-popup
     function show_hide(n) {
         if (n == 0) {

@@ -11,17 +11,18 @@ class NewsController extends Controller
     //
     public function editor()
      {
-        return view("editor");
+     // $demo=DB::table('demo')->select("*")->get();
+        return view("admin/editor");
      }
      public function newsList()
      {
         $news=DB::table('news')->where('Type','like','%'.'tin tuc'.'%')->select('*')->get();
-        return view('news',compact('news'));
+        return view('tintuc/news',compact('news'));
      }
      public function getNews($id)
      {
         $article=DB::table('news')->where('News_ID',$id)->select('*')->get();
-        return view('articles',compact('article'));
+        return view('tintuc/articles',compact('article'));
      }
      public function insert(Request $request)
      {

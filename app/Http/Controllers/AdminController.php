@@ -41,19 +41,24 @@ class AdminController extends Controller
         //   ->select('hoadon.*','ct_hoadon.DonGia')->get();
         //   return view('admin',compact('dulieu','tmp'));
         // }
-        return view("login-admin");
+            if(isset($_COOKIE['admin']))
+             return view("admin/admin");
+            return view('admin/login-admin');
+       
     }
     public function login(Request $request)
     {
         $username=$request->input('username');
-        $password=$request->input('password');
+        $password=md5($request->input('password'));
         $tk=DB::table('taikhoan')->where('IsAdmin','=',1)->select("*")->get();
         $flag=0;
         foreach($tk as $row)
         {
             if($row->TaiKhoan==$username &&$row->MatKhau==$password)
             {
-                return view('admin');
+                setcookie("admin",$row->MaTaiKhoan, time()+3600);
+                setcookie("id", null, time()-3600); 
+                return view('admin/admin');
                 break;
             }
             if($row->TaiKhoan==$username)
@@ -61,7 +66,12 @@ class AdminController extends Controller
                 $flag=1;
             }
         }
-        return view('login-admin',['flag'=>$flag]);
+        return view('admin/login-admin',['flag'=>$flag]);
+    }
+    public function logout()
+    {
+        setcookie("admin", null, time()-3600); 
+        return back();
     }
    
 }

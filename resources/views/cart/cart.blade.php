@@ -25,6 +25,12 @@
     <div>
         <h1>GIỎ HÀNG</h1>
     </div>
+    @if(session()->has('mess'))
+    <div class="alert alert-success">
+        <?php echo session()->get('mess'); session()->forget('mess');?>
+        <button style="float:right" onclick="hideMess()">X</button>
+    </div>
+    @endif
     <div id="container-cart">
         <div id="menu-cart">
             <ul>
@@ -53,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($products as $row)
+                            @foreach($cart as $row)
                             <tr>
                                 <td>
                                     <a href="#"><img src="img/fruit/{{$row->Anh}}" alt="Product" class="img-cart"></a>
@@ -62,7 +68,11 @@
                                     <h3>{{$row->TenTraiCay}}</h3>
                                 </td>
                                 <td>
-                                    <span>${{$row->GiaBan}}</span>
+                                    @if($row->ChietKhau==null)
+                                    <span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span>
+                                    @else
+                                    <span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="qty">
@@ -76,7 +86,7 @@
                                                 disabled>
                                             @endif
                                             <button onclick="tang_giam(1,{{$row->MaTraiCay}});">+</button>
-                                            <b> /Kg</b>
+                                            <b> /{{$row->TenDonVi}}</b>
                                             <a href="javascript:delProduct({{$row->MaTraiCay}});"
                                                 style="font-size:20px;margin-left:10px;"><i class="fa fa-trash"
                                                     style="color:red;"></i></a>
@@ -128,7 +138,7 @@
                         @foreach($bill as $row)
                         <tr class="tr">
                             <td>{{$row->HoTen}}</td>
-                            <td>${{$row->TongGia}}</td>
+                            <td>{{$row->ThanhTien}}.000<u>đ</u></td>
                             <td>{{$row->NgayLapHD}}</td>
                             <td>{{$row->DiaChiGiaoHang}}</td>
                             <td>{{$row->Phone}}</td>
@@ -163,6 +173,10 @@
             } else
                 elm[i].style.color = "white";
         }
+    }
+
+    function hideMess() {
+        document.getElementsByClassName('alert')[0].style.display = 'none';
     }
     </script>
 </body>

@@ -19,57 +19,14 @@
     <link rel="stylesheet" href="accset/fotorama/fotorama.css" />
     <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
 
-    @include("function")
+
 </head>
 <?php
-
     use Intervention\Image\Facades\Image;
 ?>
 
 <body>
-    <div class="header">
-        <div class="header-top">
-            <div class="wrap-content">
-                <div class="address-header"><img class="mr-2" src="img/icon-dc.png" alt="">
-                    <span>Địa chỉ: Huỳnh Thúc Kháng ,Quận 1,TP HCM</span>
-                </div>
-                <div class="email-header">
-                    <img class="mr-2" src="img/icon-gmail.png" alt="">
-                    <span>Email: TDShopPanpage@gmail.com</span>
-                </div>
-            </div>
-        </div>
-        <div class="header-bottom">
-            <div class="wrap-content">
-                <div class="logo-header">
-                    <img class="mr-2" src="img/logo2.jpg" alt="">
-                </div>
-                <div class="banner-header">
-                    <!-- <img class="mr-2" src="img/banner.png" alt=""> -->
-                    <h2 style="color:red;font-style: italic;font-family:serif;font-weight: 900;">TRÁI CÂY TƯƠI TD SHOP -
-                        TRÁI CÂY TP.HCM</h2>
-                </div>
-                <div class="hotline-header">
-                    <p>Hotline tư vấn</p>
-                    <span>0981965197</span>
-                    <span>0981965197</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="menu">
-        <div class="wrap-content">
-            <ul class="menu-main">
-                <li><a class="active" href="home">Trang chủ</a></li>
-                <li><a href="">Giới thiệu</a></li>
-                <li><a href="basket">Giỏ trái cây</a></li>
-                <li><a href="shop">Trái cây</a></li>
-                <li><a href="news">Tin tức</a></li>
-                <li><a href="">Liên Hệ</a></li>
-                <li><a href="login">Đăng nhập</a></li>
-            </ul>
-        </div>
-    </div>
+    @include('header')
     <div class="slider">
         <div id="wowslider-container1">
             <div class="ws_images">
@@ -104,8 +61,13 @@
                             <h3>{{$row->TenTraiCay}}</h3>
                         </a>
                         <div class="price-sanpham">
-                            <span><span>Giá:
-                                </span>{{$row->GiaBan}}VND/KG</span>
+                            @if($row->ChietKhau==null)
+                            <span>
+                                <span>Giá:</span>{{$row->GiaGoc}}.000<u>đ</u> /{{$row->TenDonVi}}
+                            </span>
+                            @else
+                            <span><span>Giá:</span>{{$row->GiaBan}}.000<u>đ</u> /{{$row->TenDonVi}}</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -165,58 +127,41 @@
             </div>
         </div>
     </div>
+    @foreach($loaisp as $row)
     <div class="list-san-phan-nb padding-45-50">
         <div class="wrap-content">
             <div class="title-mau1">
-                <h3>Trái cây mùa hè</h3>
+                <h3>{{$row->TenLoai}}</h3>
             </div>
             <div class="list-sanpham grid-4 padding-20 text-center">
-                @foreach($muahe as $row)
+                @foreach($fruits as $row2)
+                @if($row->MaLoai == $row2->MaLoai)
                 <div class="item-sanpham">
                     <div class="container-sanphan">
                         <div class="img-sanpham scale-img">
-                            <img src="{{ Image::make(public_path('img/fruit/'.$row->Anh))->resize(300,300)->encode('data-url') }}"
+                            <img src="{{ Image::make(public_path('img/fruit/'.$row2->Anh))->resize(300,300)->encode('data-url') }}"
                                 alt="">
                         </div>
-                        <a class="name-sanpham text-decoration-none" href="ct{{$row->MaTraiCay}}">
-                            <h3>{{$row->TenTraiCay}}</h3>
+                        <a class="name-sanpham text-decoration-none" href="ct{{$row2->MaTraiCay}}">
+                            <h3>{{$row2->TenTraiCay}}</h3>
                         </a>
                         <div class="price-sanpham">
-                            <span><span>Giá:
-                                </span>{{$row->GiaBan}}VND/KG</span>
+                            @if($row2->ChietKhau==null)
+                            <span>
+                                <span>Giá:</span>{{$row2->GiaGoc}}.000<u>đ</u> /{{$row2->TenDonVi}}
+                            </span>
+                            @else
+                            <span><span>Giá:</span>{{$row2->GiaBan}}.000<u>đ</u> /{{$row2->TenDonVi}}</span>
+                            @endif
                         </div>
                     </div>
                 </div>
+                @endif
                 @endforeach
             </div>
         </div>
     </div>
-    <div class="list-san-phan-nb padding-45-50">
-        <div class="wrap-content">
-            <div class="title-mau1">
-                <h3>Trái cây mùa đông</h3>
-            </div>
-            <div class="list-sanpham grid-4 padding-20 text-center">
-                @foreach($muadong as $row)
-                <div class="item-sanpham">
-                    <div class="container-sanphan">
-                        <div class="img-sanpham scale-img">
-                            <img src="{{ Image::make(public_path('img/fruit/'.$row->Anh))->resize(300,300)->encode('data-url') }}"
-                                alt="">
-                        </div>
-                        <a class="name-sanpham text-decoration-none" href="ct{{$row->MaTraiCay}}">
-                            <h3>{{$row->TenTraiCay}}</h3>
-                        </a>
-                        <div class="price-sanpham">
-                            <span><span>Giá:
-                                </span>{{$row->GiaBan}}VND/KG</span>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
+    @endforeach
     <div class="tin-tuc-nb padding-45-50">
         <div class="wrap-content">
             <div class="title-mau1">
@@ -322,7 +267,7 @@
             <div class="mapouter">
                 <div class="gmap_canvas">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15674.069268600488!2d106.61756025!3d10.848202500000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752b4579d7f44f%3A0xacb532ebd03dbad9!2sToyota%20An%20S%C6%B0%C6%A1ng%20-%20TAS!5e0!3m2!1svi!2s!4v1697099812512!5m2!1svi!2s"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5139339979746!2d106.6986747748048!3d10.771894089376588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f40a3b49e59%3A0xa1bd14e483a602db!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEvhu7kgdGh14bqtdCBDYW8gVGjhuq9uZw!5e0!3m2!1svi!2s!4v1703154279732!5m2!1svi!2s"
                         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
@@ -331,7 +276,7 @@
         </div>
 
     </div>
-    <a class="btn-zalo btn-frame text-decoration-none" target="_blank" href="chat{{$cookie}}">
+    <a class="btn-zalo btn-frame text-decoration-none" target="_blank" href="pusher">
         <div class="animated infinite zoomIn kenit-alo-circle"></div>
         <div class="animated infinite pulse kenit-alo-circle-fill"></div>
         <i><img src="img/chat.png" alt=""></i>
@@ -378,6 +323,9 @@
             }
         }
     });
+    console.log(document.getElementsByClassName('tc'));
+    // Add a class to the element
+    element.classList.add('highlight');
     </script>
     <script>
     (function(d, s, id) {

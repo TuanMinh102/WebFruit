@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 10, 2023 lúc 02:35 PM
+-- Thời gian đã tạo: Th12 28, 2023 lúc 05:25 AM
 -- Phiên bản máy phục vụ: 10.4.27-MariaDB
 -- Phiên bản PHP: 8.1.12
 
@@ -75,17 +75,25 @@ INSERT INTO `baiviet` (`MaBaiViet`, `TieuDe`, `Anh`, `MoTa`, `NoiDung`, `Type`, 
 --
 
 CREATE TABLE `banggia` (
-  `MaLo` varchar(20) NOT NULL,
+  `IDGia` int(11) NOT NULL,
+  `MaSanPham` int(11) NOT NULL,
+  `ChietKhau` int(11) NOT NULL,
   `GiaBan` int(11) NOT NULL,
-  `GiaTheoNgay` date NOT NULL
+  `NgayBatDau` date NOT NULL,
+  `NgayKetThuc` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `banggia`
 --
 
-INSERT INTO `banggia` (`MaLo`, `GiaBan`, `GiaTheoNgay`) VALUES
-('cam-lo1', 120, '2023-11-30');
+INSERT INTO `banggia` (`IDGia`, `MaSanPham`, `ChietKhau`, `GiaBan`, `NgayBatDau`, `NgayKetThuc`) VALUES
+(3, 3, 10, 162, '2023-12-16', '2023-12-31'),
+(6, 6, 20, 96, '2023-12-16', '2023-12-31'),
+(9, 9, 15, 132, '2023-12-16', '2023-12-31'),
+(11, 1, 15, 120, '2024-01-01', '2024-01-15'),
+(12, 12, 5, 352, '2023-12-16', '2023-12-31'),
+(13, 1, 20, 155, '2023-12-28', '2023-12-31');
 
 -- --------------------------------------------------------
 
@@ -105,7 +113,10 @@ CREATE TABLE `chatbox` (
 INSERT INTO `chatbox` (`chatID`, `MaTK`) VALUES
 (1, 1),
 (2, 2),
-(3, 3);
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6);
 
 -- --------------------------------------------------------
 
@@ -129,12 +140,10 @@ CREATE TABLE `ct_hoadon` (
 --
 
 INSERT INTO `ct_hoadon` (`MaHD`, `MaTraiCay`, `SoLuong`, `DonGia`, `TongGia`, `HoTen`, `Email`, `Note`) VALUES
-(1, 1, 2, 288, 1476, 'Nguyen Van A', 'nguyenvana@gmail.com', 'ok'),
-(1, 14, 3, 300, 1476, 'Nguyen Van A', 'www@gmail.com', 'ok'),
-(1, 8, 2, 200, 288, 'Nguyen Van A', 'www@gmail.com', 'ok'),
-(1, 10, 2, 200, 288, 'Nguyen Van A', 'www@gmail.com', 'ok'),
-(1, 13, 2, 200, 288, 'Nguyen Van A', 'www@gmail.com', 'ok'),
-(1, 9, 2, 200, 288, 'Nguyen Van A', 'www@gmail.com', 'ok');
+(1, 3, 3, 162, 486, 'tuan', 'tuanww012@gmail.com', 'ok'),
+(1, 4, 2, 60, 120, 'tuan', 'tuanww012@gmail.com', 'ok'),
+(1, 5, 1, 399, 399, 'tuan', 'tuanww012@gmail.com', 'ok'),
+(1, 6, 2, 96, 192, 'tuan', 'tuanww012@gmail.com', 'ok');
 
 -- --------------------------------------------------------
 
@@ -143,14 +152,57 @@ INSERT INTO `ct_hoadon` (`MaHD`, `MaTraiCay`, `SoLuong`, `DonGia`, `TongGia`, `H
 --
 
 CREATE TABLE `discount` (
-  `MaGiamGia` mediumtext NOT NULL,
+  `MaGiamGia` int(11) NOT NULL,
   `MaSp` int(11) NOT NULL,
-  `GiaGoc` int(11) NOT NULL,
   `ChietKhau` int(11) NOT NULL,
   `GiaSauKhiGiam` int(11) NOT NULL,
   `NgayApDung` date NOT NULL,
-  `NgayKetThuc` date NOT NULL
+  `NgayKetThuc` date NOT NULL,
+  `TinhTrang` char(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `donvi`
+--
+
+CREATE TABLE `donvi` (
+  `MaDonVi` int(11) NOT NULL,
+  `TenDonVi` mediumtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `donvi`
+--
+
+INSERT INTO `donvi` (`MaDonVi`, `TenDonVi`) VALUES
+(1, 'Kg'),
+(2, 'Gram'),
+(3, 'Trái'),
+(4, 'Hộp'),
+(5, 'Giỏ');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `FeedbackID` int(11) NOT NULL,
+  `Name` mediumtext NOT NULL,
+  `Email` mediumtext NOT NULL,
+  `Content` mediumtext NOT NULL,
+  `NgayPhanHoi` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `feedback`
+--
+
+INSERT INTO `feedback` (`FeedbackID`, `Name`, `Email`, `Content`, `NgayPhanHoi`) VALUES
+(1, 'tuan', 'tuanww@gmail.com', 'ok', '2023-12-22');
 
 -- --------------------------------------------------------
 
@@ -212,16 +264,6 @@ CREATE TABLE `giohang` (
   `SoLuong` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Đang đổ dữ liệu cho bảng `giohang`
---
-
-INSERT INTO `giohang` (`MaGioHang`, `MaTaiKhoan`, `MaSanPham`, `SoLuong`) VALUES
-(25, 2, 8, 10),
-(26, 1, 1, 1),
-(27, 1, 2, 1),
-(28, 1, 6, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -232,8 +274,20 @@ CREATE TABLE `history_chat` (
   `MaChat` int(11) NOT NULL,
   `NoiDung` varchar(255) NOT NULL,
   `ThoiGian` datetime NOT NULL,
-  `IsUser` varchar(6) NOT NULL
+  `IsUser` varchar(6) NOT NULL,
+  `Seen` char(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `history_chat`
+--
+
+INSERT INTO `history_chat` (`MaChat`, `NoiDung`, `ThoiGian`, `IsUser`, `Seen`) VALUES
+(1, 'hi shop', '2023-12-20 07:40:05', '1', 'true'),
+(1, 'chao ban', '2023-12-20 07:40:25', '0', 'true'),
+(1, 'ban can ho tro gi?', '2023-12-20 07:41:00', '0', 'true'),
+(1, '...', '2023-12-20 07:41:18', '0', 'true'),
+(1, 'lol', '2023-12-20 07:41:23', '1', 'true');
 
 -- --------------------------------------------------------
 
@@ -247,6 +301,7 @@ CREATE TABLE `hoadon` (
   `NgayLapHD` date NOT NULL,
   `DiaChiGiaoHang` varchar(30) NOT NULL,
   `Phone` char(11) NOT NULL,
+  `ThanhTien` int(11) NOT NULL,
   `TinhTrang` varchar(10) NOT NULL,
   `DanhGia` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -255,8 +310,29 @@ CREATE TABLE `hoadon` (
 -- Đang đổ dữ liệu cho bảng `hoadon`
 --
 
-INSERT INTO `hoadon` (`MaHD`, `MaTaiKhoan`, `NgayLapHD`, `DiaChiGiaoHang`, `Phone`, `TinhTrang`, `DanhGia`) VALUES
-(1, 1, '2023-11-06', 'huynh thuc khang q1', '0123456789', 'Đang Chờ', 'false');
+INSERT INTO `hoadon` (`MaHD`, `MaTaiKhoan`, `NgayLapHD`, `DiaChiGiaoHang`, `Phone`, `ThanhTien`, `TinhTrang`, `DanhGia`) VALUES
+(1, 1, '2023-12-27', 'ho van long, quan binh tan', '0123456789', 1197, 'Đang Chờ', 'true');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `lienhe`
+--
+
+CREATE TABLE `lienhe` (
+  `MaLienHe` int(11) NOT NULL,
+  `DiaChi` varchar(255) NOT NULL,
+  `Sdt` char(11) NOT NULL,
+  `Email` mediumtext NOT NULL,
+  `Map` mediumtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `lienhe`
+--
+
+INSERT INTO `lienhe` (`MaLienHe`, `DiaChi`, `Sdt`, `Email`, `Map`) VALUES
+(1, 'Trường Cao đẳng Kỹ thuật Cao Thắng 65 Đ. Huỳnh Thúc Kháng, Bến Nghé, Quận 1, Thành phố Hồ Chí Minh 700000', '0123456788', 'tdshop@gmail.com', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5139339979746!2d106.6986747748048!3d10.771894089376588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f40a3b49e59%3A0xa1bd14e483a602db!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEvhu7kgdGh14bqtdCBDYW8gVGjhuq9uZw!5e0!3m2!1svi!2s!4v1703154279732!5m2!1svi!2s');
 
 -- --------------------------------------------------------
 
@@ -324,7 +400,8 @@ INSERT INTO `news` (`News_ID`, `Title`, `Content`, `MoTa`, `Type`, `Created_at`,
 (1, 'Loại cam đắt đỏ nhất thế giới nhìn như \"sumo\", ở Việt Nam vào mùa rẻ \"như cho không\"', '<h2><strong>Giống cam đắt đỏ trên thế giới được lai tạo giữa cam và quýt có vị ngọt và chua đến hoàn hảo khiến người ăn chỉ thử một lần cũng sẽ bị mê hoặc.</strong></h2><ul><li><a href=\"https://tintuconline.com.vn/mua-sam/nang-thieu-dot-cam-sanh-giai-nhiet-gia-re-bat-ngo-n-563258.html\">Nắng thiêu đốt, cam sành giải nhiệt giá rẻ bất ngờ</a></li><li><a href=\"https://tintuconline.com.vn/mua-sam/ga-thai-loai-di-bo-tu-thai-lan-qua-campuchia-vao-viet-nam-gia-sieu-re-nguoi-chan-nuoi-trong-nuoc-keu-troi-n-559547.html\">Gà thải loại \"đi bộ\" từ Thái Lan, qua Campuchia vào Việt Nam giá siêu rẻ, người chăn nuôi trong nước kêu trời</a></li><li><a href=\"https://tintuconline.com.vn/mua-sam/ngon-hon-quyt-uc-cam-on-chau-co-gia-re-bat-ngo-tai-cho-dau-moi-n-557810.html\">Ngon hơn quýt Úc, cam Ôn Châu có giá rẻ bất ngờ tại chợ đầu mối</a></li></ul><p><a href=\"https://tintuconline.com.vn/tags/trai-cay-213135.vnn\">Trái cây</a> là nguồn cung cấp chất dinh dưỡng và năng lượng dồi dào cho sức khỏe con người. Chúng có thể được ăn trực tiếp, chế biến thành nước ép, thạch, hoặc làm mứt. Đặc biệt, các chuyên gia khuyến cáo mỗi người nên ăn từ 200 g đến 250 g hoa quả một ngày.</p><p>Theo Trung tâm Kiểm soát và Phòng ngừa Dịch bệnh (CDC) Mỹ, cứ 10 người thì chỉ có một người ăn đủ lượng trái cây hoặc rau xanh hàng ngày. Các nhà khoa học chỉ ra 6 lợi ích tuyệt vời mà trái cây mang lại.</p><p>Bổ sung trái cây hàng ngày là điều cần thiết cho sức khỏe, tuy nhiên không phải loại nào cũng phù hợp túi tiền của người tiêu dùng. Trên thế giới có một số thuộc tính quý hiếm, cùng giá trị dinh dưỡng cao, và sự khan hiếm, một số loại trái cây đã trở thành những mặt hàng có giá không hề rẻ, thậm chí đắt ngoài sức tưởng tượng.&nbsp;Với mức giá hơn 300.000 đồng/quả, cam&nbsp;Dekopon thực là trái cây đắt đỏ.</p><p><img src=\"https://ttol.vietnamnetjsc.vn/images/2023/10/27/11/30/cam-1.jpg\" alt=\"Loại cam đắt đỏ nhất thế giới nhìn như sumo, ở Việt Nam vào mùa rẻ như cho không-1\" width=\"450\" height=\"338\"></p><p><i>Hình dáng quả cam Dekopon hơn 300.000/quả khiến ai cũng mê hoặc.</i></p><p>Dekopon, hay Sumo Fruit, là một loại cam nổi tiếng đắt đỏ xuất xứ từ Nhật Bản. Loại cam&nbsp;Dekopon được lai tạo giữa cam và quýt, cam Dekopon đạt được sự cân bằng lí tưởng giữa vị ngọt và chua đến hoàn hảo khiến người ăn chỉ thử một lần cũng sẽ bị mê hoặc.</p><p>Loại cam đắt đỏ có \"1-0-2\" được khen ngợi về chất lượng thơm ngon tuyệt vời.</p><p>Điều đặc biệt ở cam Dekopon là sau khi thu hoạch sẽ được để khoảng 20-40 ngày cho lượng axit citric trong trái cây thấp hơn, đồng thời lượng đường tăng lên, tạo ra hương vị hấp dẫn.</p><p><img src=\"https://ttol.vietnamnetjsc.vn/images/2023/10/27/11/30/cam-2.jpg\" alt=\"Loại cam đắt đỏ nhất thế giới nhìn như sumo, ở Việt Nam vào mùa rẻ như cho không-2\" width=\"450\" height=\"299\"></p><p><i>Loại quả này ngọt, dễ bóc và không có hạt. Chúng là lựa chọn hoàn hảo cho những người thích ăn ngọt nhưng vẫn muốn giữ dáng.</i></p><p>Đây là sản phẩm lai tạo giữa quýt và cam, điều này khiến hương vị của nó cân bằng lý tưởng giữa vị ngọt và chua đến hoàn hảo khiến người ăn chỉ thử một lần cũng sẽ bị mê hoặc.</p><p>Để loại quả này luôn thơm ngon và đạt độ vàng óng. Tại Nhật Bản, cam Dekopon được trồng trong nhà kính để đảm bảo nhiệt độ và độ ẩm ổn định. Cam thu hoạch vào mùa đông Nhật Bản. Bên trong nhà kính có hệ thống tưới nước và tạo ẩm tự động. Tất cả đều được kiểm soát chặt chẽ để đảm bảo đúng yêu cầu kỹ thuật.</p><p>Mùa thu hoạch là từ tháng 12 đến tháng 2 (mùa đông ở Nhật Bản).&nbsp;Một quả dekopon có giá bán 13 euro (khoảng 340.000 VND).</p><p><img src=\"https://ttol.vietnamnetjsc.vn/images/2023/10/27/11/30/cam-3.jpg\" alt=\"Loại cam đắt đỏ nhất thế giới nhìn như sumo, ở Việt Nam vào mùa rẻ như cho không-3\" width=\"450\" height=\"338\"></p><p><i>Quả cam Dekopon khi còn xanh. Ảnh: Rakuten.</i></p><p>Là sản phẩm lai giữa quýt và cam, cam Dekopon nổi tiếng về độ mọng của màng ngăn giữa các múi và có chất lượng thơm ngon tuyệt vời. Do hương vị cân bằng lý tưởng giữa vị ngọt và chua đã khiến các khách hàng hài lòng và tiếp tục mua chúng nhiều lần.</p><p>Điển hình cam Dekopon là một loại trái cây lớn - mỗi quả có thể nặng tới 0,5 kg. Đôi khi chúng còn được gọi là cam Sumo vì hình dáng độc đáo giống các võ sĩ của môn võ truyền thống của nước Nhật.</p><p><img src=\"https://ttol.vietnamnetjsc.vn/images/2023/10/27/11/30/cam-4.jpg\" alt=\"Loại cam đắt đỏ nhất thế giới nhìn như sumo, ở Việt Nam vào mùa rẻ như cho không-4\" width=\"450\" height=\"338\"></p><p><i>&nbsp;Dekopon là giống cam lai quýt nổi tiếng tại Nhật Bản, được phát triển từ năm 1972.</i></p>', 'Dekopon, hay Sumo Fruit, là một loại cam nổi tiếng đắt đỏ xuất xứ từ Nhật Bản. Loại cam Dekopon được lai tạo giữa cam và quýt, cam Dekopon đạt được sự cân bằng lí tưởng giữa vị ngọt và chua đến hoàn hảo khiến người ăn chỉ thử một lần cũng sẽ bị mê hoặc.', 'tin tuc', '2023-11-24 13:28:29', '2023-11-24 13:28:29', 'https://ttol.vietnamnetjsc.vn/images/2023/10/27/11/30/cam-1.jpg'),
 (2, 'Trái cây ngoại giá rẻ tràn ngập thị trường', '<p><img src=\"https://media1.nguoiduatin.vn/thumb_x992x595/media/ngac-kim-giang/2023/08/31/trai-cay-nhap-khau.jpg\" alt=\"Trái cây ngoại giá rẻ tràn ngập thị trường\" width=\"900\" height=\"595\"></p><h2>Trái cây ngoại giá rẻ tràn ngập thị trường</h2><p>&nbsp;</p><p><strong>Trái cây ngoại ngày càng rẻ, nhiều loại chỉ còn 30.000 - 40.000 đồng/kg. Thậm chí, các loại trái cây cao cấp cũng giảm giá mạnh nên được nhiều người chọn mua.</strong></p><p><strong>Trái cây ngoại giá rẻ bất ngờ</strong></p><p>Thị trường tháng 7 âm lịch, thường gọi là tháng chay, sức mua các mặt hàng trái cây tăng khá mạnh với đủ mặt hàng, phân khúc. Trái cây bình dân ở chợ truyền thống hiện có lựu, lê, nho xanh Trung Quốc. Trong đó, lựu dù mới vào mùa nhưng giá bán lẻ chỉ từ 20.000 - 40.000 đồng/kg, bán rất chạy do hạt đỏ, vị ngọt.</p><p>Trong khi đó, siêu thị đang tràn ngập các loại táo từ nhiều nước như: New Zealand, Pháp, Nam Phi… với giá từ 49.000 - 200.000 đồng/kg tùy giống, kích cỡ và xuất xứ.</p><p>&nbsp;</p><p>Ghi nhận của báo <i>Người Lao Động</i>, tại siêu thị MM Mega An Phú (Tp. Thủ Đức, Tp.HCM), táo Nam Phi loại túi 3 kg được bày ngay lối vào để thu hút khách. Phía bên trong khu vực trái cây các loại được đổ đống, bên dưới kê các thùng đựng táo rất bắt mắt cho khách hàng lựa chọn. Tại các cửa hàng tiện lợi, dù diện tích nhỏ nhưng tủ mát luôn dành vị trí đẹp để trưng bày các loại trái cây ngoại như táo, lê, cam vàng, cherry…</p><p>Bà Nguyễn Tuyết Nga, chủ một cửa hàng thực phẩm cao cấp tại quận 12, Tp.HCM, cho hay trước dịch <a href=\"https://www.nguoiduatin.vn/tag/virus-covid19\">Covid-19</a>, cửa hàng chủ yếu bán các loại thực phẩm khô ăn liền, còn nay tập trung bán trái cây ngoại.</p><p>\"Người tiêu dùng cắt giảm chi tiêu nhiều thứ nhưng lại tăng mua trái cây vì quan tâm hơn đến sức khỏe. Trái cây ngoại giờ rẻ lắm, về giá trị thật, nên không còn đắt đỏ như trước, dễ mua hơn. Khu vực cửa hàng tôi có nhiều nhà máy, xí nghiệp, họ thường đặt mua chung theo giá sỉ nên càng rẻ\", bà Nga nói thêm.</p><p>&nbsp;</p><p>Cũng theo bà Nga, trái cây ngoại luôn là ưu tiên số 1 để làm quà biếu hay đi đám tiệc và nhóm khách hàng này thường ít quan tâm về giá, miễn đóng gói <a href=\"https://www.nguoiduatin.vn/c/ngoi-sao\">sao</a> cho thật đẹp, thật sang và trái cây phải chất lượng.</p><p>\"Trái cây nhập khẩu đã qua tuyển chọn, chỉ cần hàng mới về thì quả nào cũng ngon, đồng đều, còn hàng trong nước lựa rất cực, dù cố gắng vẫn có tỉ lệ quả hỏng\", bà Nga dẫn chứng.</p><figure class=\"image\"><img style=\"aspect-ratio:450/338;\" src=\"https://media1.nguoiduatin.vn/media/ngac-kim-giang/2023/08/31/trai-cay-nhap-khau1.jpg\" alt=\"Kinh tế - Trái cây ngoại giá rẻ tràn ngập thị trường\" width=\"450\" height=\"338\"><figcaption>Các loại trái cây nhập khẩu giá rẻ tràn ngập thị trường nội địa. Ảnh: Chí Nhân/báo Thanh Niên</figcaption></figure><p>Một nhà nhập khẩu trái cây tại Tp.HCM cho biết, giá nhiều loại táo đang rẻ hơn trước do các doanh nghiệp nhập loại cỡ nhỏ và siêu nhỏ. Những loại táo này trước đây các trang trại của nước ngoài phải bán cho chế biến với giá rẻ thì nay bán tươi cho Việt Nam vì vừa hợp thị hiếu vừa túi tiền, dễ chia. Trái cây nhập khẩu nhiều loại bảo quản được lâu, lưu trữ kho lạnh bán dần nên ít bị áp lực bán nhanh.</p><p>Trong khi đó, theo Hiệp hội Cherry Mỹ tại Việt Nam, năm nay cherry được mùa nên sản lượng tăng mạnh, hàng được chuyển bằng đường tàu biển về Việt Nam thay vì đường hàng không như trước kia. Sản lượng lớn và chi phí giảm mạnh là lý do khiến giá cherry Mỹ tại Việt Nam rẻ hơn rất nhiều so với những năm trước. Việt Nam chủ yếu nhập cherry từ Washington và California, năm nay tổng sản lượng cả 2 bang này khoảng trên 30 triệu thùng, tăng gần gấp đôi so với năm ngoái.</p><p>&nbsp;</p><p>Theo báo <i>Thanh Niên</i>, không chỉ giá rẻ, các nhà xuất khẩu nông sản Mỹ còn thường xuyên tổ chức các chương trình quảng bá và khuyến mãi lớn. Cụ thể, trong những ngày đầu tháng 8, Phòng Nông nghiệp đối ngoại thuộc Bộ Nông nghiệp Mỹ (USDA) tổ chức chương trình \"Khám phá mỹ vị Hoa Kỳ\" giới thiệu nhiều loại thực phẩm và đồ uống đặc sản Mỹ đến người tiêu dùng Việt. Trong chương trình này, nhiều loại trái cây đặc sản Mỹ như cherry, việt quất, nho… được bán với giá khuyến mãi hấp dẫn.</p><p>Trái cây từ EU, Nhật Bản, Hàn Quốc, Úc… cũng giảm mạnh trong những năm gần đây do Việt Nam tham gia sâu vào các hiệp định thương mại tự do (FTA) với các nước này, nên thuế nhập khẩu giảm. Mặt khác, trong năm nay, kinh tế khó khăn, người tiêu dùng khắp nơi cắt giảm chi tiêu nên các nhà xuất khẩu cũng đẩy mạnh các chương trình khuyến mãi nhằm kích thích sức mua.</p>', 'Trái cây ngoại ngày càng rẻ, nhiều loại chỉ còn 30.000 - 40.000 đồng/kg. Thậm chí, các loại trái cây cao cấp cũng giảm giá mạnh nên được nhiều người chọn mua.', 'tin tuc', '2023-11-24 13:35:08', '2023-11-24 13:35:08', 'https://media1.nguoiduatin.vn/thumb_x992x595/media/ngac-kim-giang/2023/08/31/trai-cay-nhap-khau.jpg'),
 (3, 'Cherry Mỹ về Việt Nam giá thấp kỷ lục', '<p>Mỗi kg cherry Mỹ về Việt Nam được các cửa hàng, siêu thị bán giá 250.000-340.000 đồng một kg, rẻ nhất từ trước tới nay.</p><p>Chị Loan, người chuộng trái cây ngoại, cho biết năm ngoái phải bỏ ra nửa triệu đồng để mua một kg cherry có xuất xứ từ Mỹ, nay cũng số tiền ấy nhưng mua được 2 kg. \"Đây là mức giá thấp nhất từ trước tới nay\", chị nói.</p><p>Ghi nhận tại các cửa hàng trái cây nhập khẩu cũng cho thấy cherry Mỹ được rao bán với giá 250.000-340.000 đồng một kg (tùy kích cỡ), giảm 50% so với cùng kỳ năm ngoái. Đặc biệt với cherry vàng - loại cao cấp hơn, cũng chỉ có giá 350.000 đồng một kg.</p><p><picture><source srcset=\"https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-jpeg-1691402027-6674-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=foFjeUvEESJw-V1oa33S5Q 1x, https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-jpeg-1691402027-6674-1691413026.jpg?w=1020&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=tiFL7ENUTGOrUfksC46hOA 1.5x, https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-jpeg-1691402027-6674-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=2&amp;fit=crop&amp;s=6vj0YVouMbHstIGxBhwOeA 2x\"><img src=\"https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-jpeg-1691402027-6674-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=foFjeUvEESJw-V1oa33S5Q\" alt=\"Cherry Mỹ được bán tại cửa hàng ở TP HCM.\" width=\"680\" height=\"543\"></picture></p><p>Cherry Mỹ được bán tại cửa hàng ở TP HCM. Ảnh: <i>Nhân vật cung cấp</i></p><p>Bán cherry Mỹ với giá 1,2 triệu đồng một thùng 5 kg, chị Mỹ Hạnh - đầu mối bán hàng ở quận Tân Bình - cho rằng mức giá này rẻ hơn năm 2019 (năm đầu tiên giá cherry Mỹ về mức 300.000 đồng một kg).</p><p>\"Năm nay, tôi nhập về Việt Nam với số lượng 500 thùng, tăng 30% so với năm ngoái. Vì giá thấp nên rất hút khách\", chị Hạnh chia sẻ.</p><p>Chị Lan Anh - chủ cửa hàng trái cây nhập khẩu ở quận Bình Thạnh - cũng cho biết cherry đang có giá hấp dẫn hơn so với các dòng trái cây nhập khẩu cao cấp khác. Do đó, sức mua sản phẩm này đang tăng 30% so với cùng kỳ 2022.</p><p>\"Với mức giá này, ngoài khách có thu nhập cao, giới bình dân cũng dễ dàng mua về thưởng thức\", chị Lan Anh nhìn nhận.</p><p><picture><source srcset=\"https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-1691412153-7952-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=YbLbkIJFNcg4kgcR5rSRWg 1x, https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-1691412153-7952-1691413026.jpg?w=1020&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=OealqM86LjzzoslHaB4fvg 1.5x, https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-1691412153-7952-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=2&amp;fit=crop&amp;s=6TZoMXY7zoOxYY4-s-AIGQ 2x\"><img src=\"https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-1691412153-7952-1691413026.jpg?w=680&amp;h=0&amp;q=100&amp;dpr=1&amp;fit=crop&amp;s=YbLbkIJFNcg4kgcR5rSRWg\" alt=\"Cherry Mỹ được bán tại hệ thống siêu thị Go! Gò Vấp (TP HCM). Ảnh: Thi Hà\" width=\"680\" height=\"465\"></picture></p><p>Cherry Mỹ được bán tại hệ thống siêu thị Go! Gò Vấp (TP HCM). Ảnh: <i>Thi Hà</i></p><p>Tương tự, tại các hệ thống siêu thị như Co.opmart, MM Mega Market, Go! cũng đang bán loại trái cây này với giá 299.000-349.000 đồng một kg.</p><p><strong>Lý giải việc giá cherry xuống thấp</strong>, các nhà nhập khẩu cho biết do nguồn cung dồi dào, hàng đang vào vụ thu hoạch ở Mỹ. Đây cũng là nông sản được Bộ Nông nghiệp nước này hỗ trợ xúc tiến ra nước ngoài, trong đó có Việt Nam.</p>', 'Mỗi kg cherry Mỹ về Việt Nam được các cửa hàng, siêu thị bán giá 250.000-340.000 đồng một kg, rẻ nhất từ trước tới nay.', 'tin tuc', '2023-11-24 14:10:01', '2023-11-24 14:10:01', 'https://i1-kinhdoanh.vnecdn.net/2023/08/07/cherry-jpeg-1691402027-6674-1691413026.jpg?w=1020&h=0&q=100&dpr=1&fit=crop&s=tiFL7ENUTGOrUfksC46hOA'),
-(4, 'Chống táo bón', 'bla bla bla', 'Thực phẩm tốt cho dạ dày.', 'bai viet', '2023-11-24 16:01:04', '2023-11-24 16:01:04', 'new1.jpg');
+(4, 'Chống táo bón', 'bla bla bla', 'Thực phẩm tốt cho dạ dày.', 'bai viet', '2023-11-24 16:01:04', '2023-11-24 16:01:04', 'new1.jpg'),
+(5, 'asfag', '<figure class=\"image\"><img style=\"aspect-ratio:750/422;\" src=\"https://www.vaticannews.va/content/dam/vaticannews/agenzie/images/reuters/2023/03/10/16/1678461317789.JPG/_jcr_content/renditions/cq5dam.thumbnail.cropped.750.422.jpeg\" alt=\"FILE PHOTO: Reuters exclusive interview with Pope Francis at the Vatican\" width=\"750\" height=\"422\"></figure><p>ĐỨC GIÁO HOÀNG</p><h2><strong>Đức Thánh Cha sẽ viếng thăm Bỉ trong năm 2024</strong></h2><p>Trong cuộc phỏng vấn dành cho đài truyền hình Mexico N+ vào ngày lễ Đức Mẹ Guadalupe 12/12, trả lời câu hỏi về các chuyến tông du tiếp theo, Đức Thánh Cha cho biết trong năm 2024 ngài sẽ viếng thăm Bỉ, còn Polynesia và Argentina đang xem xét.</p><p><strong>Vatican News</strong></p><p>Bệnh viêm phế quản buộc Đức Thánh Cha phải huỷ bỏ chuyến đi đến Dubai tham dự COP 28 vào đầu tháng 12. Vì thế khi được hỏi về những chuyến tông du tiếp theo Đức Thánh Cha cho biết rằng tất cả các cuộc viếng thăm tiếp theo hiện đang được xem lại. Ngài nói: “Đó là sự giới hạn. Giới hạn làm cho bạn hiểu rằng mọi sự kết thúc ở đây và một thứ khác bắt đầu. Tuổi già làm cho bạn trưởng thành hơn. Đó là điều tốt đẹp”. Sau đó, Đức Thánh Cha đề cập đến ba quốc gia mà ngài muốn viếng thăm trong năm tới: Bỉ, Polynesia và Argentina. Đối với Bỉ, ngài khẳng định là “chắc chắn”, vì trong buổi tiếp kiến vào ngày 14/9 vừa qua, vua Philippe và hoàng hậu Mathilde đã mời ngài.</p><p>Về hai quốc gia còn lại, Đức Thánh Cha nói đang xem xét, “để xem mọi thứ diễn ra như thế nào”. Đối với Polynesia, đây là lần đầu tiên ngài công bố công khai, trong khi việc trở về quê hương luôn được ngài đề cập đến trong các cuộc phỏng vấn trước đây. Tân tổng thống Javier Milei cũng đã mời ngài viếng thăm Argentina trong cuộc điện đàm sau chiến thắng cuộc bầu cử.</p><p>Trả lời câu hỏi về những gì tổng thống đã nói về mình, Đức Thánh Cha giải thích rằng trong chiến dịch bầu cử, có những lúc người ta nói những điều để tạo sự chú ý nhưng sau đó tự chúng biến mất. Cần phân biệt rõ giữa những gì một chính trị gia nói trong chiến dịch bầu cử và những gì ông ta thực sự sẽ làm sau đó, bởi vì lúc đó sẽ đến thời điểm cụ thể, của các quyết định.</p>', 'hhhhh', 'ggg', '2023-12-15 06:03:34', '2023-12-15 06:03:34', 'aa');
 
 -- --------------------------------------------------------
 
@@ -385,6 +462,7 @@ CREATE TABLE `review` (
   `MaTk` int(11) NOT NULL,
   `MaSp` int(11) NOT NULL,
   `Comment` mediumtext NOT NULL,
+  `ReviewIMG` mediumtext DEFAULT NULL,
   `Rating` int(11) NOT NULL,
   `NgayThang` datetime NOT NULL,
   `TinhTrang` varchar(11) NOT NULL
@@ -394,10 +472,9 @@ CREATE TABLE `review` (
 -- Đang đổ dữ liệu cho bảng `review`
 --
 
-INSERT INTO `review` (`MaTk`, `MaSp`, `Comment`, `Rating`, `NgayThang`, `TinhTrang`) VALUES
-(1, 1, 'cam', 3, '2023-12-08 04:19:44', 'true'),
-(1, 8, 'chuối', 5, '2023-12-08 04:19:44', 'true'),
-(1, 14, 'hộp cam', 4, '2023-12-08 04:19:45', 'true');
+INSERT INTO `review` (`MaTk`, `MaSp`, `Comment`, `ReviewIMG`, `Rating`, `NgayThang`, `TinhTrang`) VALUES
+(1, 4, 'kiwi', '<img src=\'img/danhgia/1703688117_hk5.png\' width=100 height=100 style=\'margin-left:5px\'>', 2, '2023-12-27 14:41:57', 'true'),
+(1, 5, 'nho', '<img src=\'img/danhgia/1703688117_MillionsOfTreesInDesert_1024.jpg\' width=100 height=100 style=\'margin-left:5px\'>', 4, '2023-12-27 14:41:57', 'true');
 
 -- --------------------------------------------------------
 
@@ -423,9 +500,12 @@ CREATE TABLE `taikhoan` (
 --
 
 INSERT INTO `taikhoan` (`MaTaiKhoan`, `TaiKhoan`, `MatKhau`, `Email`, `Phone`, `DiaChi`, `HoTen`, `IsAdmin`, `Avatar`, `TrangThai`) VALUES
-(1, 'tuan', '123', 'tuanww012@gmail.com', '0999999997', 'quan binhtan,tphcm', 'NguyenMinhTuan', 0, '', ''),
-(2, 'tuan2', 'ttt', '0306201093@caothang.edu.vn', '0123456789', 'huynh thuc khang, quan1', 'Nguyen Van A', 0, '1.jpg', ''),
-(3, 'admin', 'admin123', '', '', '', '', 1, '', '');
+(1, 'tuan', '202cb962ac59075b964b07152d234b70', 'tuanww012@gmail.com', '0999999997', 'quan binhtan,tphcm', 'NguyenMinhTuan', 0, '', ''),
+(2, 'tuan2', '9990775155c3518a0d7917f7780b24aa', '0306201093@caothang.edu.vn', '0123456789', 'huynh thuc khang, quan1', 'Nguyen Van A', 0, '1.jpg', ''),
+(3, 'admin', '0192023a7bbd73250516f069df18b500', '', '', '', '', 1, '', ''),
+(4, 'tuan3', '81dc9bdb52d04dc20036dbd8313ed055', '', '', '', '', 0, '', ''),
+(5, 'tuan5', 'a44f1a7c311b36a846c63f098a737879', 'www@gmail.com', '0123456789', 'quan2', 'Nguyen Van C', 0, '2.jpg', ''),
+(6, 'tuan4', 'd6b8cc42803ea100735c719f1d7f5e11', '', '', '', '', 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -457,13 +537,11 @@ CREATE TABLE `traicay` (
   `MaTraiCay` int(11) NOT NULL,
   `TenTraiCay` varchar(30) NOT NULL,
   `MoTa` varchar(30) NOT NULL,
-  `GiaNhap` varchar(10) NOT NULL,
   `SoLuong` int(11) NOT NULL,
-  `GiaBan` int(11) NOT NULL,
-  `Discount` int(11) NOT NULL,
   `GiaGoc` int(11) NOT NULL,
   `MaNcc` int(11) NOT NULL,
   `MaLoai` int(11) NOT NULL,
+  `UnitID` int(11) NOT NULL,
   `Anh` varchar(50) NOT NULL,
   `TinhTrang` varchar(10) NOT NULL,
   `Type` mediumtext DEFAULT NULL
@@ -473,21 +551,21 @@ CREATE TABLE `traicay` (
 -- Đang đổ dữ liệu cho bảng `traicay`
 --
 
-INSERT INTO `traicay` (`MaTraiCay`, `TenTraiCay`, `MoTa`, `GiaNhap`, `SoLuong`, `GiaBan`, `Discount`, `GiaGoc`, `MaNcc`, `MaLoai`, `Anh`, `TinhTrang`, `Type`) VALUES
-(1, 'Cam', 'Được nhập từ Mỹ,...', '124', 10, 144, 0, 144, 1, 1, 'pic1.jpg', 'true', NULL),
-(2, 'Dâu Tây', 'Được trồng trên Đà Lạt xa xôi', '130', 10, 150, 0, 150, 2, 2, 'pic2.jpg', 'true', NULL),
-(3, 'Táo Mỹ', 'Giống táo mới được lai giống', '100', 2, 120, 0, 120, 3, 1, 'pic3.jpg', 'true', NULL),
-(4, 'Kiwi', 'Vị chua,ngọt tự nhiên', '183', 5, 199, 20, 220, 3, 1, 'pic4.jpg', 'true', NULL),
-(5, 'Nho', 'Rất ngon', '150', 25, 170, 0, 170, 5, 2, 'pic5.jpg', 'true', NULL),
-(6, 'Bơ Việt Nam', 'Được nhập tại Việt Nam', '130', 10, 144, 0, 144, 1, 1, 'pic6.jpg', 'true', NULL),
-(7, 'Dưa hấu', 'Ngọt, ít hạt', '100', 25, 199, 25, 230, 2, 1, 'pic7.jpg', 'true', NULL),
-(8, 'Chuối ', 'Nhiều chất vitamin', '100', 2, 199, 0, 199, 3, 1, 'pic8.jpg', 'true', NULL),
-(9, 'Cherry', 'Ngon tuyệt', '150', 15, 200, 50, 400, 4, 2, 'pic9.jpg', 'true', NULL),
-(10, 'Xoài Cát', 'Ngọt thanh thanh', '99', 20, 150, 15, 170, 1, 2, 'pic10.jpg', 'true', NULL),
-(11, 'Khay Ngũ Quả Cúng', 'Bao gồm Nho,Kiwi,Cam,Táo', '124', 10, 155, 0, 150, 1, 3, '4-01.jpg', 'true', NULL),
-(12, 'Khay Trái Cây Trìu Mến', 'Bao gồm Cam,Táo', '134', 11, 165, 0, 165, 1, 3, '4-08.jpg', 'true', NULL),
-(13, 'Bliss Gift', 'Bao gồm Nho,Cam,Táo', '136', 14, 155, 0, 155, 1, 3, '7-01.jpg', 'true', NULL),
-(14, 'Gift Box Quýt Úc', 'Thích hợp làm quà', '135', 24, 188, 0, 188, 1, 3, '5-13-1.jpg', 'true', NULL);
+INSERT INTO `traicay` (`MaTraiCay`, `TenTraiCay`, `MoTa`, `SoLuong`, `GiaGoc`, `MaNcc`, `MaLoai`, `UnitID`, `Anh`, `TinhTrang`, `Type`) VALUES
+(1, 'Cam', 'Được nhập từ Mỹ,...', 10, 144, 1, 1, 1, 'pic1.jpg', 'true', NULL),
+(2, 'Dâu Tây', 'Được trồng trên Đà Lạt xa xôi', 10, 200, 2, 2, 1, 'pic2.jpg', 'true', NULL),
+(3, 'Táo Mỹ', 'Giống táo mới được lai giống', 2, 180, 3, 1, 1, 'pic3.jpg', 'true', NULL),
+(4, 'Kiwi', 'Vị chua,ngọt tự nhiên', 5, 60, 3, 1, 1, 'pic4.jpg', 'true', NULL),
+(5, 'Nho', 'Rất ngon', 25, 399, 5, 2, 1, 'pic5.jpg', 'true', NULL),
+(6, 'Bơ Việt Nam', 'Được nhập tại Việt Nam', 10, 120, 1, 1, 1, 'pic6.jpg', 'true', NULL),
+(7, 'Dưa hấu', 'Ngọt, ít hạt', 25, 50, 2, 1, 3, 'pic7.jpg', 'true', NULL),
+(8, 'Chuối ', 'Nhiều chất vitamin', 2, 25, 3, 1, 2, 'pic8.jpg', 'true', NULL),
+(9, 'Cherry', 'Ngon tuyệt', 15, 155, 4, 2, 2, 'pic9.jpg', 'true', NULL),
+(10, 'Xoài Cát', 'Ngọt thanh thanh', 20, 22, 1, 2, 1, 'pic10.jpg', 'true', NULL),
+(11, 'Khay Ngũ Quả Cúng', 'Bao gồm Nho,Kiwi,Cam,Táo', 10, 299, 1, 3, 4, '4-01.jpg', 'true', NULL),
+(12, 'Khay Trái Cây Trìu Mến', 'Bao gồm Cam,Táo', 11, 370, 1, 3, 4, '4-08.jpg', 'true', NULL),
+(13, 'Bliss Gift', 'Bao gồm Nho,Cam,Táo', 14, 390, 1, 3, 5, '7-01.jpg', 'true', NULL),
+(14, 'Gift Box Quýt Úc', 'Thích hợp làm quà', 24, 400, 1, 3, 4, '5-13-1.jpg', 'true', NULL);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -497,7 +575,8 @@ INSERT INTO `traicay` (`MaTraiCay`, `TenTraiCay`, `MoTa`, `GiaNhap`, `SoLuong`, 
 -- Chỉ mục cho bảng `banggia`
 --
 ALTER TABLE `banggia`
-  ADD KEY `MaLo` (`MaLo`);
+  ADD PRIMARY KEY (`IDGia`),
+  ADD KEY `FK_matc_bg2` (`MaSanPham`);
 
 --
 -- Chỉ mục cho bảng `chatbox`
@@ -517,7 +596,20 @@ ALTER TABLE `ct_hoadon`
 -- Chỉ mục cho bảng `discount`
 --
 ALTER TABLE `discount`
+  ADD PRIMARY KEY (`MaGiamGia`),
   ADD KEY `FK_masp` (`MaSp`);
+
+--
+-- Chỉ mục cho bảng `donvi`
+--
+ALTER TABLE `donvi`
+  ADD PRIMARY KEY (`MaDonVi`);
+
+--
+-- Chỉ mục cho bảng `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`FeedbackID`);
 
 --
 -- Chỉ mục cho bảng `gallery`
@@ -545,6 +637,12 @@ ALTER TABLE `history_chat`
 ALTER TABLE `hoadon`
   ADD PRIMARY KEY (`MaHD`),
   ADD KEY `FK_matk_x2` (`MaTaiKhoan`);
+
+--
+-- Chỉ mục cho bảng `lienhe`
+--
+ALTER TABLE `lienhe`
+  ADD PRIMARY KEY (`MaLienHe`);
 
 --
 -- Chỉ mục cho bảng `loaitraicay`
@@ -597,7 +695,8 @@ ALTER TABLE `taikhoan`
 ALTER TABLE `traicay`
   ADD PRIMARY KEY (`MaTraiCay`),
   ADD KEY `FK_ma_ncc_x2` (`MaNcc`),
-  ADD KEY `FK_maloai` (`MaLoai`);
+  ADD KEY `FK_maloai` (`MaLoai`),
+  ADD KEY `FK_madonvi` (`UnitID`);
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -607,7 +706,7 @@ ALTER TABLE `traicay`
 -- Các ràng buộc cho bảng `banggia`
 --
 ALTER TABLE `banggia`
-  ADD CONSTRAINT `banggia_ibfk_1` FOREIGN KEY (`MaLo`) REFERENCES `lo_nhap` (`MaLo`);
+  ADD CONSTRAINT `FK_matc_bg2` FOREIGN KEY (`MaSanPham`) REFERENCES `traicay` (`MaTraiCay`);
 
 --
 -- Các ràng buộc cho bảng `chatbox`
@@ -673,6 +772,7 @@ ALTER TABLE `review`
 --
 ALTER TABLE `traicay`
   ADD CONSTRAINT `FK_ma_ncc_x2` FOREIGN KEY (`MaNcc`) REFERENCES `nhacungcap` (`MaNcc`),
+  ADD CONSTRAINT `FK_madonvi` FOREIGN KEY (`UnitID`) REFERENCES `donvi` (`MaDonVi`),
   ADD CONSTRAINT `FK_maloai` FOREIGN KEY (`MaLoai`) REFERENCES `loaitraicay` (`MaLoai`);
 COMMIT;
 

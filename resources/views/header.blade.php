@@ -1,4 +1,3 @@
-<!-- Header start -->
 <div class="header">
     <div class="header-top">
         <div class="wrap-content">
@@ -32,13 +31,13 @@
 <div class="menu">
     <div class="wrap-content">
         <ul class="menu-main">
-            <li><a class="active" href="home">Trang chủ</a></li>
-            <li><a href="">Giới thiệu</a></li>
-            <li><a href="shop">Trái cây</a></li>
-            <li><a href="">Tin tức</a></li>
-            <li><a href="">Liên Hệ</a></li>
-            <li><a href="login">Đăng nhập</a></li>
+            <li><a class="tc" href="home">Trang chủ</a></li>
+            <li><a class="gt" href="">Giới thiệu</a></li>
+            <li><a class="gq" href="basket">Giỏ trái cây</a></li>
+            <li><a class="s" href="shop">Trái cây</a></li>
+            <li><a class="tt" href="news">Tin tức</a></li>
+            <li><a class="lh" href="contact">Liên Hệ</a></li>
+            <li><a class="dn" href="login">Đăng nhập</a></li>
         </ul>
     </div>
 </div>
-<!-- Header end -->

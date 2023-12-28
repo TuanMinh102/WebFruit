@@ -18,8 +18,16 @@
                     <button onclick="tang_giam(1,{{$row->MaTraiCay}});">+</button>
                 </div>
             </div>
-            <div style="margin-top:20px;">${{$row->GiaBan}} /Kg</div>
-            <div style="margin-top:20px;"><a href="javascript:delProduct({{$row->MaTraiCay}});" class="fa fa-trash"
+            @if($row->ChietKhau==null)
+            <div style="margin-top:20px;">
+                <span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span> /{{$row->TenDonVi}}
+            </div>
+            @else
+            <div style="margin-top:20px;">
+                <span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}
+            </div>
+            @endif
+            <div style="margin-top:20px;"><a href="javascript:delProductPopup({{$row->MaTraiCay}});" class="fa fa-trash"
                     style="color:red;"></a></div>
         </div>
         @endforeach

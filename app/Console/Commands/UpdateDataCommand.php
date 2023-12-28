@@ -29,6 +29,6 @@ class UpdateDataCommand extends Command
     {
         $ngayHienTai = new DateTime();
         $ngayHienTai= $ngayHienTai->format('Y-m-d');
-        DB::table('discount')->where("NgayKetThuc",$ngayHienTai)->delete();
+        DB::table('discount')->where('MaGiamGia',1)->delete();
     }
 }

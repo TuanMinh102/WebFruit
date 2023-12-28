@@ -23,38 +23,48 @@
 
 <body>
     <div id="app" class="container chat">
-        <h3 class=" text-center">Messaging | User: </h3>
-        <h3 class=" text-center">Messaging | Admin</h3>
+        <!-- <h3 class=" text-center">Messaging | User: </h3> -->
+        <h3 class=" text-center">Messaging | {{$name}}</h3>
         <div class="messaging">
             <div class="inbox_msg">
                 <div class="inbox_people">
                     <div class="inbox_chat">
-
-                        <div class="chat_list" id="user" onclick="location.href='chat'" style="cursor:pointer;">
+                        @if($list!=null)
+                        @foreach($list as $row)
+                        <div class="chat_list" id="user{{$row->MaTaiKhoan}}"
+                            onclick="location.href='pusher{{$row->MaTaiKhoan}}'" style="cursor:pointer;">
                             <div class="chat_people">
-                                <div class="chat_img"> <img src="img/user-profile.png" alt="sunil"> </div>
+                                <div class="chat_img"><img src="img/user-profile.png" alt="sunil"></div>
                                 <div class="chat_ib">
-                                    <h5>tuan<span class="chat_date">Dec 25</span></h5>
+                                    <h5>{{$row->TaiKhoan}}<span class="chat_date">Dec 25</span></h5>
+
+                                    <div>
+                                        <span class="number mySpan{{$row->MaTaiKhoan}}">
+                                            {{$unread[$row->MaTaiKhoan]}}
+                                        </span>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
-
+                        @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="mesgs">
                     <div id="container-history">
                         <div id="msg">
-                            <div>
-                                <div class="messages">
-                                    @include('ReceiveMessage',['message'=>"Hey! What's up!  👋",'time'=>now()])
-                                    @foreach($chat as $row)
-                                    @if($row->IsUser==1)
-                                    @include('BroadcastMessage',['message'=>$row->NoiDung,'time'=>$row->ThoiGian])
-                                    @else
-                                    @include('ReceiveMessage',['message'=>$row->NoiDung,'time'=>$row->ThoiGian])
-                                    @endif
-                                    @endforeach
-                                </div>
+                            <div class="messages">
+                                @include('chat/ReceiveMessage',['message'=>"Hey! What's up!  👋",'time'=>now()])
+                                @if($chat!=null)
+                                @foreach($chat as $row)
+                                @if($row->IsUser==$type)
+                                @include('chat/BroadcastMessage',['message'=>$row->NoiDung,'time'=>$row->ThoiGian])
+                                @else
+                                @include('chat/ReceiveMessage',['message'=>$row->NoiDung,'time'=>$row->ThoiGian])
+                                @endif
+                                @endforeach
+                                @endif
                             </div>
                         </div>
                         <div class="type_msg">
@@ -62,8 +72,8 @@
                                 <form>
                                     <input type="text" class="write_msg" name="message" placeholder="Type a message"
                                         id="message" autocomplete="off">
-                                    <button class="msg_send_btn" type="submit"><i class="fa fa-paper-plane-o"
-                                            aria-hidden="true"></i></button>
+                                    <button class="msg_send_btn" type="submit">
+                                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -71,14 +81,40 @@
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 <script>
+function getCookie(name) {
+    const cookieString = document.cookie;
+    const cookies = cookieString.split('; ');
+
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+        if (cookieName === name) {
+            return cookieValue;
+        }
+    }
+    return null;
+}
+// Get the value of the "myCookie" cookie
+var type = <?php echo $type ;?>;
+if (type == 1) {
+    var myCookieValue = getCookie('id');
+} else {
+    var myCookieValue = getCookie('admin');
+}
+
 Pusher.logToConsole = true;
+
 var pusher = new Pusher('951e298a4cf0d46d9655', {
-    cluster: 'eu'
+    cluster: 'eu',
+    encrypted: true,
 });
-var channel = pusher.subscribe('public');
+
+//var channel = pusher.subscribe('public');
+// nhận tin nhắn của người này
+var channel = pusher.subscribe(<?php echo $chater1?> + 'and' + <?php echo $chater2?>);
 //Receive messages
 channel.bind('chat', function(data) {
     $.post("/receive", {
@@ -87,10 +123,9 @@ channel.bind('chat', function(data) {
         })
         .done(function(res) {
             $(".messages > .message").last().after(res);
-            $(document).scrollTop($(document).height());
+            $("#msg").scrollTop($("#msg")[0].scrollHeight);
         });
 });
-
 //Broadcast messages
 $("form").submit(function(event) {
     event.preventDefault();
@@ -104,11 +139,14 @@ $("form").submit(function(event) {
         data: {
             _token: '{{csrf_token()}}',
             message: $("form #message").val(),
+            my: myCookieValue,
+            chatwith: <?php echo $chater2; ?>,
+            type: type,
         }
     }).done(function(res) {
         $(".messages > .message").last().after(res);
         $("form #message").val('');
-        $(document).scrollTop($(document).height());
+        $("#msg").scrollTop($("#msg")[0].scrollHeight);
     });
 });
 </script>

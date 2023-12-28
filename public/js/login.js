@@ -1,16 +1,15 @@
-class OTP {
-    otpcode;
-    constructor() {
-        this.otpcode = '';
-    }
-    set(code) {
-        this.otpcode = code;
-    }
-    get() {
-        return this.otpcode;
-    }
+// Ẩn hiện các form đăng nhập,đăng ký,lấy lại mật khẩu...
+function goToForm(name) {
+    $.ajax({
+        url: 'loadForm',
+        method: 'GET',
+        data: { 'name': name, },
+        success: function (response) {
+            $('#include').html(response);
+        }
+    });
+
 }
-otp_object = new OTP();
 //Dang Nhap
 function signIn() {
     var username = document.getElementById('username').value;
@@ -81,24 +80,7 @@ function showPass(idname) {
     }
 
 }
-// Ẩn hiện các form đăng nhập,đăng ký,lấy lại mật khẩu...
-function show_hide(n) {
-    if (n == 0) {
-        document.getElementById("loginform").style.display = "block";
-        document.getElementById("signUpform").style.display = "none";
-        document.getElementById("recoverPassform").style.display = "none";
-    }
-    else if (n == 1) {
-        document.getElementById("loginform").style.display = "none";
-        document.getElementById("signUpform").style.display = "block";
-        document.getElementById("recoverPassform").style.display = "none";
-    }
-    else {
-        document.getElementById("loginform").style.display = "none";
-        document.getElementById("signUpform").style.display = "none";
-        document.getElementById("recoverPassform").style.display = "block";
-    }
-}
+
 // cap nhat thong tin tai khoan
 function editProfile(id) {
     if (confirm('Xác nhận thay đổi?') == true) {
@@ -124,94 +106,8 @@ function editProfile(id) {
             }
         });
     }
-
 }
-// Sự kiện gửi và xác nhận mã OTP
-function next() {
-    seconds = 60;
-    var mail = $('#email_otp').val();
-    var random_otp = Math.floor(Math.random() * (99999 - 10000)) + 10000;
-    otp_object.set(String(random_otp));
-    var data = {
-        'email': mail,
-        'random_otp': otp_object.get(),
-    };
-    $.ajax({
-        type: 'get',
-        dataType: 'html',
-        url: 'otp',
-        data: data,
-        success: function () {
-            document.getElementById("recoverPassform").style.display = "none";
-            document.getElementById("OTPform").style.display = "block";
-            document.getElementById("email_to").innerHTML = mail;
-        }
-    });
-};
-// Chuyển đến thẻ input tiếp theo
-const inputs = document.getElementById("inputs");
 
-inputs.addEventListener("input", function (e) {
-    const target = e.target;
-    const val = target.value;
-    if (isNaN(val)) {
-        target.value = "";
-        return;
-    }
-    if (val != "") {
-        const next = target.nextElementSibling;
-        if (next) {
-            next.focus();
-        }
-    }
-});
-
-inputs.addEventListener("keyup", function (e) {
-    let target = e.target;
-    let key = e.key.toLowerCase();
-
-    if (key == "backspace" || key == "delete") {
-        target.value = "";
-        const prev = target.previousElementSibling;
-        if (prev) {
-            prev.focus();
-        }
-        return;
-    }
-});
-
-// kiem tra ma OTP
-function checkcode() {
-    var code_input = "";
-    var fill = 1;
-    for (var i = 1; i <= 5; i++) {
-        if (document.getElementById("i" + i).value == '') {
-            fill = 0;
-        }
-        code_input += document.getElementById("i" + i).value;
-    }
-
-    if (fill == 0) {
-        document.getElementById("error-otp").style.display = "block";
-        document.getElementById("error-otp").innerHTML = "Mã OTP gồm 5 số";
-        setTimeout(() => {
-            document.getElementById("error-otp").style.display = "none";
-        }, 4000);
-    }
-    else {
-        if (code_input == this.otp_object.get()) {
-            document.getElementById("newPassform").style.display = "block";
-            document.getElementById("OTPform").style.display = "none";
-        }
-        else {
-            document.getElementById("error-otp").style.display = "block";
-            document.getElementById("error-otp").innerHTML = "Sai mã OTP";
-            setTimeout(() => {
-                document.getElementById("error-otp").style.display = "none";
-            }, 4000);
-        }
-    }
-}
 //kiem tra mat khau de cap nhat mat khau moi
 function checkpass() {
     var new_pass = document.getElementById("new_pass").value;
@@ -293,34 +189,7 @@ function signUp() {
         });
     }
 }
-// Gui lai ma OTP
-function reloadcode() {
-    seconds = 60;
-    document.getElementById('countdown').style.color = "black";
-    var mail = $('#email_otp').val();
-    var random_otp = Math.floor(Math.random() * (99999 - 10000)) + 10000;
-    if (this.otp_object.get() == random_otp) {
-        while (true) {
-            if (this.otp_object.get() != random_otp) {
-                break;
-            } else {
-                random_otp = Math.floor(Math.random() * (99999 - 10000)) + 10000;
-            }
-        }
-    }
-    this.otp_object.set(random_otp);
-    var data = {
-        'email': mail,
-        'random_otp': random_otp,
-    };
-    $.ajax({
-        type: 'get',
-        dataType: 'html',
-        url: 'otp',
-        data: data,
-        success: function () { }
-    });
-}
+
 //Xoa du lieu nhap cua the input
 function clear_input() {
     document.getElementById("user_name").value = '';
@@ -336,18 +205,136 @@ function clear_input() {
         document.getElementById("i" + i).value = '';
 }
 //Dem nguoc thoi gian
-var countdownEL = document.getElementById('countdown');
-let seconds = 60;
-setInterval(Countdown, 1000);
-function Countdown() {
-    countdownEL.innerHTML = seconds;
-    if (seconds > 0) {
-        seconds--;
+var mail = '';
+//
+function startCountdown() {
+    var countdownEL = document.getElementById('countdown');
+    let seconds = 60;
+    let interval = setInterval(function () {
+        countdownEL.innerHTML = seconds;
+        nextInput();
+        if (seconds > 0) { seconds--; }
+        else {
+            $.ajax({
+                type: 'get',
+                dataType: 'html',
+                url: 'setOTPnull',
+                success: function () { clearInterval(interval); }
+            });
+        }
+        if (seconds == 9) { document.getElementById('countdown').style.color = "red"; }
+    }, 1000);
+}
+// Sự kiện gửi và xác nhận mã OTP
+function next() {
+    mail = $('#email_otp').val();
+    var data = {
+        'email': mail,
+    };
+    $.ajax({
+        type: 'get',
+        dataType: 'html',
+        url: 'otp',
+        data: data,
+        success: function (res) {
+            $('#include').html(res);
+            startCountdown();
+        }
+    });
+};
+// Gui lai ma OTP
+function reloadcode() {
+    document.getElementById('countdown').style.color = "black";
+    var data = {
+        'email': mail,
+    };
+    $.ajax({
+        type: 'get',
+        dataType: 'html',
+        url: 'reloadOTP',
+        data: data,
+        success: function () { startCountdown(); }
+    });
+}
+// Chuyển đến thẻ input tiếp theo
+function nextInput() {
+    const inputs = document.getElementById("inputs");
+
+    inputs.addEventListener("input", function (e) {
+        const target = e.target;
+        const val = target.value;
+        if (isNaN(val)) {
+            target.value = "";
+            return;
+        }
+        if (val != "") {
+            const next = target.nextElementSibling;
+            if (next) {
+                next.focus();
+            }
+        }
+    });
+
+    inputs.addEventListener("keyup", function (e) {
+        let target = e.target;
+        let key = e.key.toLowerCase();
+
+        if (key == "backspace" || key == "delete") {
+            target.value = "";
+            const prev = target.previousElementSibling;
+            if (prev) {
+                prev.focus();
+            }
+            return;
+        }
+    });
+}
+// kiem tra ma OTP
+function checkcode() {
+    var code_input = "";
+    var fill = 1;
+    for (var i = 1; i <= 5; i++) {
+        if (document.getElementById("i" + i).value == '') {
+            fill = 0;
+        }
+        code_input += document.getElementById("i" + i).value;
+    }
+    if (fill == 0) {
+        document.getElementById("error-otp").style.display = "block";
+        document.getElementById("error-otp").innerHTML = "Mã OTP gồm 5 số";
+        setTimeout(() => {
+            document.getElementById("error-otp").style.display = "none";
+        }, 4000);
     }
     else {
-        this.otp_object.set();
-    }
-    if (seconds == 9) {
-        document.getElementById('countdown').style.color = "red";
+        $.ajax({
+            type: 'get',
+            dataType: 'html',
+            url: 'checkOTP',
+            data: { 'code': code_input },
+            success: function (res) {
+                var data = $.parseJSON(res);
+                if (data.flag == 'true') {
+                    $('#include').html(data.view);
+                    startCountdown = function () { };
+                    nextInput = function () { };
+                    $.ajax({
+                        type: 'get',
+                        dataType: 'html',
+                        url: 'setOTPnull',
+                        success: function () { }
+                    });
+                }
+
+                else {
+                    document.getElementById("error-otp").style.display = "block";
+                    document.getElementById("error-otp").innerHTML = "Sai mã OTP";
+                    setTimeout(() => {
+                        document.getElementById("error-otp").style.display = "none";
+                    }, 4000);
+                }
+            }
+        });
     }
 }
+

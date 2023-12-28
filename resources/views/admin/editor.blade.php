@@ -2,16 +2,28 @@
 <div><input type="text" id="mota" placeholder="Mô tả bài viết"></div><br>
 <div><input type="text" id="img" placeholder="Ảnh đại diện"></div><br>
 <div><input type="text" id="loai" placeholder="Thể loại"></div><br>
-<textarea name="content" id="editor" cols="30" rows="10"></textarea>
+<input type="file" id="uploadimg">
+<form>
+    @csrf
+    <textarea name="content" id="editor" cols="30" rows="10"></textarea>
+    <button onclick="up()">up</button>
+</form>
 <a href="javascript:insert();">submit</a>
-<div id='load'></div>
+
+<div id='load'>
+
+</div>
 <!-- <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script> -->
 <script src="{{asset('ckeditor5-build-classic/ckeditor.js')}}"></script>
 <script src="js/jquery/jquery-2.2.4.min.js"></script>
 <script>
 var data;
 ClassicEditor
-    .create(document.querySelector('#editor'))
+    .create(document.querySelector('#editor'), {
+        // ckfinder: {
+        //     uploadUrl: "{{route('ckeditor.upload',['_token'=>csrf_token()])}}",
+        // }
+    })
     .then(editor => {
         // console.log(editor);
         data = editor;
@@ -42,5 +54,21 @@ function insert() {
         }
     });
 
+}
+
+function up() {
+    var formData = new FormData();
+    var fileInput = document.getElementById('uploadimg').files;
+    formData.append('upload', fileInput);
+    $.ajax({
+        type: 'post',
+        url: "{{route('ckeditor.upload',['_token'=>csrf_token()])}}",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function() {
+            alert('ok');
+        }
+    });
 }
 </script>

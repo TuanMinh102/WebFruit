@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="bootstrap/bootstrap.css">
     <link rel="stylesheet" href="magiczoomplus/magiczoomplus.css">
     <link rel="stylesheet" href="css/style_home.css">
+    <link rel="stylesheet" href="css/cart-popup.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -31,6 +33,11 @@
             </nav>
         </div>
     </div>
+    <br>
+    <div class="session-message">
+
+    </div>
+    <br>
     <div class="wap-content">
         <div class="container-ct-product">
             <div class="img-ct-product">
@@ -55,48 +62,46 @@
                 </div>
             </div>
             <div class="product_desc">
-                @foreach( $product as $row)
+                @foreach($product as $row)
                 <h3 class="name-product-ct">
                     {{$row->TenTraiCay}}
                 </h3><br>
-                @if($row->Discount==0)
-                <span class="price-product-ct"><b>Giá: </b><span>${{$row->GiaBan}}.000 VND
-                    </span>/KG</span><br><br>
+                @if($row->ChietKhau==null)
+                <span class="price-product-ct"><b>Giá: </b><span>{{$row->GiaGoc}}.000<u>đ</u>
+                    </span> /{{$row->TenDonVi}}</span><br><br>
                 @else
                 <div style="display:flex;">
-                    <div><span class="price-product-ct"><b>Giá gốc: </b><span><s>${{$row->GiaGoc}}.000 VND</s>
-                            </span>/KG</span></div>
-                    <div class="rotateDiscount">Giảm {{$row->Discount}}%</div>
+                    <div><span class="price-product-ct"><b>Giá gốc: </b><span><s>{{$row->GiaGoc}}.000<u>đ</u></s>
+                            </span> /{{$row->TenDonVi}}</span></div>
+                    <div class="rotateDiscount">Giảm {{$row->ChietKhau}}%</div>
                     <br><br>
                 </div>
                 <span class="price-product-ct"><b>Giá sau khi giảm:</b>
-                    <span>${{$row->GiaBan}}.000 VND
-                    </span>/KG</span><br><br>
+                    <span>{{$row->GiaBan}}.000<u>đ</u>
+                    </span> /{{$row->TenDonVi}}</span><br><br>
                 @endif
                 <span><b>Tình Trạng:</b>@if($row->TinhTrang=='true')<span> Còn
                         hàng</span>@else<span style="color:red;"> Hết hàng</span>@endif</span>
-                <form class="cart clearfix" method="get" action="gh{{$row->MaTraiCay}}">
-                    <div class="cart-btn d-flex mb-3 mt-3 align-items-center">
-                        <span><b>Số lượng:</b></span>
-                        <div class="quantity ml-2">
-                            <span class="qty-minus"
-                                onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i
-                                    class="fa fa-caret-down" aria-hidden="true"></i></span>
-                            <input class="qty-text" id="qty" step="1" min="1" max="{{$row->SoLuong}}" name="quantity"
-                                value="1" disabled style="background-color:white;border: 1px solid black;color:black">
-                            <span class="qty-plus"
-                                onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i
-                                    class="fa fa-caret-up" aria-hidden="true"></i></span>
-                        </div>
+                <div class="cart-btn d-flex mb-3 mt-3 align-items-center">
+                    <span><b>Số lượng:</b></span>
+                    <div class="quantity ml-2">
+                        <span class="qty-minus"
+                            onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i
+                                class="fa fa-caret-down" aria-hidden="true"></i></span>
+                        <input class="qty-text" id="qty" step="1" min="1" max="{{$row->SoLuong}}" name="quantity"
+                            value="1" disabled style="background-color:white;border: 1px solid black;color:black">
+                        <span class="qty-plus"
+                            onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i
+                                class="fa fa-caret-up" aria-hidden="true"></i></span>
                     </div>
-                    <button type="submit" name="addtocart" class="btn btn-success"><i
-                            class="fas fa-shopping-bag mr-1"></i>
-                        <span>Thêm vào giỏ hàng</span></button>
-                    <a class="btn btn-dark" href="gio-hang">
-                        <i class="fas fa-shopping-bag mr-1"></i>
-                        <span>Mua ngay</span>
-                    </a>
-                </form>
+                </div>
+                <button name="addtocart" onclick="addcart({{$row->MaTraiCay}})" class="btn btn-success">
+                    <i class="fas fa-shopping-bag mr-1"></i>
+                    <span>Thêm vào giỏ hàng</span></button>
+                <a class="btn btn-dark" href="gio-hang">
+                    <i class="fas fa-shopping-bag mr-1"></i>
+                    <span>Mua ngay</span>
+                </a>
                 <div class="mota-product-ct mt-3">
                     <b>Mô Tả:</b> {{$row->MoTa}}
                 </div>
@@ -119,7 +124,13 @@
                             <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                                 <h3>{{$row->TenTraiCay}}</h3>
                             </a>
-                            <p class="product-price">${{$row->GiaBan}}</p>
+                            @if($row->ChietKhau==null)
+                            <p><span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
+                            @else
+                            <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}
+                                <s style="color:grey;font-size:11px">{{$row->GiaGoc}}.000<u>đ</u></s>
+                            </p>
+                            @endif
                         </div>
                         <div class="ratings-cart">
                             <div class="ratings">
@@ -130,8 +141,8 @@
                                 <i class="fa fa-star" aria-hidden="true"></i>
                             </div>
                             <div class="cart">
-                                <a class="btn btn-success" href="" data-toggle="tooltip" data-placement="left"
-                                    title="Add to Cart">Thêm giỏ hàng</a>
+                                <a class="btn btn-success" href="javascript:addcart({{$row->MaTraiCay}})"
+                                    data-toggle="tooltip" data-placement="left" title="Add to Cart">Thêm giỏ hàng</a>
                             </div>
                         </div>
                     </div>
@@ -201,6 +212,9 @@
                                 @endfor
                         </div>
                         <div style="width:500px;word-wrap:break-word;">
+                            @if($row->ReviewIMG!='')
+                            {!!$row->ReviewIMG!!}<br>
+                            @endif
                             {{$row->Comment}}
                         </div>
                     </div>
@@ -212,48 +226,22 @@
         </div>
     </div>
     <br>
+    <div class="btn-cart-popup btn-frame">
+        <a class="text-decoration-none" id="cart-icon" href="javascript:show_hide(0);">
+            <div class="animated infinite zoomIn kenit-alo-circle"></div>
+            <div class="animated infinite pulse kenit-alo-circle-fill"></div>
+            <span class='badge badge-warning' id='lblCartCount'>{{$count}}</span>
+            <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
+        </a>
+        <div id="cart-popup">
+            @include('cart/cart-popup')
+        </div>
+    </div>
     @include("footer2")
     <script src="js/jquery/jquery.min.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
     <script>
-    var star = 0;
-
-    function getStar(n) {
-        star = n;
-        for (var i = 1; i <= 5; i++) {
-            var icon = document.getElementById('star' + i);
-            if (i <= n) {
-                icon.style.color = "#ffc300";
-            } else {
-                icon.style.color = "black";
-            }
-        }
-    }
-
-    function getCookie(name) {
-        const cookieString = document.cookie;
-        const cookies = cookieString.split('; ');
-
-        for (const cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.split('=');
-            if (cookieName === name) {
-                return cookieValue;
-            }
-        }
-
-        return null;
-    }
-
-    // Get the value of the "myCookie" cookie
-    const myCookieValue = getCookie('id');
-
-    // Log the value to the console
-    console.log('Value of myCookie:', myCookieValue);
-    $("#comment-input").focus(function() {
-        if (myCookieValue == null) {
-            location.href = "login";
-        }
-    });
+    //////////////////////////////////////////////
     document.getElementById("comment-input").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -287,19 +275,8 @@
             }
         }
     });
-
-    function checkKeyword(text) {
-        var arr = ['lol', 'dm', 'fuck', 'cc', 'lon', 'cac', 'clm', 'cm', 'chet', 'mm', 'cho chet', 'me may',
-            'dmm', 'bitch'
-        ];
-        for (var i = 0; i < arr.length; i++) {
-            if (text.indexOf(arr[i]) !== -1) {
-                return false;
-            }
-        }
-        return true;
-    }
     </script>
+    <script src="js/detail.js"></script>
     <script src="magiczoomplus/magiczoomplus.js"></script>
 </body>
 

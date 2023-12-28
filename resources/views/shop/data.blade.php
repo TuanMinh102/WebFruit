@@ -11,8 +11,13 @@
                     <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                         <h3><b>{{$row->TenTraiCay}}</b></h3>
                     </a>
-                    <p class="product-price">${{$row->GiaBan}} @if($row->Discount!=0) <s
-                            style="color:grey;font-size:11px">${{$row->GiaGoc}}</s>@endif</p>
+                    @if($row->ChietKhau==null)
+                    <p><span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
+                    @else
+                    <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}
+                        <s style="color:grey;font-size:11px">{{$row->GiaGoc}}.000<u>đ</u></s>
+                    </p>
+                    @endif
                 </div>
                 <div class="ratings-cart">
                     <div class="ratings">

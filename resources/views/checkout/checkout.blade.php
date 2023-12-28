@@ -16,17 +16,30 @@
 
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/checkout.css">
+    <!-- <link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
     <!-- ##### Main Content Wrapper Start ##### -->
-    <div>
+    <!-- <div>
         <a href="home"><img src="img/logo2.jpg" alt=""></a>
-    </div>
+    </div> -->
     <div>
         <h1>THANH TOÁN</h1>
     </div>
+    @if(session()->has('mess-true'))
+    <div class="alert alert-success">
+        <b>Thành công! </b><?php echo session()->get('mess-true'); session()->forget('mess-true');?>
+        <button style="float:right" onclick="hideMess()">X</button>
+    </div>
+    @elseif(session()->has('mess-false'))
+    <div class="alert alert-danger">
+        <b>Thất bại! </b><?php echo session()->get('mess-false'); session()->forget('mess-false');?>
+        <a href="/shop">Go to shop</a>
+        <button class="btn-close" style="float:right" onclick="hideMess()">X</button>
+    </div>
+    @endif
     <div id="container-checkout">
         <div id="menu-checkout">
             <ul>
@@ -38,21 +51,33 @@
             </ul>
         </div>
         <div id="content-checkout">
-            <form action="ttoan" method="get">
+            <form action="ttoan" method="post">
+                @csrf
                 <div class="row">
-                    <div class="row-input">
+                    <div class="line">
+                        <label for="">Họ</label>
                         <input type="text" name="first_name" id="first_name" value="" placeholder="Họ" required>
                     </div>
-                    <div class="row-input">
+                    <div class="line">
+                        <label for=""><i style="font-size:15px" class="fa">&#xf007;</i> Tên</label>
                         <input type="text" id="last_name" value="" placeholder="Tên" required>
                     </div>
-                    <div class="col-input">
-                        <input type="text" id="company" placeholder="Công ty" value="">
+                </div>
+                <div class="col">
+                    <label for=""><i style="font-size:15px" class="fa">&#xf2bc;</i> Công ty</label>
+                    <input type="text" id="company" placeholder="Công ty" value="">
+                </div>
+                <div class="col">
+                    <label for=""><i style="font-size:15px" class="fa">&#xf0e0;</i> Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email" value="" required>
+                </div>
+                <div class="row">
+                    <div class="line">
+                        <label for=""><i style="font-size:15px" class="fa">&#xf19c;</i> Thành phố</label>
+                        <input type="text" id="city" placeholder="Thành Phố" value="" required>
                     </div>
-                    <div class="col-input">
-                        <input type="email" name="email" id="email" placeholder="Email" value="">
-                    </div>
-                    <div class="col-input">
+                    <div class="line">
+                        <label for="">Quận</label>
                         <select class="w-100" id="Quận">
                             <option value="usa">Bình Tân</option>
                             <option value="uk">Tân Phú</option>
@@ -62,26 +87,36 @@
                             <option value="aus">Quận 3</option>
                             <option value="bra">Quận 4</option>
                             <option value="cana">Quận 5</option>
+                            <option value="cana">Quận 6</option>
+                            <option value="cana">Quận 7</option>
+                            <option value="cana">Quận 8</option>
+                            <option value="cana">Quận 9</option>
+                            <option value="cana">Quận 10</option>
+                            <option value="cana">Quận 11</option>
+                            <option value="cana">Quận 12</option>
                         </select>
                     </div>
-                    <div class="col-input">
-                        <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Địa chỉ"
-                            value="">
-                    </div>
-                    <div class="col-input">
-                        <input type="text" id="city" placeholder="Thành Phố" value="">
-                    </div>
-                    <div class="row-input">
+                </div>
+                <div class="col">
+                    <label for=""><i style="font-size:15px" class="fa">&#xf1ad;</i> Địa chỉ</label>
+                    <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Địa chỉ"
+                        value="" required>
+                </div>
+                <div class="row">
+                    <div class="line">
+                        <label for="">Mã zip</label>
                         <input type="text" id="zipCode" placeholder="Mã Zip" value="">
                     </div>
-                    <div class="row-input">
-                        <input type="number" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại"
-                            value="">
+                    <div class="line">
+                        <label for=""><i style="font-size:15px" class="fa">&#xf095;</i> Số điện thoại</label>
+                        <input type="number" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại" value=""
+                            required>
                     </div>
-                    <div class="col-input">
-                        <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10"
-                            placeholder="Nhận xét"></textarea>
-                    </div>
+                </div>
+                <div class="col">
+                    <label for=""><i style="font-size:15px" class="fa">&#xf0e6;</i> Nhận xét</label>
+                    <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10"
+                        placeholder="Nhận xét"></textarea>
                 </div>
         </div>
         <div id="total-checkout">
@@ -113,6 +148,12 @@
         </form>
     </div>
     @include("footer2")
+
 </body>
+<script>
+function hideMess() {
+    document.getElementsByClassName('alert')[0].style.display = 'none';
+}
+</script>
 
 </html>

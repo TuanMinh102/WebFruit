@@ -131,32 +131,66 @@ function reviewProducts_insert(arr, mahd) {
         alert('Nội dung có chứa từ nhạy cảm!');
     else if (checkNull(arr) == false)
         alert('Vui lòng nhập đầy đủ!');
-    else {
-        for (var i = 0; i < arr.length; i++) {
-            var text = document.getElementById('text_review' + arr[i]).value;
-            var star = document.getElementById('star' + arr[i]).value;
-            var data2 = {
-                'text': text,
-                'idsp': arr[i],
-                'star': star,
-                'mahd': mahd,
-            };
-            $.ajax({
-                type: "get",
-                dataType: "html",
-                url: "review",
-                data: data2,
-                success: function () {
-                    document.getElementById("detail-invoices").style.display = "none";
-                    document.getElementById("child").style.display = "none";
-                }
-            });
-        }
-        alert('Nhận xét thành công.');
-        $('#container-invoices-table').load(location.href + ' #invoices-table');
-    }
+    // else {
+    //     for (var i = 0; i < arr.length; i++) {
+    //         var formData = new FormData();
+    //         // var text = document.getElementById('text_review' + arr[i]).value;
+    //         // var star = document.getElementById('star' + arr[i]).value;
+    //         var fileInput = document.getElementById('file-upload1-' + arr[i]).files;
+    //         var fileInput2 = document.getElementById('file-upload2-' + arr[i]).files;
+    //         // formData.append('fileToUpload', fileInput);
+    //         // formData.append('fileToUpload2', fileInput2);
+    //         formData.append('fileToUpload1' + arr[i], fileInput[0]);
+    //         formData.append('fileToUpload2' + arr[i], fileInput2[0]);
+    //         // formData.append('text', text);
+    //         formData.append('idsp', arr[i]);
+    //         // formData.append('star', star);
+    //         // formData.append('mahd', mahd);
+    //         $.ajax({
+    //             url: "/upload",
+    //             type: "post",
+    //             data: formData,
+    //             contentType: false,
+    //             processData: false,
+    //             success: function () {
+    //                 document.getElementById("detail-invoices").style.display = "none";
+    //                 document.getElementById("child").style.display = "none";
+    //             }
+    //         });
+    //     }
+    //     alert('Nhận xét thành công.');
+    //     $('#container-invoices-table').load(location.href + ' #invoices-table');
+    // }
 }
-
+// $(document).ready(function() {
+//     $('#uploadForm').on('submit', function() {
+//         var arr = document.getElementById('dataArr').value;
+//         for (var i = 0; i < arr.length; i++) {
+//             // var formData = new FormData();
+//             var fileInput = document.getElementById('file-upload1-' + arr[i]).files;
+//             var fileInput2 = document.getElementById('file-upload2-' + arr[i]).files;
+//             var idsp = document.getElementById('idsp' + arr[i]).value;
+//             formData.append('fileToUpload1-' + arr[i], fileInput[0]);
+//             //formData.append('fileToUpload2-'+arr[i], fileInput2[0]);
+//             formData.append('idsp', idsp);
+//             //formData.append('text', 'asdas');
+//             $.ajax({
+//                 url: "/upload",
+//                 type: "post",
+//                 data: formData,
+//                 contentType: false,
+//                 processData: false,
+//                 success: function(res) {
+//                     // var data = $.parseJSON(res);
+//                     // console.log(data.name);
+//                     // console.log(data.file);
+//                     // document.getElementById("detail-invoices").style.display = "none";
+//                     // document.getElementById("child").style.display = "none";
+//                 }
+//             });
+//         }
+//     });
+// })
 //   var cursor=document.getElementById("child");
 //   document.addEventListener("mousemove",function(e)
 //   {

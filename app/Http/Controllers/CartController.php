@@ -5,26 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UserController;
-
+use Carbon\Carbon;
 class CartController extends Controller
 {
     // lay du lieu gio hang tu tai khoan
-
     public function getcart()
     {      
         if(isset($_COOKIE['id'])){
-        $products = DB::table('traicay')
-        ->join('giohang', 'traicay.MaTraiCay', '=', 'giohang.MaSanPham')
-        ->where('MaTaiKhoan',$_COOKIE['id'])
-        ->select('traicay.*', 'giohang.SoLuong')
-        ->get();
-        return view("cart",compact('products'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
+        $cart =$this->getCartByAccountId_query($_COOKIE['id']);
+        return view("cart/cart",compact('cart'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
         }
         else 
         {
-            $products = DB::table('traicay')->whereIn('MaTraiCay',session()->get('cart',[]))->get();
+           $cart=$this->getCartBySession_query();
            $sl=session()->get('sl',[]);
-           return view("cart",compact('products','sl'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
+           return view("cart/cart",compact('cart','sl'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
         }
     }
   //xoa toan bo san pham khoi gio hang
@@ -62,14 +57,11 @@ class CartController extends Controller
                     ));
               }
               $count= DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->select('*')->get()->count();
-              $cart = DB::table('traicay')
-              ->join('giohang', 'traiCay.MaTraiCay', '=', 'giohang.MaSanPham')->where('MaTaiKhoan',$_COOKIE['id'])
-              ->select('traicay.*', 'giohang.SoLuong')
-              ->get();
+              $cart =$this->getCartByAccountId_query($_COOKIE['id']);
               $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
               foreach($name as $row){ $name=$row->TenTraiCay;}
-            $view=view('cart-popup',compact('cart'))->render();
-            return response()->json(['html'=>$view,'count'=>$count,'flag'=>true,'name'=>$name]);
+              $view=view('cart/cart-popup',compact('cart'))->render();
+            return response()->json(['html'=>$view,'count'=>$count,'name'=>$name]);
         } 
         else{
             $cart=session()->get('cart',[]);
@@ -79,14 +71,13 @@ class CartController extends Controller
             session()->put('cart',$cart);
             session()->put('sl',$sl);
             $count= count($cart);
-            $cart =  DB::table('traicay')->whereIn('MaTraiCay',session()->get('cart',[]))->get();
+            $cart = $this->getCartBySession_query();
             $sl=session()->get('sl',[]);
             $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
             foreach($name as $row){ $name=$row->TenTraiCay;}
-          $view=view('cart-popup',compact('cart','sl'))->render();
-          return response()->json(['html'=>$view,'count'=>$count,'flag'=>true,'name'=>$name]);
+            $view=view('cart/cart-popup',compact('cart','sl'))->render();
+          return response()->json(['html'=>$view,'count'=>$count,'name'=>$name]);
         }
-            return response()->json(['flag'=>false]);
     }
 
   //cap nhat gio hang
@@ -112,25 +103,26 @@ public  function gettotal()
   $sum=0;
  if(isset($_COOKIE['id']))
  {   
-    $products = DB::table('traicay')
-    ->join('giohang', 'traicay.MaTraiCay', '=', 'giohang.MaSanPham')->where('MaTaiKhoan',$_COOKIE['id'])
-    ->select('traicay.*', 'giohang.SoLuong')
-    ->get();
-    foreach($products as $row)
+    $cart = $this->getCartByAccountId_query($_COOKIE['id']);
+    foreach($cart as $row)
     {
-        $sum2=($row->SoLuong*$row->GiaBan);
-        $sum+=$sum2;
+        if($row->ChietKhau!=null)
+            $sum2=($row->SoLuong*$row->GiaBan);
+        else
+            $sum2=($row->SoLuong*$row->GiaGoc);
+         $sum+=$sum2;
     }
    }
    else{
     $cart=session()->get('cart',[]);
     $sl=session()->get('sl',[]);
-    $products = DB::table('traicay')->whereIn('MaTraiCay',session()->get('cart',[]))
-    ->select('traicay.*')
-    ->get();
-    foreach($products as $row)
+    $cart = $this->getCartBySession_query();
+    foreach($cart as $row)
     {
-        $sum2=($sl[$row->MaTraiCay]*$row->GiaBan);
+        if($row->ChietKhau!=null)
+            $sum2=($sl[$row->MaTraiCay]*$row->GiaBan);
+        else
+            $sum2=($sl[$row->MaTraiCay]*$row->GiaGoc);
         $sum+=$sum2;
     }
    }
@@ -151,7 +143,7 @@ public function delProduct($id)
         session()->put('sl', $sl);
     }
 }
-
+// Lay lich su hoa don cua tai khoan
 public function get_historyBill()
 {
  if(isset($_COOKIE['id']))
@@ -159,16 +151,16 @@ public function get_historyBill()
    $his=DB::table('hoadon')
    ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
    ->where('MaTaiKhoan',$_COOKIE['id'])
-   ->select('hoadon.*','ct_hoadon.HoTen','ct_hoadon.TongGia')
-   ->take(1)->get();
+   ->select('hoadon.*','ct_hoadon.HoTen')
+   ->distinct()->get();
  } 
  else{
      $his=DB::table('hoadon')->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')->where('MaTaiKhoan',0)
-     ->select('hoadon.*')
-     ->get();
+     ->select('hoadon.*')->get();
  }
    return $his;
 }
+//Lay chi tiet hoa don cua tai khoan
 public function get_detailBill(Request $request)
 {
     $detail=DB::table('hoadon')
@@ -176,19 +168,78 @@ public function get_detailBill(Request $request)
     ->where('MaTaiKhoan',$_COOKIE['id'])
     ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
     ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')
-   ->select('hoadon.*','ct_hoadon.*','traicay.TenTraiCay','traicay.MaTraiCay')
+    ->leftJoin('banggia', function($join) {
+        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+        ->where('NgayBatDau', '<=', Carbon::now())
+        ->where('NgayKetThuc', '>=', Carbon::now());
+    })
+    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+   ->select('hoadon.*','ct_hoadon.*','traicay.TenTraiCay','traicay.MaTraiCay','traicay.GiaGoc','banggia.GiaBan','donvi.*')
    ->get();
    $info=DB::table('hoadon')
    ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
    ->where('hoadon.MaHD','=',$request->id)->select('hoadon.*','ct_hoadon.HoTen')
    ->take(1)->get();
-   return view('detail-invoices',compact('detail','info'));
+   return view('cart/detail-invoices',compact('detail','info'));
 }
+//Danh gia san pham
 public function reviewProduct(Request $request)
 {
     $list_products=DB::table('ct_hoadon')
     ->where('MaHD','=',$request->id)
     ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')->select('*')->get();
-    return view('review_products',compact('list_products'));
+    return view('cart/review_products',compact('list_products'));
+}
+
+///////////////////////////////////////////////////////////////////
+//////////////////////QUERY---HERE/////////////////////////////////
+
+public function getCartByAccountId_query($id)
+{
+    $cart = DB::table('traicay')
+    ->join('giohang', 'traicay.MaTraiCay', '=', 'giohang.MaSanPham')
+    ->leftJoin('banggia', function($join) {
+        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+        ->where('NgayBatDau', '<=', Carbon::now())
+        ->where('NgayKetThuc', '>=', Carbon::now());
+    })
+    ->where('MaTaiKhoan',$id)
+    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+    ->select('traicay.*','giohang.SoLuong','banggia.*','donvi.*')->get();
+    return $cart;
+}
+//
+public function getCartBySession_query()
+{
+    $cart = DB::table('traicay')
+    ->leftJoin('banggia', function($join) {
+        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+        ->where('NgayBatDau', '<=', Carbon::now())
+        ->where('NgayKetThuc', '>=', Carbon::now());
+    })
+    ->whereIn('MaTraiCay',session()->get('cart',[]))
+    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+    ->select('traicay.*','banggia.*','donvi.*')->get();
+    return $cart;
+}
+public function upload2(Request $request)
+{
+    if ($request->hasFile('upload')) {
+        $originName = $request->file('upload')->getClientOriginalName();
+        $fileName = pathinfo($originName, PATHINFO_FILENAME);
+        $extension = $request->file('upload')->getClientOriginalExtension();
+        $fileName = $fileName . '_' . time() . '.' . $extension;
+        $request->file('upload')->move(public_path('img/danhgia'), $fileName);
+        $url = asset('img/danhgia/' . $fileName);
+        return response()->json(['fileName' => $fileName, 'uploaded' => 1, 'url' => $url]);
+    }
+}
+
+public function tmp(Request $request)
+{
+DB::table('demo')->insert(array(
+    'id'=>1,
+    'text'=>$request->data
+));
 }
 }

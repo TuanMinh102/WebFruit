@@ -1,4 +1,5 @@
 <button id="cancel-detail" onclick="show_hide_detail();">X</button>
+<a href="" class="printer"><i style="font-size:17px" class="fa">&#xf02f;</i></a>
 <div class="header-invoices">
     <div class="logo-detail">
         <a href="home"><img src="img/logo2.jpg" height=100 alt=""></a>
@@ -29,7 +30,7 @@
                 <th>Mã hàng</th>
                 <th>Số lượng</th>
                 <th>Đơn giá</th>
-                <th>Thành tiền</th>
+                <th>Tổng giá</th>
             </tr>
         </thead>
         <tbody>
@@ -40,20 +41,20 @@
                 <td>{{$row->TenTraiCay}}</td>
                 <td>{{$row->MaTraiCay}}</td>
                 <td>{{$row->SoLuong}}</td>
-                <td>{{$row->DonGia}}</td>
-                <td>{{$row->DonGia*$row->SoLuong}}</td>
+                <td>{{$row->DonGia}}.000<u>đ</u> /<i>{{$row->TenDonVi}}</i></td>
+                <td>{{$row->DonGia*$row->SoLuong}}.000<u>đ</u></td>
             </tr>
             <?php $stt+=1; ?>
             @endforeach
             @foreach($detail as $row)
             <tr>
-                <td colspan="6" class="info-cost"><b>Tổng cộng: </b>{{$row->TongGia}}.000 VND</td>
+                <td colspan="6" class="info-cost"><b>Tổng cộng: </b>{{$row->ThanhTien}}.000<u>đ</u></td>
             </tr>
             <tr>
-                <td colspan="6" class="info-cost"><b>Phí giao hàng: </b>0.000 VND</td>
+                <td colspan="6" class="info-cost"><b>Phí giao hàng: </b>0.000<u>đ</u></td>
             </tr>
             <tr>
-                <td colspan="6" class="info-cost"><b>Thành tiền: </b>{{$row->TongGia}}.000 VND</td>
+                <td colspan="6" class="info-cost"><b>Thành tiền: </b>{{$row->ThanhTien}}.000<u>đ</u></td>
             </tr>
             @break
             @endforeach

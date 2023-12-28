@@ -35,31 +35,120 @@ class PusherController extends Controller
     public function index()
     {
         if(isset($_COOKIE['id']))
-        {
+        { 
+            $type=1; 
+            $chater1=$_COOKIE['id'];
+            $chater2=3;
             $chat=DB::table('chatbox')
             ->join('history_chat','chatbox.chatID','=','history_chat.MaChat')
             ->where('chatbox.MaTK',$_COOKIE['id'])
             ->select('*')->get();
-            return view('pusher-chat',compact('chat'));
+            $list=null;
+            //////////
+            $unread=array();
+            $name='Admin';
+            return view('chat/pusher-chat',compact('chat','list','chater1','chater2','unread','name'),['type'=>$type]);             
          }
-         else return redirect()->to('login');
+          else if(isset($_COOKIE['admin']))
+         {
+            $type=0;
+            $chater1=3;
+            $chater2=0;
+            $chat=null;
+            $list=DB::table('chatbox')
+            ->join('taikhoan','taikhoan.MaTaiKhoan','=','chatbox.MaTk')
+            ->where('IsAdmin','=',0)
+            ->select('taikhoan.*')->get();
+            ///////////
+            $unread=$this->get_unseen();
+            $name='Username';
+            return view('chat/pusher-chat',compact('chat','list','chater1','chater2','unread','name'),['type'=>$type]);
+         }
+         else return redirect('login');
     }
-
+    /////////////////
+    public function get_history_chat($id)
+    {
+        $type=0;
+        $chater1=3;
+        $chater2=$id;
+        $chat=DB::table('chatbox')->join('history_chat','chatbox.chatID','=','history_chat.MaChat')->where('chatbox.MaTK',$id)->select('*')->get();
+        $list=DB::table('chatbox')->join('taikhoan','chatbox.MaTK','=','taikhoan.MaTaiKhoan')->where('IsAdmin','=',0)->select('*')->get();  
+        ////////////
+        DB::table('history_chat')->where('MaChat',$id)->update(['Seen'=>'true']);
+        $unread=$this->get_unseen();
+        $name=DB::table('taikhoan')->where('MaTaiKhoan',$id)->select('TaiKhoan')->get();
+        foreach($name as $row){$name=$row->TaiKhoan;}
+        return view('chat/pusher-chat',compact('chat','list','chater1','chater2','unread','name'),['type'=>$type]);
+    }
+    ////////////
     public function broadcast(Request $request)
     {
-              DB::table('history_chat')->insert(
-            array(
-                'MaChat'=> $_COOKIE['id'],
-                'NoiDung'=>$request->get('message'),
-                'ThoiGian'=> Carbon::now(),
-                'IsUser'=>1,
-            ));
-            broadcast(new PusherBroadcast($request->get('message')))->toOthers();
-            return view('BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
+       // broadcast(new PusherBroadcast($request->get('message')))->toOthers();
+        // if(isset($_COOKIE['id'])){
+        //       DB::table('history_chat')->insert(
+        //     array(
+        //         'MaChat'=> $_COOKIE['id'],
+        //         'NoiDung'=>$request->get('message'),
+        //         'ThoiGian'=> Carbon::now(),
+        //         'IsUser'=>1,
+        //     ));
+        //     broadcast(new PusherBroadcast($request->get('message'), 1));
+        //     return view('BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
+        // }
+        // else if(isset($_COOKIE['admin'])){
+        //         DB::table('history_chat')->insert(
+        //             array(
+        //                 'MaChat'=> 1,
+        //                 'NoiDung'=>$request->get('message'),
+        //                 'ThoiGian'=> Carbon::now(),
+        //                 'IsUser'=>0,
+        //             ));
+        //     broadcast(new PusherBroadcast($request->get('message'), 3));
+        //     return view('BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
+        //     }
+            if(intval($request->get('type'))==1)
+                $machat=intval($request->get('my'));
+            else
+                $machat=intval($request->get('chatwith'));
+                    DB::table('history_chat')->insert(
+                        array(
+                            'MaChat'=> $machat,
+                            'NoiDung'=>$request->get('message'),
+                            'ThoiGian'=> Carbon::now(),
+                            'IsUser'=>intval($request->get('type')),
+                            'Seen'=>'false'
+                        ));
+            
+            event(new PusherBroadcast($request->get('message'),intval($request->get('chatwith')),intval($request->get('my'))));
+            return view('chat/BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
     }
-
+    ///////////
     public function receive(Request $request)
     {
-           return view('ReceiveMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
+        return view('chat/ReceiveMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
+    }
+    //////////
+    public function get_unseen()
+    {
+        $arr=array();
+        $list=DB::table('chatbox')
+        ->join('taikhoan','taikhoan.MaTaiKhoan','=','chatbox.MaTk')
+        ->where('IsAdmin','=',0)
+        ->select('taikhoan.*')->get();
+        foreach($list as $row)
+        {
+            $count=DB::table('chatbox')
+            ->join('history_chat','chatbox.chatID','history_chat.MaChat')
+            ->where('history_chat.MaChat','=',$row->MaTaiKhoan)
+            ->where('IsUser','=',1)
+            ->where('Seen','=','false')
+            ->select('*')->get()->count();
+            if($count>0)
+              $arr[$row->MaTaiKhoan]=$count;
+            else 
+              $arr[$row->MaTaiKhoan]=0;
+        }
+        return $arr;
     }
 }

@@ -108,6 +108,10 @@ img {
   padding: 18px 16px 10px;
 }
 
+.chat_list:hover {
+  background-color: #e6e6e6;
+}
+
 .inbox_chat {
   height: 550px;
   overflow-y: scroll;
@@ -210,4 +214,13 @@ img {
 #msg {
   height: 516px;
   overflow-y: scroll;
+}
+
+.number {
+  font-size: 13px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 0px 5px;
+  font-weight: 700;
 }
