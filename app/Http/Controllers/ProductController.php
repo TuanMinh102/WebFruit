@@ -242,13 +242,17 @@ public function product_item($products)
                 $image = $request->file('fileToUpload1-'.$id);
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $image->move(public_path('img/danhgia/'), $imageName);
-                $img.="<img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>";
+                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='img/danhgia/".$imageName."'>
+                        <img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
+                      </a>";
             } 
             if ($request->hasFile('fileToUpload2-'.$id)) {
                 $image = $request->file('fileToUpload2-'.$id);
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $image->move(public_path('img/danhgia/'), $imageName);
-                $img.="<img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>";
+                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='img/danhgia/".$imageName."'>
+                        <img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
+                       </a>";
             } 
             DB::table('review')->insert(
                 array(

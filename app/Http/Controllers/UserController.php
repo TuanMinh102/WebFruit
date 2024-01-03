@@ -39,7 +39,7 @@ class UserController extends Controller
      //Dang xuat
      public function logout()
      {
-         setcookie("id", null, time()-3600); 
+         setcookie("id", null, time()-7200); 
          return redirect("login");
      }
      // Kiem Tra Dang Nhap
@@ -52,8 +52,8 @@ class UserController extends Controller
             {
          if($username==$row->TaiKhoan && $password==$row->MatKhau)
          {
-             setcookie("id",$row->MaTaiKhoan, time()+3600);
-             setcookie("admin", null, time()-3600); 
+             setcookie("id",$row->MaTaiKhoan, time()+7200);
+             setcookie("admin", null, time()-7200); 
              return response()->json(['flag'=>true]);break;
          }
      }
@@ -87,29 +87,11 @@ class UserController extends Controller
         }
         else
         {
-            $max=(DB::table('taikhoan')->max('MaTaiKhoan'));
-            for($i=1;$i<=$max;$i++)
-            {
-                $lag=false;
-                foreach($tk as $row)
-                {
-                    if($i==$row->MaTaiKhoan)
-                    {
-                        $lag=true;
-                        break;
-                    }
-                }
-                if($i==$max)
-                {
-                    $i=$max+1;
-                    $lag=false;
-                }
-                if($lag==false)
-                {
-                    DB::table('taikhoan')->insert(
+                $id=$this->createID();
+                DB::table('taikhoan')->insert(
                         array(
-                                'MaTaiKhoan' => $i,
-                               'TaiKhoan'     =>   $request->tendangnhap, 
+                               'MaTaiKhoan' => $id,
+                               'TaiKhoan'     =>  $request->tendangnhap, 
                                'MatKhau'   =>  md5($request->matkhau),
                                'Email'=>'',
                                'Phone'=>'',
@@ -119,14 +101,12 @@ class UserController extends Controller
                                'Avatar'=>'',
                                'TrangThai'=>''
                         ));
-                   DB::table('chatbox')->insert(
-                    array(
-                        'chatID' => $i,
-                        'MaTK'=>$i,
+                        //
+                DB::table('chatbox')->insert(
+                        array(
+                        'chatID' => $id,
+                        'MaTK'=>$id,
                     ));
-                   break;
-                }
-            }
         return response()->json(['SignUpError'=>"Đăng Ký Thành Công",'flag'=>"true"]);
      }
      }
@@ -184,4 +164,25 @@ class UserController extends Controller
      {
         session()->put('otp','TUANPRO');
      }
+     // Tao ma moi tai khoan
+   public function createID()
+   {
+        $max=DB::table('taikhoan')->max('MaTaiKhoan');
+        $tk=DB::table('taikhoan')->select('*')->get();
+            for($i=1;$i<=$max;$i++){
+                $flag=false;
+                foreach($tk as $row)
+                {
+                    if($i==$row->MaTaiKhoan)
+                    {
+                        $flag=true;
+                        break;
+                    }
+                }
+                if($flag==false){
+                  return $i;
+                }
+            }
+            return $max+1;
+   }
 }

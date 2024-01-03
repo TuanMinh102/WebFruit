@@ -159,3 +159,11 @@ textarea {
     border: none;
     background-color: #f8d7da;
 }
+
+.payment {
+    display: flex;
+}
+
+.payment label {
+    margin-top: 6px;
+}

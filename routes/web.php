@@ -26,6 +26,7 @@ Route::get('/contact',[HomeController::class,"contactview"]);
 Route::get('/',[HomeController::class,"welcomeview"]);
 Route::get('/sendFeedback',[HomeController::class,"sendFeedback"]);
 
+
 Route::get('/login',[UserController::class,"loginview"]);
 Route::get('/loadForm',[UserController::class,"loadForm"]);
 Route::get('/logout',[UserController::class,"logout"]);
@@ -47,8 +48,6 @@ Route::get('/brands{id}',[ProductController::class,"Brands"]);
 Route::get('/ct{id}',[ProductController::class,"details"]);
 Route::get('/search',[ProductController::class,"timkiem"]);
 Route::get('/range',[ProductController::class,"RangePrice"]);
-//Route::get('/review',[ProductController::class,"insertReview"])->name('ReviewInsert');
-//Route::post('/upload/images', 'ProductController@uploadImages')->name('upload.images');
 Route::get('/PriceToPrice',[ProductController::class,"RangeBetween"]);
 Route::post('/upload',[ProductController::class,"upload"]);
 
@@ -60,11 +59,17 @@ Route::get('/delProduct{id}',[CartController::class,"delProduct"]);
 Route::get('/getDetailInvoices',[CartController::class,"get_detailBill"]);
 Route::get('/reviewProduct',[CartController::class,"reviewProduct"]);
 
-//Route::post('/upload', [CartController::class,"upload"])->name('ckeditor.images');
-
 
 Route::get('/tt',[CheckoutController::class,"checkoutview"]);
 Route::post('/ttoan',[CheckoutController::class,"thanhtoan"]);
+Route::post('/vnpay',[CheckoutController::class,"vn_payment"]);
+Route::controller(CheckoutController::class)
+    ->prefix('paypal')
+    ->group(function () {
+        Route::post('handle-payment', 'handlePayment')->name('make.payment');
+        Route::get('cancel-payment', 'paymentCancel')->name('cancel.payment');
+        Route::get('payment-success', 'paymentSuccess')->name('success.payment');
+    });
 // Route::get('/sendmail',[CheckoutController::class,"sendMail2"]);
 
 

@@ -17,7 +17,8 @@
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/checkout.css">
     <!-- <link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css" /> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+
 </head>
 
 <body>
@@ -36,7 +37,10 @@
     @elseif(session()->has('mess-false'))
     <div class="alert alert-danger">
         <b>Thất bại! </b><?php echo session()->get('mess-false'); session()->forget('mess-false');?>
+        @if(session()->has('empty-cart'))
         <a href="/shop">Go to shop</a>
+        <?php session()->forget('empty-cart');?>
+        @endif
         <button class="btn-close" style="float:right" onclick="hideMess()">X</button>
     </div>
     @endif
@@ -51,7 +55,7 @@
             </ul>
         </div>
         <div id="content-checkout">
-            <form action="ttoan" method="post">
+            <form action="{{ route('make.payment') }}" method="post">
                 @csrf
                 <div class="row">
                     <div class="line">
@@ -60,7 +64,7 @@
                     </div>
                     <div class="line">
                         <label for=""><i style="font-size:15px" class="fa">&#xf007;</i> Tên</label>
-                        <input type="text" id="last_name" value="" placeholder="Tên" required>
+                        <input type="text" name="last_name" id="last_name" value="" placeholder="Tên" required>
                     </div>
                 </div>
                 <div class="col">
@@ -98,7 +102,7 @@
                     </div>
                 </div>
                 <div class="col">
-                    <label for=""><i style="font-size:15px" class="fa">&#xf1ad;</i> Địa chỉ</label>
+                    <label for=""><i style="font-size:15px" class="fa">&#xf041;</i> Địa chỉ</label>
                     <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Địa chỉ"
                         value="" required>
                 </div>
@@ -109,11 +113,11 @@
                     </div>
                     <div class="line">
                         <label for=""><i style="font-size:15px" class="fa">&#xf095;</i> Số điện thoại</label>
-                        <input type="number" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại" value=""
-                            required>
+                        <input type="tel" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại" value=""
+                            pattern="[0]{1}[0-9]{3}[0-9]{3}[0-9]{3}" required>
                     </div>
                 </div>
-                <div class="col">
+                <div class=" col">
                     <label for=""><i style="font-size:15px" class="fa">&#xf0e6;</i> Nhận xét</label>
                     <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10"
                         placeholder="Nhận xét"></textarea>
@@ -125,25 +129,31 @@
             </div>
             <ul class="summary-table">
                 <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
+                <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Miễn phí</span></li>
                 <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
             </ul>
             <div class="payment-method">
                 <!-- Cash on delivery -->
-                <div class="">
-                    <img class="ml-15" style="width:30px;" src="img/visa.png" alt="">
+                <div class="payment">
+                    <img class="ml-15" style="width:30px;" src="img/cash.jpg" alt="">
                     <input type="checkbox" class="" id="cod" checked>
-                    <label class="" for="cod">Cash on Delivery</label>
+                    <label class="" for="cod">Tiền mặt</label>
+                </div>
+                <!-- Vnpay -->
+                <div class="payment">
+                    <img class="ml-15" style="width:30px;" src="img/vnpay.jpg" alt="">
+                    <input type="checkbox" class="" id="vnpay">
+                    <label class="" for="vnpay">Vnpay</label>
                 </div>
                 <!-- Paypal -->
-                <div class="">
+                <div class="payment">
                     <img class="ml-15" style="width:30px;" src="img/paypal.png" alt="">
                     <input type="checkbox" class="" id="paypal">
                     <label class="" for="paypal">Paypal</label>
                 </div>
             </div>
-            <br><br>
-            <button class="btn-checkout">Thanh Toán</button>
+            <br>
+            <button class="btn-checkout" type="submit" name="redirect">Thanh Toán</button>
         </div>
         </form>
     </div>

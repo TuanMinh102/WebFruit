@@ -50,7 +50,7 @@ class CartController extends Controller
               {
                 DB::table('giohang')->insert(
                     array(
-                            'MaGioHang' => (DB::table('giohang')->max('MaGioHang'))+1,
+                            'MaGioHang' => $this->createID(),
                             'MaTaiKhoan'=>$_COOKIE['id'],
                             'MaSanPham'=>$id,
                             'SoLuong'=> 1,
@@ -222,24 +222,38 @@ public function getCartBySession_query()
     ->select('traicay.*','banggia.*','donvi.*')->get();
     return $cart;
 }
-public function upload2(Request $request)
+// Tao ma moi gio hang
+public function createID()
 {
-    if ($request->hasFile('upload')) {
-        $originName = $request->file('upload')->getClientOriginalName();
-        $fileName = pathinfo($originName, PATHINFO_FILENAME);
-        $extension = $request->file('upload')->getClientOriginalExtension();
-        $fileName = $fileName . '_' . time() . '.' . $extension;
-        $request->file('upload')->move(public_path('img/danhgia'), $fileName);
-        $url = asset('img/danhgia/' . $fileName);
-        return response()->json(['fileName' => $fileName, 'uploaded' => 1, 'url' => $url]);
-    }
+        $max=(DB::table('giohang')->max('MaGioHang'));
+        $gh=DB::table('giohang')->select('*')->get();
+         for($i=1;$i<=$max;$i++){
+             $flag=false;
+             foreach($gh as $row)
+             {
+                 if($i==$row->MaGioHang)
+                 {
+                     $flag=true;
+                     break;
+                 }
+             }
+             if($flag==false){
+               return $i;
+             }
+         }
+         return $max+1;
 }
+// public function upload2(Request $request)
+// {
+//     if ($request->hasFile('upload')) {
+//         $originName = $request->file('upload')->getClientOriginalName();
+//         $fileName = pathinfo($originName, PATHINFO_FILENAME);
+//         $extension = $request->file('upload')->getClientOriginalExtension();
+//         $fileName = $fileName . '_' . time() . '.' . $extension;
+//         $request->file('upload')->move(public_path('img/danhgia'), $fileName);
+//         $url = asset('img/danhgia/' . $fileName);
+//         return response()->json(['fileName' => $fileName, 'uploaded' => 1, 'url' => $url]);
+//     }
+// }
 
-public function tmp(Request $request)
-{
-DB::table('demo')->insert(array(
-    'id'=>1,
-    'text'=>$request->data
-));
-}
 }

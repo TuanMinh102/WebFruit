@@ -85,28 +85,7 @@ class PusherController extends Controller
     public function broadcast(Request $request)
     {
        // broadcast(new PusherBroadcast($request->get('message')))->toOthers();
-        // if(isset($_COOKIE['id'])){
-        //       DB::table('history_chat')->insert(
-        //     array(
-        //         'MaChat'=> $_COOKIE['id'],
-        //         'NoiDung'=>$request->get('message'),
-        //         'ThoiGian'=> Carbon::now(),
-        //         'IsUser'=>1,
-        //     ));
-        //     broadcast(new PusherBroadcast($request->get('message'), 1));
-        //     return view('BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
-        // }
-        // else if(isset($_COOKIE['admin'])){
-        //         DB::table('history_chat')->insert(
-        //             array(
-        //                 'MaChat'=> 1,
-        //                 'NoiDung'=>$request->get('message'),
-        //                 'ThoiGian'=> Carbon::now(),
-        //                 'IsUser'=>0,
-        //             ));
-        //     broadcast(new PusherBroadcast($request->get('message'), 3));
-        //     return view('BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
-        //     }
+        
             if(intval($request->get('type'))==1)
                 $machat=intval($request->get('my'));
             else

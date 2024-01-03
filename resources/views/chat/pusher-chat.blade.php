@@ -14,8 +14,7 @@
     <!-- CSS -->
     <link rel="icon" href="img/core-img/favicon.ico">
     <link rel="stylesheet" href="css/chat.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css"
-        rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <!-- End CSS -->
 

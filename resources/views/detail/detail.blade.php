@@ -13,7 +13,8 @@
     <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/jquery.fancybox.css">
     <title>TD Shop | Chi tiết</title>
 </head>
 
@@ -239,7 +240,9 @@
     </div>
     @include("footer2")
     <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/jquery.fancybox.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
+
     <script>
     //////////////////////////////////////////////
     document.getElementById("comment-input").addEventListener("keypress", function(event) {
