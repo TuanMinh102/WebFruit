@@ -20,17 +20,19 @@
 
     <!-- ##### Main Content Wrapper Start ##### -->
     <div>
-        <a href="home"><img src="img/logo2.jpg" alt=""></a>
+        <a href="home"><img src="images/logo2.jpg" alt=""></a>
     </div>
     <div>
         <h1>GIỎ HÀNG</h1>
     </div>
-    @if(session()->has('mess'))
-    <div class="alert alert-success">
-        <?php echo session()->get('mess'); session()->forget('mess');?>
-        <button style="float:right" onclick="hideMess()">X</button>
+    <div class="mess">
+        @if(session()->has('mess'))
+        <div class="alert alert-success">
+            <?php echo session()->get('mess'); session()->forget('mess');?>
+            <button style="float:right" onclick="hideMess()">X</button>
+        </div>
+        @endif
     </div>
-    @endif
     <div id="container-cart">
         <div id="menu-cart">
             <ul>
@@ -62,13 +64,14 @@
                             @foreach($cart as $row)
                             <tr>
                                 <td>
-                                    <a href="#"><img src="img/fruit/{{$row->Anh}}" alt="Product" class="img-cart"></a>
+                                    <a href="#"><img src="images/sanpham/{{$row->Anh}}" alt="Product"
+                                            class="img-cart"></a>
                                 </td>
                                 <td>
                                     <h3>{{$row->TenTraiCay}}</h3>
                                 </td>
                                 <td>
-                                    @if($row->ChietKhau==null)
+                                    @if($row->GiaBan===null)
                                     <span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span>
                                     @else
                                     <span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span>
@@ -77,15 +80,16 @@
                                 <td>
                                     <div class="qty">
                                         <div class="substract-add">
-                                            <button onclick="tang_giam(0,{{$row->MaTraiCay}});">-</button>
+                                            <button
+                                                onclick="tang_giam(0,{{$row->MaTraiCay}},{{$row->SoLuong}});">-</button>
                                             @if(isset($sl))
                                             <input min="1" value="{{$sl[$row->MaTraiCay]}}" id="qty{{$row->MaTraiCay}}"
                                                 disabled>
                                             @else
-                                            <input min="1" value="{{$row->SoLuong}}" id="qty{{$row->MaTraiCay}}"
-                                                disabled>
+                                            <input min="1" value="{{$row->sl}}" id="qty{{$row->MaTraiCay}}" disabled>
                                             @endif
-                                            <button onclick="tang_giam(1,{{$row->MaTraiCay}});">+</button>
+                                            <button
+                                                onclick="tang_giam(1,{{$row->MaTraiCay}},{{$row->SoLuong}});">+</button>
                                             <b> /{{$row->TenDonVi}}</b>
                                             <a href="javascript:delProduct({{$row->MaTraiCay}});"
                                                 style="font-size:20px;margin-left:10px;"><i class="fa fa-trash"
@@ -163,22 +167,6 @@
     @include("footer2")
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/cart.js"></script>
-    <script>
-    function setstar(id, n) {
-        document.getElementById('star' + id).value = n;
-        var elm = document.getElementsByClassName("ngoisao" + id);
-        for (var i = 0; i < 5; i++) {
-            if (i < n) {
-                elm[i].style.color = "#ffc300";
-            } else
-                elm[i].style.color = "white";
-        }
-    }
-
-    function hideMess() {
-        document.getElementsByClassName('alert')[0].style.display = 'none';
-    }
-    </script>
 </body>
 
 </html>

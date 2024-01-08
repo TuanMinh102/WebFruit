@@ -22,7 +22,8 @@
 </head>
 
 <body>
-    @include("header")
+    @include("home/templates/header")
+    @include("home/templates/menu")
     <div id="container-login">
         <div id="menu-login">
             <ul>
@@ -34,6 +35,19 @@
             </ul>
         </div>
         <div id="content-login">
+            @if(session()->has('mess-true'))
+            <div class="alert alert-success alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Thành công! </strong><?= session()->get('mess-true');?>
+            </div>
+            <?php session()->forget('mess-true'); ?>
+            @elseif(session()->has('mess-false'))
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Thất bại! </strong><?= session()->get('mess-false');?>
+            </div>
+            <?php session()->forget('mess-false'); ?>
+            @endif
             <div id="form-container">
                 @empty($ck)
                 <div id="include">
@@ -47,10 +61,11 @@
         </div>
     </div>
 
-    @include("footer")
+    @include("home/templates/footer")
 
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/jquery.fancybox.js"></script>
+    <script src="bootstrap/bootstrap.js"></script>
     <script src="js/login.js"></script>
     <script>
     function show_edit() {
@@ -72,5 +87,11 @@
     }
     </script>
 </body>
+<style>
+.alert {
+    top: 2%;
+    width: 32%;
+}
+</style>
 
 </html>

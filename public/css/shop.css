@@ -348,11 +348,7 @@ body {
     width: 100%;
 }
 
-.img-active {
-    width: 680px;
-    height: 640px;
-    overflow: hidden;
-}
+
 
 .img-active a {
     width: 100%;
@@ -369,7 +365,7 @@ body {
     border-radius: 10px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url("../img/slider2.jpg");
+    background-image: url("../images/slider2.jpg");
 }
 
 .filter-product select {

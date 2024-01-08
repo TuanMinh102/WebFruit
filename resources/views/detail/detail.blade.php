@@ -15,25 +15,13 @@
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/jquery.fancybox.css">
+    <link rel="stylesheet" type="text/css" href="css/home.css" />
     <title>TD Shop | Chi tiết</title>
 </head>
 
 <body>
-    <div>
-        <a href="home"><img src="img/logo2.jpg" alt=""></a>
-    </div>
-    <br>
-    <div style="margin-left:5%">
-        <div class="col-12">
-            <nav aria-label="breadcrumb" style="width:90%">
-                <ol class="breadcrumb mt-50">
-                    <li class="breadcrumb-item"><a href="home"><i class="fa fa-home"></i> Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="shop">Trái cây</a></li>
-                    <li class="breadcrumb-item"><a href="ct">Chi tiết</a></li>
-                </ol>
-            </nav>
-        </div>
-    </div>
+    @include("home/templates/header")
+    @include("home/templates/menu")
     <br>
     <div class="session-message">
 
@@ -45,9 +33,9 @@
                 <div class="product-deail">
                     @foreach($product as $row)
                     <div class="img-active">
-                        <a href="img/fruit/{{$row->Anh}}" id="Zoom-1" class="MagicZoom"
+                        <a href="images/sanpham/{{$row->Anh}}" id="Zoom-1" class="MagicZoom"
                             data-options="zoomMode: true; hint: true; rightClick: true; selectorTrigger: hover; expandCaption: fasle; history: fasle;">
-                            <img src="img/fruit/{{$row->Anh}}" alt="">
+                            <img src="images/sanpham/{{$row->Anh}}" alt="">
                         </a>
                         @php $idsp=$row->MaTraiCay; @endphp
                     </div>
@@ -56,8 +44,8 @@
                 <div class="product-galary mt-3">
                     @foreach($gallery as $row)
                     <div style="width:100px;height: 100px;">
-                        <a class="thumb-pro-detail" data-zoom-id="Zoom-1" href="img/gallery/{{$row->Anh}}">
-                            <img src="img/gallery/{{$row->Anh}}"></a>
+                        <a class="thumb-pro-detail" data-zoom-id="Zoom-1" href="images/gallery/{{$row->Anh}}">
+                            <img src="images/gallery/{{$row->Anh}}"></a>
                     </div>
                     @endforeach
                 </div>
@@ -67,10 +55,10 @@
                 <h3 class="name-product-ct">
                     {{$row->TenTraiCay}}
                 </h3><br>
-                @if($row->ChietKhau==null)
+                @if($row->ChietKhau === null)
                 <span class="price-product-ct"><b>Giá: </b><span>{{$row->GiaGoc}}.000<u>đ</u>
                     </span> /{{$row->TenDonVi}}</span><br><br>
-                @else
+                @elseif($row->ChietKhau>0)
                 <div style="display:flex;">
                     <div><span class="price-product-ct"><b>Giá gốc: </b><span><s>{{$row->GiaGoc}}.000<u>đ</u></s>
                             </span> /{{$row->TenDonVi}}</span></div>
@@ -80,8 +68,11 @@
                 <span class="price-product-ct"><b>Giá sau khi giảm:</b>
                     <span>{{$row->GiaBan}}.000<u>đ</u>
                     </span> /{{$row->TenDonVi}}</span><br><br>
+                @else
+                <span class="price-product-ct"><b>Giá: </b><span>{{$row->GiaBan}}.000<u>đ</u>
+                    </span> /{{$row->TenDonVi}}</span><br><br>
                 @endif
-                <span><b>Tình Trạng:</b>@if($row->TinhTrang=='true')<span> Còn
+                <span><b>Tình Trạng:</b>@if($row->TinhTrang==1)<span> Còn
                         hàng</span>@else<span style="color:red;"> Hết hàng</span>@endif</span>
                 <div class="cart-btn d-flex mb-3 mt-3 align-items-center">
                     <span><b>Số lượng:</b></span>
@@ -117,20 +108,22 @@
                 @foreach($cungloai as $row)
                 <div class="item-product">
                     <div class="product-img">
-                        <img src="img/fruit/{{$row->Anh}}" alt="">
-                        <img class="hover-img" src="img/fruit/{{$row->Anh}}" alt="">
+                        <img src="images/sanpham/{{$row->Anh}}" alt="">
+                        <img class="hover-img" src="images/sanpham/{{$row->Anh}}" alt="">
                     </div>
                     <div class="product-desc">
                         <div class="product-meta-data">
                             <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                                 <h3>{{$row->TenTraiCay}}</h3>
                             </a>
-                            @if($row->ChietKhau==null)
+                            @if($row->GiaBan===null)
                             <p><span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
-                            @else
+                            @elseif($row->ChietKhau>0)
                             <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}
                                 <s style="color:grey;font-size:11px">{{$row->GiaGoc}}.000<u>đ</u></s>
                             </p>
+                            @else
+                            <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
                             @endif
                         </div>
                         <div class="ratings-cart">
@@ -162,7 +155,7 @@
         </div>
         <br>
         <div class="user-input">
-            <div><img class="img-review" src="img/user-profile.png" alt=""></div>
+            <div><img class="img-review" src="images/avatar/avatar.png" alt=""></div>
             <div class="input-review"><input type="text" id="comment-input" placeholder="Viết nội dung...">
                 <div class="ratings">
                     Đánh Giá:
@@ -180,7 +173,7 @@
                 @foreach($comments as $row)
                 @if($row->TinhTrang=='true')
                 <div style="display:flex;height:auto">
-                    <div><img class="img-review" src="img/user-profile.png" alt=""></div>
+                    <div><img class="img-review" src="images/avatar/{{$row->Avatar}}" alt=""></div>
                     <div style="margin-left:10px">
                         <div><b>{{$row->TaiKhoan}}</b>
                             <span style="color:#606060">
@@ -213,10 +206,10 @@
                                 @endfor
                         </div>
                         <div style="width:500px;word-wrap:break-word;">
+                            <div> {{$row->Comment}}</div>
                             @if($row->ReviewIMG!='')
-                            {!!$row->ReviewIMG!!}<br>
+                            <div>{!!$row->ReviewIMG!!}</div>
                             @endif
-                            {{$row->Comment}}
                         </div>
                     </div>
                 </div>
@@ -242,7 +235,6 @@
     <script src="js/jquery/jquery.min.js"></script>
     <script src="js/jquery.fancybox.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
-
     <script>
     //////////////////////////////////////////////
     document.getElementById("comment-input").addEventListener("keypress", function(event) {

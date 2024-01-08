@@ -45,50 +45,80 @@ class UserController extends Controller
      // Kiem Tra Dang Nhap
      public function dangnhap(Request $request)
      {
-         $username= $request->tendangnhap;
-         $password=md5($request->matkhau);
-         $tk = DB::table('taikhoan')->select('*')->get();
+        if($request->tendangnhap=='' || $request->matkhau=='')
+            return response()->json(['mess'=>'Vui lòng nhập đầy đủ','flag'=>false]);
+        else {
+            $username= $request->tendangnhap;
+            $password=md5($request->matkhau);
+            $tk = DB::table('taikhoan')->select('*')->get();
          foreach($tk as $row)
             {
-         if($username==$row->TaiKhoan && $password==$row->MatKhau)
-         {
-             setcookie("id",$row->MaTaiKhoan, time()+7200);
-             setcookie("admin", null, time()-7200); 
-             return response()->json(['flag'=>true]);break;
-         }
-     }
-          return response()->json(['flag'=>false]);
+                 if($username==$row->TaiKhoan && $password==$row->MatKhau)
+                 {
+                     setcookie("id",$row->MaTaiKhoan, time()+7200);
+                     setcookie("admin", null, time()-7200); 
+                    return response()->json(['mess'=>'','flag'=>true]);
+                 }
+            }
+        }
+        return response()->json(['mess'=>'Sai mật khẩu hoặc tài khoản','flag'=>false]);
      }
      // Chinh sua thong tin ca nhan
      function editProfile(Request $request,$id)
      {
-                    DB::table('taikhoan')
+            $tk=DB::table('taikhoan')->where('MaTaiKhoan', $id)->select('Avatar')->get();
+            foreach($tk as $row) $img=$row->Avatar;
+        if ($request->hasFile('uploadAvatar')) {
+            $image = $request->file('uploadAvatar');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/avatar/'), $imageName);
+            $img=$imageName;
+        } 
+            try{
+                 $update=  DB::table('taikhoan')
                     ->where('MaTaiKhoan', $id)
                     ->update([
-                        'HoTen'=>$request->name,
-                        'DiaChi'=>$request->address,
-                        'Phone'=>$request->phone,
-                        'Email'=>$request->email,
+                        'HoTen'=>$_POST['username-edit'],
+                        'DiaChi'=>$_POST['address-edit'],
+                        'Phone'=>$_POST['phone-edit'],
+                        'Email'=>$_POST['email-edit'],
+                        'Avatar'=>$img,
                     ]);
+                        if($update)
+                        {
+                            session()->get('mess-true');
+                            session()->put('mess-true','Cập nhật tài khoản thành công.');
+                        }
+                        else {
+                            session()->get('mess-false');
+                            session()->put('mess-false','Cập nhật tài khoản thất bại.');
+                        }
+                    }catch(\Exception $e)
+                    {
+                        session()->get('mess-false');
+                        session()->put('mess-false','Đã xảy ra lỗi.');
+                    }
+            return redirect('login');
         }
      // Dang Ky
      public function dangky(Request $request)
      {
-         $tk = DB::table('taikhoan')->select('*')->get();
-         foreach($tk as $row){
-         if($request->tendangnhap==$row->TaiKhoan)
-         {
-        return response()->json(['SignUpError'=>"Tên Đăng Nhập Tồn Tại",'flag'=>'false']);
-         }
-        }
-        if($request->matkhau!=$request->xacnhanmatkhau)
-        {
-         return response()->json(['SignUpError'=>"Mật Khẩu Không Trùng khớp",'flag'=>'false']);
-        }
-        else
-        {
+            if($request->tendangnhap=='' ||$request->matkhau=='' ||$request->xacnhanmatkhau=='' )
+                return response()->json(['mess'=>"Vui lòng nhập đầy đủ",'flag'=>false]);
+            else if(strlen($request->tendangnhap)<6)
+                return response()->json(['mess'=>"Tài khoản ít nhất 6 ký tự",'flag'=>false]);
+            else if(strlen($request->matkhau)<8)
+                return response()->json(['mess'=>"Mật khẩu ít nhất 8 ký tự",'flag'=>false]);
+            else if($request->xacnhanmatkhau!=$request->matkhau)
+                return response()->json(['mess'=>"Mật khẩu không trùng khớp",'flag'=>false]);
+            else {
+                $tk = DB::table('taikhoan')->select('*')->get();
+            foreach($tk as $row)
+            if($request->tendangnhap==$row->TaiKhoan)
+                return response()->json(['mess'=>"Tên Đăng Nhập Tồn Tại",'flag'=>false]);
+            try{
                 $id=$this->createID();
-                DB::table('taikhoan')->insert(
+                $dk= DB::table('taikhoan')->insert(
                         array(
                                'MaTaiKhoan' => $id,
                                'TaiKhoan'     =>  $request->tendangnhap, 
@@ -98,22 +128,57 @@ class UserController extends Controller
                                'DiaChi'=>'',
                                'HoTen'=>'',
                                'IsAdmin'=> 0,
-                               'Avatar'=>'',
-                               'TrangThai'=>''
+                               'Avatar'=>'avatar.png',
+                               'TrangThai'=> 0
                         ));
                         //
-                DB::table('chatbox')->insert(
+                $chat= DB::table('chatbox')->insert(
                         array(
                         'chatID' => $id,
-                        'MaTK'=>$id,
+                        'MaTK'=> $id,
                     ));
-        return response()->json(['SignUpError'=>"Đăng Ký Thành Công",'flag'=>"true"]);
-     }
-     }
+                if($dk && $chat){
+                    session()->get('mess-true');
+                    session()->put('mess-true','Đăng ký tài khoản thành công.');
+                }
+                else {
+                    session()->get('mess-false');
+                    session()->put('mess-false','Đăng ký tài khoản thất bại.');
+                }
+        }catch (\Exception $e) {
+            session()->get('mess-false');
+            session()->put('mess-false','Đã xảy ra lỗi.');
+        }
+        return response()->json(['mess'=>"",'flag'=>true]);
+    }
+        
+}
      //
      public function Laylaimk(Request $request)
      {
-        $user= DB::table('taikhoan')->where('Email',$request->gmail)->update(['MatKhau'=>md5($request->newpassword)]);
+        if($request->newPassword=='' ||$request->confirmPass=='' )
+            return response()->json(['mess'=>"Vui lòng nhập đầy đủ",'flag'=>false]);
+        else if(strlen($request->newPassword)<8)
+            return response()->json(['mess'=>"Mật khẩu ít nhất 8 ký tự",'flag'=>false]);
+        else if($request->newPassword!=$request->confirmPass)
+            return response()->json(['mess'=>"Mật khẩu không trùng khớp",'flag'=>false]);
+        else {
+            try{
+                $user= DB::table('taikhoan')->where('Email',$request->gmail)->update(['MatKhau'=>md5($request->newPassword)]);
+            if($user){
+                session()->get('mess-true');
+                session()->put('mess-true','Thay đổi mật khẩu thành công.');
+            }
+            else {
+                session()->get('mess-false');
+                session()->put('mess-false','Thay đổi mật khẩu thất bại.');
+            }
+            }catch(\Exception $e){
+                session()->get('mess-false');
+                session()->put('mess-false','Đã xảy ra lỗi.');
+            }
+            return response()->json(['mess'=>"",'flag'=>true]);
+        }
      }
     //
     public function SendOTP(Request $request)

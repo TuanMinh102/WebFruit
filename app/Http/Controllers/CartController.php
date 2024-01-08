@@ -39,50 +39,63 @@ class CartController extends Controller
  //them 1 san pham vao gio hang
     public function addcart($id)
     { 
+        $soluong=$this->getRemainAmountProduct($id);
         if(isset($_COOKIE['id']))
         {
             $cart= DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham', $id)->select('*')->get();
             if($cart->count()>0)
-            {
-                DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham', $id)->increment('SoLuong', 1);
-            }
+                DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham', $id)->increment('SoLuong', 0);
              else
               {
-                DB::table('giohang')->insert(
+                if($soluong >0)
+                {
+                     DB::table('giohang')->insert(
                     array(
                             'MaGioHang' => $this->createID(),
                             'MaTaiKhoan'=>$_COOKIE['id'],
                             'MaSanPham'=>$id,
                             'SoLuong'=> 1,
                     ));
+                }
+                else {
+                    $name= $this->getNameOfProduct($id);
+                    return response()->json(['name'=>$name,'flag'=>false]);
+                }
               }
               $count= DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->select('*')->get()->count();
               $cart =$this->getCartByAccountId_query($_COOKIE['id']);
-              $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
-              foreach($name as $row){ $name=$row->TenTraiCay;}
+              $name= $this->getNameOfProduct($id);
               $view=view('cart/cart-popup',compact('cart'))->render();
-            return response()->json(['html'=>$view,'count'=>$count,'name'=>$name]);
+            return response()->json(['html'=>$view,'count'=>$count,'name'=>$name,'flag'=>true]);
         } 
         else{
             $cart=session()->get('cart',[]);
             $sl=session()->get('sl',[]);
-            $sl[$id]=isset($sl[$id]) ?$sl[$id]+1 : 1;
-            $cart[$id]=$id;
-            session()->put('cart',$cart);
-            session()->put('sl',$sl);
+            if($soluong>0){
+                 $sl[$id]=isset($sl[$id]) ?$sl[$id]+0 : 1;
+                 $cart[$id]=$id;
+                 session()->put('cart',$cart);
+                 session()->put('sl',$sl);
+            }
+            else {
+                $name= $this->getNameOfProduct($id);
+                return response()->json(['name'=>$name,'flag'=>false]);
+            }
             $count= count($cart);
             $cart = $this->getCartBySession_query();
             $sl=session()->get('sl',[]);
-            $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
-            foreach($name as $row){ $name=$row->TenTraiCay;}
+            $name= $this->getNameOfProduct($id);
             $view=view('cart/cart-popup',compact('cart','sl'))->render();
-          return response()->json(['html'=>$view,'count'=>$count,'name'=>$name]);
+          return response()->json(['html'=>$view,'count'=>$count,'name'=>$name,'flag'=>true]);
         }
     }
 
   //cap nhat gio hang
   public function capnhatgh(Request $request,$id)
     {   
+       $soluong=$this->getRemainAmountProduct($id);
+        if($request->SoLuong<=$soluong)
+        {
             if(isset($_COOKIE['id']))
             {
                 DB::table('giohang')
@@ -96,6 +109,7 @@ class CartController extends Controller
                 $sl[$id]=$request->SoLuong;
                 session()->put('sl',$sl);
             }
+        }   
 } 
 // //lay tong tien trong gio hang
 public  function gettotal()
@@ -106,10 +120,10 @@ public  function gettotal()
     $cart = $this->getCartByAccountId_query($_COOKIE['id']);
     foreach($cart as $row)
     {
-        if($row->ChietKhau!=null)
-            $sum2=($row->SoLuong*$row->GiaBan);
+        if($row->GiaBan==null)
+            $sum2=($row->sl*$row->GiaGoc);
         else
-            $sum2=($row->SoLuong*$row->GiaGoc);
+            $sum2=($row->sl*$row->GiaBan);
          $sum+=$sum2;
     }
    }
@@ -119,10 +133,10 @@ public  function gettotal()
     $cart = $this->getCartBySession_query();
     foreach($cart as $row)
     {
-        if($row->ChietKhau!=null)
-            $sum2=($sl[$row->MaTraiCay]*$row->GiaBan);
-        else
+        if($row->GiaBan==null)
             $sum2=($sl[$row->MaTraiCay]*$row->GiaGoc);
+        else
+            $sum2=($sl[$row->MaTraiCay]*$row->GiaBan);
         $sum+=$sum2;
     }
    }
@@ -194,6 +208,23 @@ public function reviewProduct(Request $request)
 ///////////////////////////////////////////////////////////////////
 //////////////////////QUERY---HERE/////////////////////////////////
 
+//
+public function getRemainAmountProduct($id)
+{
+    $soluong=DB::table('traicay')->where('MaTraiCay',$id)->select('SoLuong')->get();
+    foreach($soluong as $row) 
+        return $row->SoLuong;
+    return 0;
+}
+// 
+public function getNameOfProduct($id)
+{
+    $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
+    foreach($name as $row) 
+        return $row->TenTraiCay;
+    return '';
+}
+//
 public function getCartByAccountId_query($id)
 {
     $cart = DB::table('traicay')
@@ -205,7 +236,7 @@ public function getCartByAccountId_query($id)
     })
     ->where('MaTaiKhoan',$id)
     ->join('donvi','donvi.MaDonVi','traicay.UnitID')
-    ->select('traicay.*','giohang.SoLuong','banggia.*','donvi.*')->get();
+    ->select('traicay.*','giohang.SoLuong as sl','banggia.*','donvi.*')->get();
     return $cart;
 }
 //

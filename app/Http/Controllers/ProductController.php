@@ -47,6 +47,14 @@ class ProductController extends Controller
             return view('shop/data',compact('products'))->render();
         }
      }
+     //
+    //  public function loaiDanhMuc($id)
+    //  { 
+    //         $products = $this->getProductByCategoryId_query_ToPaginate($id);
+    //         $cats = DB::table('loaitraicay')->select('*')->get();
+    //         $brand = DB::table('nhacungcap')->select('*')->get();
+    //         return view('shop/shop',compact('products','cats','brand'))->render();
+    //  }
      // phan loai theo hang
      public function Brands(Request $request,$id)
      { 
@@ -62,10 +70,7 @@ class ProductController extends Controller
      // chi tiet san pham
      public function details($id)
      { 
-            $maloai=DB::table('traicay')->where('MaTraiCay',$id)->select('traicay.MaLoai')->get();
-            foreach($maloai as $row)$maloai=$row->MaLoai;
-            $cungloai =$this->getProductBySameCategory_query($maloai,$id);
-            ////
+            
             $comments=DB::table('review')
             ->join('taikhoan','taikhoan.MaTaiKhoan','=','review.MaTk')
             ->where('MaSp',$id)
@@ -73,6 +78,11 @@ class ProductController extends Controller
             ->get();
             ////
             $product=$this->getProductById_query($id);
+            ///
+            if($product->count()==0) return abort(404);
+            $maloai=DB::table('traicay')->where('MaTraiCay',$id)->select('traicay.MaLoai')->get();
+            foreach($maloai as $row)$maloai=$row->MaLoai;
+            $cungloai =$this->getProductBySameCategory_query($maloai,$id);
             ////
             $gallery=DB::table('gallery')->where('MaTCay',$id)->select('*')->get();
          if(isset($_COOKIE['id']))
@@ -177,42 +187,7 @@ class ProductController extends Controller
             return view('shop/data', compact('products'))->render();
         }
 }
-   //
-public function product_item($products)
-{
-    $string='';
-    foreach($products as $row)
-    {
-            $string.= '<div class="item-product">
-            <div class="product-img">
-                <img src="img/fruit/'.$row->Anh.'" alt="">
-                <img class="hover-img" src="img/fruit/'.$row->Anh.'" alt="">
-            </div>
-            <div class="product-desc">
-                <div class="product-meta-data">
-                    <a class="product-name text-decoration-none" href="ct'.$row->MaTraiCay.'">
-                        <h3><b>'.$row->TenTraiCay.'</b></h3>
-                    </a>
-                    <p class="product-price">$'.round($row->GiaBan-(($row->GiaBan*$row->Discount)/100)).'</p>
-                </div>
-                <div class="ratings-cart">
-                    <div class="ratings">
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                    </div>
-                    <div class="cart">
-                        <a class="btn btn-success" href="javascript:addcart('.$row->MaTraiCay.')" data-toggle="tooltip"
-                            data-placement="left" title="Add to Cart">Thêm giỏ hàng</a>
-                    </div>
-                </div>
-            </div>
-        </div>';
-    }
-    return $string;
-}
+
 // dem san pham trong gio hang
     public function count_products()
     {
@@ -240,18 +215,18 @@ public function product_item($products)
             $id=$dataArray[$i];
             if ($request->hasFile('fileToUpload1-'.$id)) {
                 $image = $request->file('fileToUpload1-'.$id);
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('img/danhgia/'), $imageName);
-                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='img/danhgia/".$imageName."'>
-                        <img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
+                $imageName = $image->getClientOriginalName();
+                $image->move(public_path('images/danhgia/'), $imageName);
+                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='images/danhgia/".$imageName."'>
+                        <img src='images/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
                       </a>";
             } 
             if ($request->hasFile('fileToUpload2-'.$id)) {
                 $image = $request->file('fileToUpload2-'.$id);
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('img/danhgia/'), $imageName);
-                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='img/danhgia/".$imageName."'>
-                        <img src='img/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
+                $imageName =$image->getClientOriginalName();
+                $image->move(public_path('images/danhgia/'), $imageName);
+                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='images/danhgia/".$imageName."'>
+                        <img src='images/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
                        </a>";
             } 
             DB::table('review')->insert(

@@ -1,5 +1,5 @@
 // Tăng giảm số lượng sản phẩm và cập nhật
-function tang_giam(n, id) {
+function tang_giam(n, id, sl) {
     var qty = document.getElementById('qty' + id).value;
     qty = parseInt(qty);
     if (n == 0) {
@@ -7,7 +7,14 @@ function tang_giam(n, id) {
     } else {
         qty += 1;
     }
-    if (qty > 0 && qty < 50) {
+    if (qty > sl) {
+        var mess =
+            '<div class="alert alert-warning">' +
+            '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
+            '<button style="float:right" onclick="hideMess()">X</button></div>';
+        $('.mess').html(mess);
+    }
+    else if (qty > 0 && qty <= sl) {
         document.getElementById('qty' + id).value = qty;
         var newqty = qty;
         var data = {
@@ -49,7 +56,6 @@ function delAllproduct() {
             url: "delAll",
             data: '',
             success: function (response) {
-                console.log(response);
                 $('#result').load(location.href + ' #my');
                 $('#total-checkout').load(location.href + ' .summary-table');
             }
@@ -82,6 +88,7 @@ function getdetailInvoices(id) {
         }
     });
 }
+//
 function reviewProduct(id) {
     data2 = {
         'id': id,
@@ -117,6 +124,7 @@ function checkKeyword(arr) {
     }
     return true;
 }
+//
 function checkNull(arr) {
     for (var i = 0; i < arr.length; i++) {
         var text = document.getElementById('text_review' + arr[i]).value;
@@ -126,42 +134,28 @@ function checkNull(arr) {
     return true;
 }
 //
-function reviewProducts_insert(arr, mahd) {
-    if (checkKeyword(arr) == false)
-        alert('Nội dung có chứa từ nhạy cảm!');
-    else if (checkNull(arr) == false)
-        alert('Vui lòng nhập đầy đủ!');
-    // else {
-    //     for (var i = 0; i < arr.length; i++) {
-    //         var formData = new FormData();
-    //         // var text = document.getElementById('text_review' + arr[i]).value;
-    //         // var star = document.getElementById('star' + arr[i]).value;
-    //         var fileInput = document.getElementById('file-upload1-' + arr[i]).files;
-    //         var fileInput2 = document.getElementById('file-upload2-' + arr[i]).files;
-    //         // formData.append('fileToUpload', fileInput);
-    //         // formData.append('fileToUpload2', fileInput2);
-    //         formData.append('fileToUpload1' + arr[i], fileInput[0]);
-    //         formData.append('fileToUpload2' + arr[i], fileInput2[0]);
-    //         // formData.append('text', text);
-    //         formData.append('idsp', arr[i]);
-    //         // formData.append('star', star);
-    //         // formData.append('mahd', mahd);
-    //         $.ajax({
-    //             url: "/upload",
-    //             type: "post",
-    //             data: formData,
-    //             contentType: false,
-    //             processData: false,
-    //             success: function () {
-    //                 document.getElementById("detail-invoices").style.display = "none";
-    //                 document.getElementById("child").style.display = "none";
-    //             }
-    //         });
-    //     }
-    //     alert('Nhận xét thành công.');
-    //     $('#container-invoices-table').load(location.href + ' #invoices-table');
-    // }
+function setstar(id, n) {
+    document.getElementById('star' + id).value = n;
+    var elm = document.getElementsByClassName("ngoisao" + id);
+    for (var i = 0; i < 5; i++) {
+        if (i < n) {
+            elm[i].style.color = "#ffc300";
+        } else
+            elm[i].style.color = "white";
+    }
 }
+//
+function hideMess() {
+    document.getElementsByClassName('alert')[0].style.display = 'none';
+}
+//
+// function reviewProducts_insert(arr, mahd) {
+//     if (checkKeyword(arr) == false)
+//         alert('Nội dung có chứa từ nhạy cảm!');
+//     else if (checkNull(arr) == false)
+//         alert('Vui lòng nhập đầy đủ!');
+// }
+//
 // $(document).ready(function() {
 //     $('#uploadForm').on('submit', function() {
 //         var arr = document.getElementById('dataArr').value;

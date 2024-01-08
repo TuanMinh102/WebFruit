@@ -19,7 +19,7 @@
                 @endphp
                 <tr>
                     <td>
-                        <img src="img/fruit/{{$row->Anh}}" width=70 height=70 alt="Product">
+                        <img src="images/sanpham/{{$row->Anh}}" width=70 height=70 alt="Product">
                         <div style="font-size:12px">{{$row->TenTraiCay}}</div>
                     </td>
                     <td>
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="img-up">
                                         <label for="file-upload1-{{$row->MaTraiCay}}" class="custom-file-upload">
-                                            <img src="img/img.jpg" id="img1-{{$row->MaTraiCay}}" alt="">
+                                            <img src="images/img.jpg" id="img1-{{$row->MaTraiCay}}" alt="">
                                         </label>
                                         <input type="file" name="fileToUpload1-{{$row->MaTraiCay}}"
                                             id="file-upload1-{{$row->MaTraiCay}}"
@@ -46,7 +46,7 @@
                                     </div>
                                     <div class="img-up">
                                         <label for="file-upload2-{{$row->MaTraiCay}}" class="custom-file-upload">
-                                            <img src="img/img.jpg" id="img2-{{$row->MaTraiCay}}" alt="">
+                                            <img src="images/img.jpg" id="img2-{{$row->MaTraiCay}}" alt="">
                                         </label>
                                         <input type="file" name="fileToUpload2-{{$row->MaTraiCay}}"
                                             id="file-upload2-{{$row->MaTraiCay}}"
@@ -149,37 +149,10 @@
 </style>
 <script src="{{asset('ckeditor5-build-classic/ckeditor.js')}}"></script>
 <script>
-var data = [];
 var arr = <?php echo($jsonArray);?>;
-// var editableElement;
-// var parentElement;
-// for (var i = 0; i < arr.length; i++) {
-//     ClassicEditor
-//         .create(document.querySelector('#text_review' + arr[i]), {
-//             height: '70px',
-//             width: '300px',
-//             toolbar: ['imageUpload', 'undo', 'redo'],
-//           
-//         })
-//         .then(editor => {
-//             data.push(editor);
-//             // editor.editing.view.document.on('click', evt => {
-//             //     editableElement = editor.ui.getEditableElement();
-//             //     parentElement = editableElement.closest('.ck-editor');
-//             //     parentElement.classList.toggle('expanded');
-//             //     editableElement.classList.toggle('set');
-//             //     else {
-//             //         parentElement.classList.remove('expanded');
-//             //         editableElement.classList.remove('set');
-//             //         isExpanded = false;
-//             //     }
-//             // });
-//         })
-//         .catch(error => {});
-// }
-//
+
 function xoaAnh(id, n) {
-    document.getElementById('img' + n + '-' + id).src = 'img/img.jpg';
+    document.getElementById('img' + n + '-' + id).src = 'images/img.jpg';
 }
 
 function loadImg(fileInput, n, id) {

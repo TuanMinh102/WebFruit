@@ -1,4 +1,5 @@
 <div id="signUpform">
+    <a href=""><i style="font-size:24px;margin-left:10px;color:black" class="fa">&#xf0a8;</i></a>
     <form>
         <div class="tiltle">
             <h2>Đăng Ký</h2>
@@ -25,6 +26,8 @@
     <div class="submit">
         <button class="btn btn-success" onclick="signUp();">Đăng
             ký</button>
-        <h4 style="color:red;" id="error-signUp"></h4>
+        <i>
+            <h5 style="color:red;" id="error-signUp"></h5>
+        </i>
     </div>
 </div>

@@ -1,5 +1,5 @@
 <div class="incoming_msg message">
-    <div class="incoming_msg_img"> <img src="img/user-profile.png" alt="sunil">
+    <div class="incoming_msg_img"> <img src="images/avatar/avatar.png" alt="sunil">
     </div>
     <div class="received_msg">
         <div class="received_withd_msg">

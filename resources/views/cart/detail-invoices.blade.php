@@ -2,7 +2,7 @@
 <a href="" class="printer"><i style="font-size:17px" class="fa">&#xf02f;</i></a>
 <div class="header-invoices">
     <div class="logo-detail">
-        <a href="home"><img src="img/logo2.jpg" height=100 alt=""></a>
+        <a href="home"><img src="images/logo2.jpg" height=100 alt=""></a>
     </div>
     <div class="info-detail">
         <div>Địa chỉ: Huỳnh Thúc Kháng - Quận 1 - Hồ Chí Minh.</div>

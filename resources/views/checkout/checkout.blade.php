@@ -12,7 +12,6 @@
     <title>TD Shop | Thanh Toán</title>
 
     <!-- Favicon  -->
-    <link rel="icon" href="img/core-img/favicon.ico">
 
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/checkout.css">
@@ -23,9 +22,6 @@
 
 <body>
     <!-- ##### Main Content Wrapper Start ##### -->
-    <!-- <div>
-        <a href="home"><img src="img/logo2.jpg" alt=""></a>
-    </div> -->
     <div>
         <h1>THANH TOÁN</h1>
     </div>
@@ -135,19 +131,19 @@
             <div class="payment-method">
                 <!-- Cash on delivery -->
                 <div class="payment">
-                    <img class="ml-15" style="width:30px;" src="img/cash.jpg" alt="">
+                    <img class="ml-15" style="width:30px;" src="images/cash.jpg" alt="">
                     <input type="checkbox" class="" id="cod" checked>
                     <label class="" for="cod">Tiền mặt</label>
                 </div>
                 <!-- Vnpay -->
                 <div class="payment">
-                    <img class="ml-15" style="width:30px;" src="img/vnpay.jpg" alt="">
+                    <img class="ml-15" style="width:30px;" src="images/vnpay.jpg" alt="">
                     <input type="checkbox" class="" id="vnpay">
                     <label class="" for="vnpay">Vnpay</label>
                 </div>
                 <!-- Paypal -->
                 <div class="payment">
-                    <img class="ml-15" style="width:30px;" src="img/paypal.png" alt="">
+                    <img class="ml-15" style="width:30px;" src="images/paypal.png" alt="">
                     <input type="checkbox" class="" id="paypal">
                     <label class="" for="paypal">Paypal</label>
                 </div>

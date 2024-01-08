@@ -3,20 +3,22 @@
         @foreach($products as $row)
         <div class="item-product">
             <div class="product-img">
-                <img src="img/fruit/{{$row->Anh}}" alt="">
-                <img class="hover-img" src="img/fruit/{{$row->Anh}}" alt="">
+                <img src="images/sanpham/{{$row->Anh}}" alt="">
+                <img class="hover-img" src="images/sanpham/{{$row->Anh}}" alt="">
             </div>
             <div class="product-desc">
                 <div class="product-meta-data">
                     <a class="product-name text-decoration-none" href="ct{{$row->MaTraiCay}}">
                         <h3><b>{{$row->TenTraiCay}}</b></h3>
                     </a>
-                    @if($row->ChietKhau==null)
+                    @if($row->GiaBan===null)
                     <p><span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
-                    @else
+                    @elseif($row->ChietKhau>0)
                     <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}
                         <s style="color:grey;font-size:11px">{{$row->GiaGoc}}.000<u>đ</u></s>
                     </p>
+                    @else
+                    <p><span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span> /{{$row->TenDonVi}}</p>
                     @endif
                 </div>
                 <div class="ratings-cart">

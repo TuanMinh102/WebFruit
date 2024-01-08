@@ -1,4 +1,5 @@
 <div id="recoverPassform">
+    <a href=""><i style="font-size:24px;margin-left:10px;color:black" class="fa">&#xf0a8;</i></a>
     <form action="#" method="get">
         <div class="tiltle">
             <h2>Khôi phục mật khẩu</h2>
@@ -13,5 +14,9 @@
     <div class="submit">
         <button class="btn btn-secondary" onclick="next();">Tiếp
             tục</button>
+        <i>
+            <h5 style="color:red;" id="error-email"></h5>
+        </i>
     </div>
+
 </div>

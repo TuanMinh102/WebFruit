@@ -14,9 +14,8 @@
 </head>
 
 <body>
-    <div>
-        <a href="home"><img src="img/logo2.jpg" alt=""></a>
-    </div>
+    @include("home/templates/header")
+    @include("home/templates/menu")
     <div class="bao-noidung">
         <div class="filter-product">
             <div class="filter-product-top flex align-items-center">
@@ -148,6 +147,7 @@
         output.innerHTML = this.value;
     }
     </script>
+
 </body>
 
 </html>

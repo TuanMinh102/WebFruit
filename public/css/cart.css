@@ -314,17 +314,26 @@ input[type="file"] {
     background: #0056b3;
 } */
 .alert {
-    padding: 15px;
+    padding: 10px;
     border: 1px solid transparent;
     border-radius: 4px;
     margin-bottom: 20px;
     width: 20%;
 }
 
+.alert button {
+    background-color: transparent;
+    border: none;
+}
+
 .alert-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
+    background-color: #d1e7dd;
+    border-color: #a3cfbb;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffe69c;
 }
 
 .printer {

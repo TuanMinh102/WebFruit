@@ -3,7 +3,7 @@
     width: 100%;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url("../img/bg4.jpg");
+    background-image: url("../images/bg4.jpg");
 }
 
 #form-container {
@@ -119,7 +119,6 @@ input {
     position: absolute;
     bottom: 0px;
     right: 30px;
-    color: paleturquoise;
 }
 
 .container-avatar {
@@ -148,4 +147,34 @@ input {
 
 input[type="file"] {
     display: none;
+}
+
+/* profile */
+.btn-profile {
+    color: #fff;
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 3px 5px #888888;
+}
+
+.btn-profile i {
+    font-size: 17px;
+}
+
+.editpro {
+    color: #13a206;
+}
+
+.editpro:hover {
+    background-color: #13a206;
+    color: #fff;
+}
+
+.outpro {
+    color: red;
+}
+
+.outpro:hover {
+    background-color: red;
+    color: #fff;
 }

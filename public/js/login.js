@@ -14,39 +14,31 @@ function goToForm(name) {
 function signIn() {
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
-    if (username == '' || password == '') {
-        document.getElementById("error-login").style.display = "block";
-        document.getElementById("error-login").innerHTML = 'Vui lòng nhập đầy đủ';
-        setTimeout(() => {
-            document.getElementById("error-login").style.display = "none";
-        }, 4000);
+    var data3 = {
+        'tendangnhap': username,
+        'matkhau': password,
     }
-    else {
-        var data3 = {
-            'tendangnhap': username,
-            'matkhau': password,
-        }
-        $.ajax({
-            type: 'get',
-            dataType: 'html',
-            url: 'dn',
-            data: data3,
-            success: function (response) {
-                var data = $.parseJSON(response);
-                if (data.flag == false) {
-                    document.getElementById("error-login").style.display = "block";
-                    document.getElementById("error-login").innerHTML = 'Sai mật khẩu hoặc tài khoản.';
-                    setTimeout(() => {
-                        document.getElementById("error-login").style.display = "none";
-                    }, 4000);
-                }
-                else {
-                    location.href = 'home';
-                }
+    $.ajax({
+        type: 'get',
+        dataType: 'html',
+        url: 'dn',
+        data: data3,
+        success: function (response) {
+            var data = $.parseJSON(response);
+            if (data.flag == false) {
+                document.getElementById("error-login").style.display = "block";
+                document.getElementById("error-login").innerHTML = data.mess;
+                setTimeout(() => {
+                    document.getElementById("error-login").style.display = "none";
+                }, 4000);
             }
-        })
-    }
+            else {
+                location.href = 'home';
+            }
+        }
+    })
 }
+
 //Hien thi mat khau
 function showPass(idname) {
     if (idname == 'pass_word') {
@@ -81,113 +73,35 @@ function showPass(idname) {
 
 }
 
-// cap nhat thong tin tai khoan
-function editProfile(id) {
-    if (confirm('Xác nhận thay đổi?') == true) {
-        var name = document.getElementById('username-edit').value;
-        var address = document.getElementById('address-edit').value;
-        var phone = document.getElementById('phone-edit').value;
-        var email = document.getElementById('email-edit').value;
-        var editdata = {
-            'name': name,
-            'address': address,
-            'phone': phone,
-            'email': email,
-        }
-        $.ajax({
-            type: 'get',
-            dataType: 'html',
-            url: 'edit' + id,
-            data: editdata,
-            success: function () {
-                setTimeout(() => {
-                    document.getElementById('error-edit').innerHTML = "Cập nhật thành công.";
-                }, 4000);
-            }
-        });
-    }
-}
-
-//kiem tra mat khau de cap nhat mat khau moi
-function checkpass() {
-    var new_pass = document.getElementById("new_pass").value;
-    var confirm_pass = document.getElementById("confirm_pass").value;
-    var gmail = document.getElementById("email_to").textContent;
-    if (new_pass == '' || confirm_pass == '') {
-        document.getElementById("error-newpass").style.display = "block";
-        document.getElementById("error-newpass").innerHTML = "Vui lòng nhập đầy đủ.";
-        setTimeout(() => {
-            document.getElementById("error-newpass").style.display = "none";
-        }, 4000);
-    } else {
-        if (new_pass == confirm_pass) {
-            var data2 = {
-                'gmail': gmail,
-                'newpassword': confirm_pass,
-            };
-            $.ajax({
-                type: 'get',
-                dataType: 'html',
-                url: 'recoverpass',
-                data: data2,
-                success: function (response) {
-                    console.log(response);
-                    alert("Cập nhật mật khẩu thành công");
-                    document.getElementById("loginform").style.display = "block";
-                    document.getElementById("newPassform").style.display = "none";
-                }
-            });
-        }
-        else {
-            document.getElementById("error-newpass").style.display = "block";
-            document.getElementById("error-newpass").innerHTML = "Mật khẩu không trùng khớp";
-            setTimeout(() => {
-                document.getElementById("error-newpass").style.display = "none";
-            }, 4000);
-        }
-    }
-}
 //dang ky
 function signUp() {
     var username = document.getElementById("user_name").value;
     var passwordconfirm = document.getElementById("confirm_pass-signup").value;
     var password = document.getElementById("pass_word").value;
-    if (username == '' || passwordconfirm == '' || password == '') {
-        document.getElementById("error-signUp").style.display = "block";
-        document.getElementById("error-signUp").innerHTML = 'Vui lòng nhập đầy đủ';
-        setTimeout(() => {
-            document.getElementById("error-signUp").style.display = "none";
-        }, 4000);
+    var data3 = {
+        'tendangnhap': username,
+        'matkhau': password,
+        'xacnhanmatkhau': passwordconfirm,
     }
-    else {
-        var data3 = {
-            'tendangnhap': username,
-            'matkhau': password,
-            'xacnhanmatkhau': passwordconfirm,
-        }
-        $.ajax({
-            type: 'get',
-            dataType: 'html',
-            url: 'dk',
-            data: data3,
-            success: function (response) {
-                var data = $.parseJSON(response);
-                if (data.flag == 'false') {
-                    document.getElementById("error-signUp").style.display = "block";
-                    document.getElementById("error-signUp").innerHTML = data.SignUpError;
-                    setTimeout(() => {
-                        document.getElementById("error-signUp").style.display = "none";
-                    }, 4000);
-                }
-                else {
-                    clear_input();
-                    document.getElementById("loginform").style.display = "block";
-                    document.getElementById("signUpform").style.display = "none";
-                    alert("Đăng ký thành công");
-                }
+    $.ajax({
+        type: 'get',
+        dataType: 'html',
+        url: 'dk',
+        data: data3,
+        success: function (response) {
+            var data = $.parseJSON(response);
+            if (data.flag == false) {
+                document.getElementById("error-signUp").style.display = "block";
+                document.getElementById("error-signUp").innerHTML = data.mess;
+                setTimeout(() => {
+                    document.getElementById("error-signUp").style.display = "none";
+                }, 4000);
             }
-        });
-    }
+            else {
+                window.location.href = 'login';
+            }
+        }
+    });
 }
 
 //Xoa du lieu nhap cua the input
@@ -228,6 +142,13 @@ function startCountdown() {
 // Sự kiện gửi và xác nhận mã OTP
 function next() {
     mail = $('#email_otp').val();
+    if (mail == '') {
+        document.getElementById("error-email").style.display = "block";
+        document.getElementById("error-email").innerHTML = 'Vui lòng nhập đầy đủ';
+        setTimeout(() => {
+            document.getElementById("error-email").style.display = "none";
+        }, 4000);
+    }
     var data = {
         'email': mail,
     };
@@ -242,6 +163,36 @@ function next() {
         }
     });
 };
+//kiem tra mat khau de cap nhat mat khau moi
+function checkpass() {
+    var new_pass = document.getElementById("new_pass").value;
+    var confirm_pass = document.getElementById("confirm_pass").value;
+    var data2 = {
+        'gmail': mail,
+        'newPassword': new_pass,
+        'confirmPass': confirm_pass,
+    };
+    console.log(mail);
+    $.ajax({
+        type: 'get',
+        dataType: 'html',
+        url: 'recoverpass',
+        data: data2,
+        success: function (response) {
+            var data = $.parseJSON(response);
+            if (data.flag == false) {
+                document.getElementById("error-newpass").style.display = "block";
+                document.getElementById("error-newpass").innerHTML = data.mess;
+                setTimeout(() => {
+                    document.getElementById("error-newpass").style.display = "none";
+                }, 4000);
+            }
+            else {
+                window.location.href = 'login';
+            }
+        }
+    });
+}
 // Gui lai ma OTP
 function reloadcode() {
     document.getElementById('countdown').style.color = "black";
