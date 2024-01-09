@@ -57,8 +57,8 @@ class PusherController extends Controller
         ////////////
         DB::table('history_chat')->where('MaChat',$id)->update(['Seen'=>'true']);
         $unread=$this->get_unseen();
-        $name=DB::table('taikhoan')->where('MaTaiKhoan',$id)->select('TaiKhoan')->get();
-        foreach($name as $row){$name=$row->TaiKhoan;}
+        $name=DB::table('taikhoan')->where('MaTaiKhoan',$id)->select('TaiKhoan')->get()->first();
+        $name=$name->TaiKhoan;
         return view('chat/pusher-chat',compact('chat','list','chater1','chater2','unread','name'),['type'=>$type]);
     }
     ////////////

@@ -59,22 +59,21 @@ function addcart(id) {
         data: id,
         success: function (response) {
             var data = $.parseJSON(response);
-            // if (data.flag == false) {
-            //     var div =
-            //         '<div class="alert alert-danger">' +
-            //         '<button type="button" class="close" data-dismiss="alert">x</button>' +
-            //         'Thêm thất bại. Vui lòng đăng nhập!' +
-            //         '<a href="login"> >> Chuyển đến đăng nhập </a>' +
-            //         '</div>';
-            //     $('.session-message').html(div);
-            // } else {}
-            var div =
-                '<div class="alert alert-success">' +
-                '<button type="button" class="close" data-dismiss="alert">x</button>' +
-                'Đã thêm thành công sản phẩm <b>' + data.name + '</b> vào ghỏ hàng.' +
-                '</div>';
-            $('#cart-popup').html(data.html);
-            document.getElementById('lblCartCount').innerHTML = data.count;
+            if (data.flag == false)
+                var div =
+                    '<div class="alert alert-warning">' +
+                    '<button type="button" class="close" data-dismiss="alert">x</button>' +
+                    'Sản phẩm <b>' + data.name + '</b> đã hết hàng.' +
+                    '</div>';
+            else {
+                var div =
+                    '<div class="alert alert-success">' +
+                    '<button type="button" class="close" data-dismiss="alert">x</button>' +
+                    'Đã thêm thành công sản phẩm <b>' + data.name + '</b> vào ghỏ hàng.' +
+                    '</div>';
+                $('#cart-popup').html(data.html);
+                document.getElementById('lblCartCount').innerHTML = data.count;
+            }
             $('.session-message').html(div);
             document.getElementsByTagName("body").scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -93,7 +92,7 @@ function show_hide(n) {
     }
 }
 //Tang giam so luong
-function tang_giam(n, id) {
+function tang_giam(n, id, sl) {
     var qty = document.getElementById('qty' + id).value;
     qty = parseInt(qty);
     if (n == 0) {
@@ -101,7 +100,16 @@ function tang_giam(n, id) {
     } else {
         qty += 1;
     }
-    if (qty > 0 && qty < 50) {
+    if (qty > sl) {
+        var mess =
+            '<div class="alert alert-warning">' +
+            '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
+            '<button  type="button" class="close" data-dismiss="alert">x</button></div>';
+        $('.session-message').html(mess);
+        document.getElementsByTagName("body").scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    else if (qty > 0 && qty <= sl) {
         document.getElementById('qty' + id).value = qty;
         var newqty = qty;
         var data = {
@@ -113,7 +121,8 @@ function tang_giam(n, id) {
             dataType: 'html',
             url: 'update' + id,
             data: data,
-            success: function () { }
+            success: function () {
+            }
         });
     }
 }

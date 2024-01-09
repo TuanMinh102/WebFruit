@@ -22,8 +22,8 @@ class ProductController extends Controller
                 $sl=session()->get('sl',[]);
                 $count=$this->count_products();  
             }
-                $maloai=DB::table('traicay')->where('MaTraiCay',1)->select('traicay.MaLoai')->get();
-                foreach($maloai as $row)$maloai=$row->MaLoai;
+                $maloai=DB::table('traicay')->where('MaTraiCay',1)->select('traicay.MaLoai')->get()->first();
+                $maloai=$maloai->MaLoai;
                 ////
                 $cungloai =$this->getProductBySameCategory_query($maloai,1);
                 ////
@@ -80,8 +80,8 @@ class ProductController extends Controller
             $product=$this->getProductById_query($id);
             ///
             if($product->count()==0) return abort(404);
-            $maloai=DB::table('traicay')->where('MaTraiCay',$id)->select('traicay.MaLoai')->get();
-            foreach($maloai as $row)$maloai=$row->MaLoai;
+            $maloai=DB::table('traicay')->where('MaTraiCay',$id)->select('traicay.MaLoai')->get()->first();
+            $maloai=$maloai->MaLoai;
             $cungloai =$this->getProductBySameCategory_query($maloai,$id);
             ////
             $gallery=DB::table('gallery')->where('MaTCay',$id)->select('*')->get();

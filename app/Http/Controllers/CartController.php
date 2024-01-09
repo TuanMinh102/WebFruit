@@ -211,17 +211,15 @@ public function reviewProduct(Request $request)
 //
 public function getRemainAmountProduct($id)
 {
-    $soluong=DB::table('traicay')->where('MaTraiCay',$id)->select('SoLuong')->get();
-    foreach($soluong as $row) 
-        return $row->SoLuong;
+    $soluong=DB::table('traicay')->where('MaTraiCay',$id)->select('SoLuong')->get()->first();
+        return $soluong->SoLuong;
     return 0;
 }
 // 
 public function getNameOfProduct($id)
 {
-    $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get();
-    foreach($name as $row) 
-        return $row->TenTraiCay;
+    $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get()->first();
+        return $name->TenTraiCay;
     return '';
 }
 //

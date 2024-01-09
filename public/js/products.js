@@ -254,6 +254,8 @@ function tang_giam(n, id, sl) {
             '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
             '<button  type="button" class="close" data-dismiss="alert">x</button></div>';
         $('.session-message').html(mess);
+        document.getElementsByTagName("body").scrollTop = 0;
+        document.documentElement.scrollTop = 0;
     }
     else if (qty > 0 && qty <= sl) {
         document.getElementById('qty' + id).value = qty;

@@ -8,7 +8,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PusherController;
 use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 
@@ -42,7 +41,6 @@ Route::get('/reloadOTP',[UserController::class,"resendOTP"]);
 
 
 Route::get('/shop',[ProductController::class,"Shopview"])->name('shop');
-// Route::get('/basket',[ProductController::class,"Shopview"]);
 Route::get('/ct',[ProductController::class,"chitiet"]);
 Route::get('/cats{id}',[ProductController::class,"Catogories"]);
 Route::get('/category{id}',[ProductController::class,"loaiDanhMuc"]);
@@ -72,12 +70,6 @@ Route::controller(CheckoutController::class)
         Route::get('cancel-payment', 'paymentCancel')->name('cancel.payment');
         Route::get('payment-success', 'paymentSuccess')->name('success.payment');
     });
-// Route::get('/sendmail',[CheckoutController::class,"sendMail2"]);
-
-
-// Route::get('/admin',[AdminController::class,"adminview"]);
-// Route::post('/login-admin',[AdminController::class,"login"]);
-// Route::post('/admin-logout',[AdminController::class,"logout"]);
 
 
 // Route::get('/chat',[ChatController::class,"chatview"]);
@@ -85,11 +77,6 @@ Route::controller(CheckoutController::class)
 // Route::get('/send',[ChatController::class,"sendMessage"]);
 // Route::get('/getmsg',[ChatController::class,"getmsg"]);
 
-
-Route::get('/ckeditor',[NewsController::class,"editor"]);
-Route::get('/news',[NewsController::class,"newsList"]);
-Route::get('/news{id}',[NewsController::class,"getNews"]);
-Route::get('/insertNews',[NewsController::class,"insert"]);
 
 Route::get('/pusher',[PusherController::class,"index"]);
 Route::post('/broadcast',[PusherController::class,"broadcast"]);

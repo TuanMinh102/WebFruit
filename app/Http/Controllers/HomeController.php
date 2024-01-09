@@ -74,7 +74,7 @@ class HomeController extends Controller
     //
   public function contactview()
   {
-    $contact=DB::table('baiviet')->where('Loai','lienhe')->select('*')->get();
+    $contact=DB::table('baiviet')->where('Loai','lienhe')->where('TinhTrang',1)->select('*')->get();
     return view('contact/lienhe',compact('contact'));
   }
   //

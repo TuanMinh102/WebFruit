@@ -82,15 +82,6 @@ class CheckoutController extends Controller
     });
     }
    }
-   //
-  //  public function sendMail2()
-  //  {
-  //    $name='tuan';
-  //    $mail="tuanww";
-  //      Mail::send('checkout/mailform',compact('name','mail'),function($email){
-  //     $email->to('tuanww012@gmail.com','tuanpro');
-  //   });
-  //   }
     // Lấy giá của 1 sản phẩm
     public function getProductPrice($id)
     {

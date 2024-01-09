@@ -414,7 +414,11 @@ public function deletesp(request $request, $id)
     public function capnhatttdon(Request $request)
     {
         $id = $request->input('mahd');
-        if($request->input('tinh_trang')=='Hoàn thành')
+        //
+        $hoanthanh=DB::table('hoadon')
+        ->where('MaHD', $id)->select('TinhTrang')->get()->first();
+        //
+        if($request->input('tinh_trang')=='Hoàn thành'&& $request->input('tinh_trang') != $hoanthanh->TinhTrang)
         {
              $danhgia='false';
              $traicaylist = DB::table('ct_hoadon')
