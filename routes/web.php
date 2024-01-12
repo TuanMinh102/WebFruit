@@ -21,6 +21,7 @@ use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//hello
 Route::get('/home',[HomeController::class,"homeview"])->name('home');
 Route::get('/contact',[HomeController::class,"contactview"])->name('contact');
 Route::get('/',[HomeController::class,"welcomeview"]);
