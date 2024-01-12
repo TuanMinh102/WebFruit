@@ -79,7 +79,7 @@ class PusherController extends Controller
                             'Seen'=>'false'
                         ));
             
-            event(new PusherBroadcast($request->get('message'),intval($request->get('chatwith')),intval($request->get('my'))));
+            event(new PusherBroadcast($request->get('message'),intval($request->get('chatwith')),intval($request->get('my')),'online'));
             return view('chat/BroadcastMessage', ['message' => $request->get('message'),'time'=>Carbon::now()]);
     }
     ///////////

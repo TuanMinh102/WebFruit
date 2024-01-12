@@ -21,6 +21,8 @@
 </head>
 
 <body>
+    <button onclick="status(1)">dang nhap</button>
+    <button onclick="status(0)">dang xuat</button>
     <div id="app" class="container chat">
         <!-- <h3 class=" text-center">Messaging | User: </h3> -->
         <h3 class=" text-center">Messaging | {{$name}}</h3>
@@ -106,6 +108,21 @@ var pusher = new Pusher('951e298a4cf0d46d9655', {
 //var channel = pusher.subscribe('public');
 // nhận tin nhắn của người này
 var channel = pusher.subscribe(<?php echo $chater1?> + 'and' + <?php echo $chater2?>);
+
+function status(n) {
+    if (n == 1) {
+        channel.blind('pusher:member_added', function(member) {
+            console.log('Member added:', 'online');
+            // Xử lý logic khi có người dùng mới đăng nhập
+        });
+    } else {
+        channel.blind('pusher:member_added', function(member) {
+            console.log('Member added:', 'offline');
+            // Xử lý logic khi có người dùng mới đăng nhập
+        });
+    }
+}
+
 //Receive messages
 channel.bind('chat', function(data) {
     $.post("/receive", {

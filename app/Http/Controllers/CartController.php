@@ -61,6 +61,7 @@ class CartController extends Controller
                             'MaTaiKhoan'=>session()->get('user'),
                             'MaSanPham'=>$id,
                             'SoLuong'=> 1,
+                            'NgayTao'=>Carbon::now(),
                     ));
                 }
                 else {
@@ -259,6 +260,7 @@ public function getCartByAccountId_query($id)
     })
     ->where('MaTaiKhoan',$id)
     ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+    ->orderBy('NgayTao','asc')
     ->select('traicay.*','giohang.SoLuong as sl','banggia.*','donvi.*')->get();
     return $cart;
 }
