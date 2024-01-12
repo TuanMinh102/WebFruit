@@ -4,6 +4,7 @@ var search_catagory = false;
 var search_brand = false;
 var search_PriceToPrice = false;
 //Tìm kiếm sản phẩm bằng từ khóa
+//qqq
 $(document).ready(function () {
     $('#search').on('change keypress', function () {
         search_key = true;
