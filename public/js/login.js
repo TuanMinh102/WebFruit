@@ -26,11 +26,7 @@ function signIn() {
         success: function (response) {
             var data = $.parseJSON(response);
             if (data.flag == false) {
-                document.getElementById("error-login").style.display = "block";
-                document.getElementById("error-login").innerHTML = data.mess;
-                setTimeout(() => {
-                    document.getElementById("error-login").style.display = "none";
-                }, 4000);
+                AnHienThongBao(document.getElementById("error-login"), data.mess);
             }
             else {
                 location.href = 'home';
@@ -91,11 +87,7 @@ function signUp() {
         success: function (response) {
             var data = $.parseJSON(response);
             if (data.flag == false) {
-                document.getElementById("error-signUp").style.display = "block";
-                document.getElementById("error-signUp").innerHTML = data.mess;
-                setTimeout(() => {
-                    document.getElementById("error-signUp").style.display = "none";
-                }, 4000);
+                AnHienThongBao(document.getElementById("error-signUp"), data.mess);
             }
             else {
                 window.location.href = 'login';
@@ -143,11 +135,7 @@ function startCountdown() {
 function next() {
     mail = $('#email_otp').val();
     if (mail == '') {
-        document.getElementById("error-email").style.display = "block";
-        document.getElementById("error-email").innerHTML = 'Vui lòng nhập đầy đủ';
-        setTimeout(() => {
-            document.getElementById("error-email").style.display = "none";
-        }, 4000);
+        AnHienThongBao(document.getElementById("error-email"), 'Vui lòng nhập đầy đủ');
     }
     var data = {
         'email': mail,
@@ -181,11 +169,7 @@ function checkpass() {
         success: function (response) {
             var data = $.parseJSON(response);
             if (data.flag == false) {
-                document.getElementById("error-newpass").style.display = "block";
-                document.getElementById("error-newpass").innerHTML = data.mess;
-                setTimeout(() => {
-                    document.getElementById("error-newpass").style.display = "none";
-                }, 4000);
+                AnHienThongBao(document.getElementById("error-newpass"), data.mess);
             }
             else {
                 window.location.href = 'login';
@@ -251,11 +235,7 @@ function checkcode() {
         code_input += document.getElementById("i" + i).value;
     }
     if (fill == 0) {
-        document.getElementById("error-otp").style.display = "block";
-        document.getElementById("error-otp").innerHTML = "Mã OTP gồm 5 số";
-        setTimeout(() => {
-            document.getElementById("error-otp").style.display = "none";
-        }, 4000);
+        AnHienThongBao(document.getElementById("error-otp"), "Mã OTP gồm 5 số");
     }
     else {
         $.ajax({
@@ -278,14 +258,17 @@ function checkcode() {
                 }
 
                 else {
-                    document.getElementById("error-otp").style.display = "block";
-                    document.getElementById("error-otp").innerHTML = "Sai mã OTP";
-                    setTimeout(() => {
-                        document.getElementById("error-otp").style.display = "none";
-                    }, 4000);
+                    AnHienThongBao(document.getElementById("error-otp"), "Sai mã OTP");
                 }
             }
         });
     }
 }
-
+//an hien thong bao sau 4s
+function AnHienThongBao(element, thongbao) {
+    element.style.display = "block";
+    element.innerHTML = thongbao;
+    setTimeout(() => {
+        element.style.display = "none";
+    }, 4000);
+}

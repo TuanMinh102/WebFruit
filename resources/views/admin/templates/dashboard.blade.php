@@ -36,39 +36,22 @@
                         <span class="desc">Số đơn bị hủy</span>
                     </div>
                 </div>
-                <!-- <div class="bettwen">
-                    <table>
-                        <tr>
-                            <th>Mã</th>
-                            <th>Khách hàng </th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Thời gian</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                        </tr>
-                    </table>
-                </div> -->
-                <div class="bo-loc-doanh-thu">
-                    <select name="" id="yeartk">
-                        @for($i=now()->year; $i>=(now()->year)-5;$i--)
-                        <option value="{{$i}}">Năm {{$i}}</option>
-                        @endfor
-                    </select>
+                <div style="display:flex;">
+                    <div class="bo-loc-doanh-thu">
+                        <select name="" id="yeartk">
+                            @for($i=now()->year; $i>=(now()->year)-5;$i--)
+                            <option value="{{$i}}">Năm {{$i}}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="dang-bieu-do">
+                        <select name="" id="dangbieudo">
+                            <option value="bar">Biểu đồ cột</option>
+                            <option value="pie">Biểu đồ tròn</option>
+                            <option value="line">Biểu đồ đường</option>
+                            <option value="doughnut">Biểu đồ bánh quy</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="noidung-chart">
                     @include("admin/templates/dashboard_data")

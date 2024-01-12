@@ -219,12 +219,13 @@ function routeTocthoadonid(id) {
 }
 
 //Biểu đồ
-
 $(document).ready(function () {
     $("#yeartk").on("change select", function () {
-        var year = $("#yeartk").find(":selected").val();
+        var year = $(this).find(":selected").val();
+        var type = $("#dangbieudo").find(":selected").val();
         var data3 = {
             year: year,
+            type: type
         };
         $.ajax({
             type: "get",
@@ -236,36 +237,72 @@ $(document).ready(function () {
         });
     });
 });
-
+// đổi dạng biểu đồ
+$(document).ready(function () {
+    $("#dangbieudo").on("change select", function () {
+        var type = $(this).find(":selected").val();
+        var year = $("#yeartk").find(":selected").val();
+        var data3 = {
+            year: year,
+            type: type
+        };
+        $.ajax({
+            type: "get",
+            url: "/selectchart",
+            data: data3,
+            success: function (response) {
+                $(".noidung-chart").html(response);
+            },
+        });
+    });
+});
 // tìm kiếm tự động
 
 //Thêm dòng input
 
+var isRequesting = false;
+
 function addinput() {
-    var elements = document.getElementsByClassName('nhapHang');
-    var mainput = elements.length;
-    mainput++;
-    $.ajax({
-        url: "addinput",
-        type: "GET",
-        data: { mainput: mainput },
-        success: function (response) {
-            $(".noidung-add").append(response);
-        },
-    });
+    if (!isRequesting) {
+        isRequesting = true;
+        var elements = document.getElementsByClassName('nhapHang');
+        var mainput = elements.length;
+        mainput++;
+        $.ajax({
+            url: "addinput",
+            type: "GET",
+            data: { mainput: mainput },
+            success: function (response) {
+                $(".noidung-add").append(response);
+                isRequesting = false;
+            },
+            complete: function () {
+                isRequesting = false;
+            }
+        });
+    }
 }
+var isDeleting = false;
+
 function deleteinput() {
-    var elements = document.getElementsByClassName('nhapHang2');
-    var mainput = elements.length;
-    mainput--;
-    $.ajax({
-        url: "deleteinput",
-        type: "GET",
-        data: { mainput: mainput },
-        success: function (response) {
-            $(".nhapHang2:last-child").remove();
-        },
-    });
+    if (!isDeleting) {
+        isDeleting = true;
+        var elements = document.getElementsByClassName('nhapHang2');
+        var mainput = elements.length;
+        mainput--;
+        $.ajax({
+            url: "deleteinput",
+            type: "GET",
+            data: { mainput: mainput },
+            success: function (response) {
+                $(".nhapHang2:last-child").remove();
+            },
+            complete: function () {
+                isDeleting = false; // Thiết lập lại cờ sau khi hoàn thành request AJAX
+            }
+        });
+
+    }
 }
 
 //Nhập hàng
@@ -331,12 +368,11 @@ function routeTodeletespnhaphang(id, id2) {
                 text: "Đồng ý",
                 btnClass: "btn-blue",
                 action: function () {
-                    console.log(id + id2);
+                    alert(id + '/' + id2);
                     $.ajax({
                         type: "get",
                         dataType: "html",
-                        url: "xoaspnhaphang" + id + id2,
-                        data: id,
+                        url: "xoaspnhaphang" + id + "/" + id2,
                         success: function (response) {
                             $(".noidung").html(response);
                         },
@@ -483,6 +519,7 @@ function routeTodeletegallery(id, loai, idsp) {
         },
     });
 }
+
 //loại trai cây
 function routeToctloaisp() {
     $.ajax({
@@ -844,3 +881,40 @@ function routeTodeletebanggia(id) {
         },
     });
 }
+function displaySelectedImage(event) {
+    let input = event.target;
+    let imgElement = document.getElementById('selectedImage');
+
+    if (input.files && input.files[0]) {
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+            imgElement.style.display = 'block';
+            imgElement.src = e.target.result;
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function displaySelectedImage2(event) {
+    const container = document.querySelector('.data-gallery');
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            const imgElement = document.createElement('img');
+
+            reader.onload = function (e) {
+                imgElement.src = e.target.result;
+                imgElement.style.width = '200px';
+                imgElement.style.height = '200px';
+                imgElement.style.objectFit = 'cover';
+                container.appendChild(imgElement);
+            };
+
+            reader.readAsDataURL(files[i]);
+        }
+    }
+}   

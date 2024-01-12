@@ -84,24 +84,16 @@
 </body>
 
 <script>
-function getCookie(name) {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split('; ');
-
-    for (const cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=');
-        if (cookieName === name) {
-            return cookieValue;
-        }
-    }
-    return null;
+function getSession(key) {
+    const sessionValue = localStorage.getItem(key);
+    return sessionValue;
 }
-// Get the value of the "myCookie" cookie
+// Get the value of the "session" 
 var type = <?php echo $type ;?>;
 if (type == 1) {
-    var myCookieValue = getCookie('id');
+    var SessionValue = @json(session('user'));
 } else {
-    var myCookieValue = getCookie('admin');
+    var SessionValue = @json(session('admin'));
 }
 
 Pusher.logToConsole = true;
@@ -138,7 +130,7 @@ $("form").submit(function(event) {
         data: {
             _token: '{{csrf_token()}}',
             message: $("form #message").val(),
-            my: myCookieValue,
+            my: SessionValue,
             chatwith: <?php echo $chater2; ?>,
             type: type,
         }

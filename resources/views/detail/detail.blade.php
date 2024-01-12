@@ -87,6 +87,8 @@
                                 class="fa fa-caret-up" aria-hidden="true"></i></span>
                     </div>
                 </div>
+                <div><b>Lượt xem:</b> {{$row->LuotXem}}</div>
+                <hr>
                 <button name="addtocart" onclick="addcart({{$row->MaTraiCay}})" class="btn btn-success">
                     <i class="fas fa-shopping-bag mr-1"></i>
                     <span>Thêm vào giỏ hàng</span></button>
@@ -228,13 +230,24 @@
             <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
         </a>
         <div id="cart-popup">
-            @include('cart/cart-popup')
+            <div id="cart-popup2">
+                <?php $arr=array();$soluongcon=array();  ?>
+                @foreach($cart as $row)
+                @php
+                array_push($arr,$row->MaTraiCay);
+                array_push($soluongcon,$row->SoLuong);
+                @endphp
+                @endforeach
+                @include('cart/cart-popup')
+                <?php $jsonArray = json_encode($arr); $jsonArray2=json_encode($soluongcon);?>
+            </div>
         </div>
     </div>
     @include("footer2")
     <script src="js/jquery/jquery.min.js"></script>
     <script src="js/jquery.fancybox.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
+    @include('inputQuatity')
     <script>
     //////////////////////////////////////////////
     document.getElementById("comment-input").addEventListener("keypress", function(event) {

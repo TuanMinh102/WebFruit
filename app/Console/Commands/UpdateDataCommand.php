@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Console\Commands;
-
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
 class UpdateDataCommand extends Command
 {
     /**
@@ -14,21 +11,53 @@ class UpdateDataCommand extends Command
      * @var string
      */
     protected $signature = 'minute:update';
-
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Delete';
-
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $ngayHienTai = new DateTime();
-        $ngayHienTai= $ngayHienTai->format('Y-m-d');
-        DB::table('discount')->where('MaGiamGia',1)->delete();
+            $tongdoanhthu=DB::table('hoadon')
+            ->whereYear('hoadon.NgayLapHD',Carbon::now()->year)->select('*')->sum('ThanhTien');
+            //
+            $chiphi=DB::table('hoadon')
+            ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+            ->whereYear('hoadon.NgayLapHD',Carbon::now()->year)
+            ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+            ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+            ->first()->totalCost;
+            //
+             DB::table('thongke')->insert(array([
+            'MaThongKe'=>$this->createID(),
+            'TongDoanhThu'=> $tongdoanhthu-=$chiphi,
+            'Date'=> Carbon::now(),
+            'ChiPhi'=>$chiphi
+        ]));
     }
+    // Tao ma moi thong ke
+   public function createID()
+   {
+        $max=DB::table('thongke')->max('MaThongKe');
+        $tk=DB::table('thongke')->select('*')->get();
+            for($i=1;$i<=$max;$i++){
+                $flag=false;
+                foreach($tk as $row)
+                {
+                    if($i==$row->MaThongKe)
+                    {
+                        $flag=true;
+                        break;
+                    }
+                }
+                if($flag==false){
+                  return $i;
+                }
+            }
+            return $max+1;
+   }
 }

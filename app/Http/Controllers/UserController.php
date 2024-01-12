@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-
 class UserController extends Controller
 {
     public function loadForm(Request $request)
@@ -18,28 +15,21 @@ class UserController extends Controller
      // View dang nhap
      public function loginview()
      {
-         if(empty($_COOKIE['id']))
-         {
-         $cookie=0;
-         }
-         else
-         $cookie=$_COOKIE['id'];
-         if(isset($cookie)){
-         $info=DB::table('taikhoan')->where('MaTaiKhoan',$cookie)->select('*');
-         $info = $info->get();
-         return view("auth/login",['ck'=>$cookie],compact('info'));
-         } 
-         else
-         {
-             $info=null;
-         return view("auth/login",['ck'=>$cookie],compact('info'));
-         }
+        if(session()->has('user')){
+                $info=DB::table('taikhoan')->where('MaTaiKhoan',session()->get('user'))->select('*');
+                $info = $info->get();
+                return view("auth/login",['ss'=>session()->get('user')],compact('info'));
+        }
+        else {
+                $info=DB::table('taikhoan')->where('MaTaiKhoan',0)->select('*');
+                $info = $info->get();
+                return view("auth/login",compact('info'));
+        }
      }
-    
      //Dang xuat
      public function logout()
      {
-         setcookie("id", null, time()-7200); 
+         session()->forget('user'); 
          return redirect("login");
      }
      // Kiem Tra Dang Nhap
@@ -55,8 +45,9 @@ class UserController extends Controller
             {
                  if($username==$row->TaiKhoan && $password==$row->MatKhau)
                  {
-                     setcookie("id",$row->MaTaiKhoan, time()+7200);
-                     setcookie("admin", null, time()-7200); 
+                     session()->get('user');
+                     session()->put('user',$row->MaTaiKhoan,now()->addMinutes(120));
+                    session()->forget('admin');
                     return response()->json(['mess'=>'','flag'=>true]);
                  }
             }

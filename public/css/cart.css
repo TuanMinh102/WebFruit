@@ -123,10 +123,10 @@ li a {
 }
 
 .active {
-    font-size: 20px;
+    font-size: 22px;
     color: #ffb700;
+    margin-left: 10px;
 }
-
 
 h1 {
     margin-left: 25px;
@@ -139,7 +139,7 @@ h1 {
 }
 
 .substract-add input {
-    width: 35px;
+    width: 45px;
     text-align: center;
     height: 32px;
     border: 1px solid black;
@@ -266,30 +266,6 @@ textarea::placeholder {
     vertical-align: middle;
 }
 
-/* .expanded {
-    position: absolute !important;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 999;
-    width: 380px !important;
-    background-color: #fffffff2;
-    color: black;
-    resize: none;
-
-}
-
-.set {
-    max-height: 480px !important;
-    max-width: 380px !important;
-    height: 480px !important;
-    overflow-y: auto;
-} */
-
-/*.show {
-    display: block !important;
-} */
-
 a {
     text-decoration: none;
 }
@@ -298,21 +274,6 @@ input[type="file"] {
     display: none;
 }
 
-/* Tùy chỉnh giao diện của nút tải lên */
-/* .custom-file-upload {
-    display: inline-block;
-    padding: 10px 20px;
-    cursor: pointer;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.custom-file-upload:hover {
-    background: #0056b3;
-} */
 .alert {
     padding: 10px;
     border: 1px solid transparent;
@@ -344,4 +305,10 @@ input[type="file"] {
 
 .printer>i {
     color: blue;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

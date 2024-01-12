@@ -47,7 +47,7 @@
                 <li><a href="shop">Trái Cây</a></li>
                 <li><a href="ct">Sản Phẩm</a></li>
                 <li><a href="gh">Giỏ Hàng</a></li>
-                <li><a>=> </a><a class="active" href="tt">Thanh Toán</a></li>
+                <li><a class="active" href="tt"><i class="fa">&#xf101;</i> Thanh Toán</a></li>
             </ul>
         </div>
         <div id="content-checkout">
@@ -55,11 +55,12 @@
                 @csrf
                 <div class="row">
                     <div class="line">
-                        <label for="">Họ</label>
+                        <label for="">Họ <a style="color:red;">*</a></label>
                         <input type="text" name="first_name" id="first_name" value="" placeholder="Họ" required>
                     </div>
                     <div class="line">
-                        <label for=""><i style="font-size:15px" class="fa">&#xf007;</i> Tên</label>
+                        <label for=""><i style="font-size:15px" class="fa">&#xf007;</i> Tên <a
+                                style="color:red;">*</a></label>
                         <input type="text" name="last_name" id="last_name" value="" placeholder="Tên" required>
                     </div>
                 </div>
@@ -68,12 +69,14 @@
                     <input type="text" id="company" placeholder="Công ty" value="">
                 </div>
                 <div class="col">
-                    <label for=""><i style="font-size:15px" class="fa">&#xf0e0;</i> Email</label>
+                    <label for=""><i style="font-size:15px" class="fa">&#xf0e0;</i> Email <a
+                            style="color:red;">*</a></label>
                     <input type="email" name="email" id="email" placeholder="Email" value="" required>
                 </div>
                 <div class="row">
                     <div class="line">
-                        <label for=""><i style="font-size:15px" class="fa">&#xf19c;</i> Thành phố</label>
+                        <label for=""><i style="font-size:15px" class="fa">&#xf19c;</i> Thành phố <a
+                                style="color:red;">*</a></label>
                         <input type="text" id="city" placeholder="Thành Phố" value="" required>
                     </div>
                     <div class="line">
@@ -98,7 +101,8 @@
                     </div>
                 </div>
                 <div class="col">
-                    <label for=""><i style="font-size:15px" class="fa">&#xf041;</i> Địa chỉ</label>
+                    <label for=""><i style="font-size:15px" class="fa">&#xf041;</i> Địa chỉ <a
+                            style="color:red;">*</a></label>
                     <input type="text" class="form-control mb-3" name="address" id="address" placeholder="Địa chỉ"
                         value="" required>
                 </div>
@@ -108,15 +112,16 @@
                         <input type="text" id="zipCode" placeholder="Mã Zip" value="">
                     </div>
                     <div class="line">
-                        <label for=""><i style="font-size:15px" class="fa">&#xf095;</i> Số điện thoại</label>
+                        <label for=""><i style="font-size:15px" class="fa">&#xf095;</i> Số điện thoại <a
+                                style="color:red;">*</a></label>
                         <input type="tel" name="phone" id="phone_number" min="0" placeholder="Số Điện Thoại" value=""
                             pattern="[0]{1}[0-9]{3}[0-9]{3}[0-9]{3}" required>
                     </div>
                 </div>
                 <div class=" col">
-                    <label for=""><i style="font-size:15px" class="fa">&#xf0e6;</i> Nhận xét</label>
+                    <label for=""><i style="font-size:15px" class="fa">&#xf0e6;</i> Ghi chú</label>
                     <textarea name="comment" class="form-control w-100" id="comment" cols="30" rows="10"
-                        placeholder="Nhận xét"></textarea>
+                        placeholder="Ghi chú"></textarea>
                 </div>
         </div>
         <div id="total-checkout">
@@ -125,7 +130,6 @@
             </div>
             <ul class="summary-table">
                 <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Miễn phí</span></li>
                 <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
             </ul>
             <div class="payment-method">

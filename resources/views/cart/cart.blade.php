@@ -17,8 +17,6 @@
 </head>
 
 <body>
-
-    <!-- ##### Main Content Wrapper Start ##### -->
     <div>
         <a href="home"><img src="images/logo2.jpg" alt=""></a>
     </div>
@@ -26,10 +24,10 @@
         <h1>GIỎ HÀNG</h1>
     </div>
     <div class="mess">
-        @if(session()->has('mess'))
+        @if(session()->has('mess-true'))
         <div class="alert alert-success">
-            <?php echo session()->get('mess'); session()->forget('mess');?>
-            <button style="float:right" onclick="hideMess()">X</button>
+            <b>Thành công ! </b><?php echo session()->get('mess-true'); session()->forget('mess-true');?>
+            <button style="float:right" onclick="RemoveMess()">X</button>
         </div>
         @endif
     </div>
@@ -39,7 +37,7 @@
                 <li><a href="home">Trang Chủ</a></li>
                 <li><a href="shop">Trái Cây</a></li>
                 <li><a href="ct">Sản Phẩm</a></li>
-                <li><a>=> </a><a class="active" href="gh">Giỏ Hàng</a></li>
+                <li><a class="active" href="gh"><i class="fa">&#xf101;</i> Giỏ Hàng</a></li>
                 <li><a href="tt">Thanh Toán</a></li>
             </ul>
         </div>
@@ -61,7 +59,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $arr=array();$soluongcon=array();  ?>
                             @foreach($cart as $row)
+                            @php
+                            array_push($arr,$row->MaTraiCay);
+                            array_push($soluongcon,$row->SoLuong);
+                            @endphp
                             <tr>
                                 <td>
                                     <a href="#"><img src="images/sanpham/{{$row->Anh}}" alt="Product"
@@ -83,10 +86,11 @@
                                             <button
                                                 onclick="tang_giam(0,{{$row->MaTraiCay}},{{$row->SoLuong}});">-</button>
                                             @if(isset($sl))
-                                            <input min="1" value="{{$sl[$row->MaTraiCay]}}" id="qty{{$row->MaTraiCay}}"
-                                                disabled>
+                                            <input min="1" type="number" value="{{$sl[$row->MaTraiCay]}}"
+                                                id="qty{{$row->MaTraiCay}}">
                                             @else
-                                            <input min="1" value="{{$row->sl}}" id="qty{{$row->MaTraiCay}}" disabled>
+                                            <input min="1" type="number" value="{{$row->sl}}"
+                                                id="qty{{$row->MaTraiCay}}">
                                             @endif
                                             <button
                                                 onclick="tang_giam(1,{{$row->MaTraiCay}},{{$row->SoLuong}});">+</button>
@@ -99,6 +103,7 @@
                                 </td>
                             </tr>
                             @endforeach
+                            <?php $jsonArray = json_encode($arr); $jsonArray2=json_encode($soluongcon);?>
                         </tbody>
                     </table>
                 </div>
@@ -111,7 +116,6 @@
                 </div>
                 <ul>
                     <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                    <li><span>Vận Chuyển:</span><span class="cost"> ${{$total}}.000 VND Free</span></li>
                     <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
                 </ul>
                 <br><br>
@@ -167,6 +171,45 @@
     @include("footer2")
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/cart.js"></script>
+    <script>
+    var arr = <?php echo($jsonArray); ?>;
+    var soluongcon = <?php echo($jsonArray2); ?>;
+    for (let i = 0; i < arr.length; i++) {
+        $('#qty' + arr[i]).on('change keypress', function() {
+            var newqty = $(this).val();
+            if (newqty == '' && !$(this).is(':focus')) {
+                $(this).val(1);
+                newqty = 1;
+            } else if (newqty <= 0 && !$(this).is(':focus')) {
+                $(this).val(1);
+                newqty = 1;
+            } else if (soluongcon[i] < newqty && !$(this).is(':focus')) {
+                $(this).val(soluongcon[i]);
+                newqty = soluongcon[i];
+                var mess =
+                    '<div class="alert alert-warning">' +
+                    '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
+                    '<button style="float:right" onclick="hideMess()">X</button></div>';
+                $('.mess').html(mess);
+                setTimeout(() => {
+                    document.getElementsByClassName('alert')[0].remove();
+                }, 3000);
+            }
+            var data = {
+                'SoLuong': newqty,
+            };
+            $.ajax({
+                type: 'get',
+                dataType: 'html',
+                url: 'update' + arr[i],
+                data: data,
+                success: function() {
+                    $('#total-checkout').load(location.href + ' .summary-table');
+                }
+            });
+        });
+    }
+    </script>
 </body>
 
 </html>

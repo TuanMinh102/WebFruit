@@ -14,14 +14,14 @@ class PusherController extends Controller
 {
     public function index()
     {
-        if(isset($_COOKIE['id']))
+        if(session()->has('user'))
         { 
             $type=1; 
-            $chater1=$_COOKIE['id'];
+            $chater1=session()->get('user');
             $chater2=3;
             $chat=DB::table('chatbox')
             ->join('history_chat','chatbox.chatID','=','history_chat.MaChat')
-            ->where('chatbox.MaTK',$_COOKIE['id'])
+            ->where('chatbox.MaTK',session()->get('user'))
             ->select('*')->get();
             $list=null;
             //////////
@@ -29,7 +29,7 @@ class PusherController extends Controller
             $name='Admin';
             return view('chat/pusher-chat',compact('chat','list','chater1','chater2','unread','name'),['type'=>$type]);             
          }
-          else if(isset($_COOKIE['admin']))
+          else if(session()->has('admin'))
          {
             $type=0;
             $chater1=3;

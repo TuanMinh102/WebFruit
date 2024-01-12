@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="css/home.css" />
+    <link rel="stylesheet" type="text/css" href="css/cart-popup.css" />
 </head>
 
 <body>
@@ -41,36 +42,14 @@
                 </div>
                 <div class="price-nb">
                     <div class=""><span>Giá:</span><span id="price-count"></span><u>đ</u></div>
-                    <input type="range" min="1" max="1000" value="50" class="price-slider" id="priceRange">
-                </div>
-                <div class="price-check">
-                    <div>
-                        <input type="radio" id="radio1" name="choice" data-min="0" data-max="100"
-                            onclick="uncheckOthers('radio1')"> 0 - 100<u>đ</u>
-                    </div>
-                    <div>
-                        <input type="radio" id="radio2" name="choice" data-min="100" data-max="200"
-                            onclick="uncheckOthers('radio2')"> 100 - 200<u>đ</u>
-                    </div>
-                    <div>
-                        <input type="radio" id="radio3" name="choice" data-min="200" data-max="300"
-                            onclick="uncheckOthers('radio3')"> 200 - 300<u>đ</u>
-                    </div>
-                    <div>
-                        <input type="radio" id="radio4" name="choice" data-min="300" data-max="400"
-                            onclick="uncheckOthers('radio4')"> 300 - 400<u>đ</u>
-                    </div>
-                    <div>
-                        <input type="radio" id="radio5" name="choice" data-min="400" data-max="500"
-                            onclick="uncheckOthers('radio5')"> 400 - 500<u>đ</u>
-                    </div>
+                    <input type="range" min="1" max="1000" value="500" class="price-slider" id="priceRange">
                 </div>
                 <div class="view-product d-flex align-items-center mr-4 ml-4">
                     <form action="#" method="get">
-                        <select name="select" id="viewProduct">
-                            <option value="value">Chế độ xem</option>
-                            <option value="value">Nổi bật</option>
-                            <option value="value">Bán chạy</option>
+                        <select name="select" id="viewMode">
+                            <option value="normal">Chế độ xem</option>
+                            <option value="mostviews">Lượt xem nhiều nhất</option>
+                            <option value="bestselling">Bán chạy</option>
                             <option value="sale">Giảm giá</option>
                         </select>
                     </form>
@@ -90,6 +69,7 @@
 
         </div>
         <div id="item-lists">
+            <?php $arr=array();$soluongcon=array();  ?>
             @include('shop/data')
         </div>
     </div>
@@ -102,32 +82,25 @@
             <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
         </a>
         <div id="cart-popup">
-            @include('cart/cart-popup')
+            <div id="cart-popup2">
+                <?php $arr=array();$soluongcon=array();  ?>
+                @foreach($cart as $row)
+                @php
+                array_push($arr,$row->MaTraiCay);
+                array_push($soluongcon,$row->SoLuong);
+                @endphp
+                @endforeach
+                @include('cart/cart-popup')
+                <?php $jsonArray = json_encode($arr); $jsonArray2=json_encode($soluongcon);?>
+            </div>
         </div>
     </div>
     @include('footer2')
-    <style>
-    #cart-popup {
-        display: none;
-    }
-
-    .chiaPage .pagination {
-        justify-content: center;
-    }
-    </style>
     <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/products.js"></script>
     <script src="bootstrap/bootstrap.js"></script>
+    @include('inputQuatity')
     <script>
-    //
-    function uncheckOthers(selectedId) {
-        const radios = document.getElementsByName('choice');
-        radios.forEach(radio => {
-            if (radio.id !== selectedId) {
-                radio.checked = false;
-            }
-        });
-    }
     //An hien cart-popup
     function show_hide(n) {
         if (n == 0) {

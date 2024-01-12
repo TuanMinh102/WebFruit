@@ -38,7 +38,7 @@
             @if(session()->has('mess-true'))
             <div class="alert alert-success alert-dismissible">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                <strong>Thành công! </strong><?= session()->get('mess-true');?>
+                <strong>Thành công ! </strong><?= session()->get('mess-true');?>
             </div>
             <?php session()->forget('mess-true'); ?>
             @elseif(session()->has('mess-false'))
@@ -49,12 +49,12 @@
             <?php session()->forget('mess-false'); ?>
             @endif
             <div id="form-container">
-                @empty($ck)
+                @empty($ss)
                 <div id="include">
                     @include('auth/login-form')
                 </div>
                 @endempty
-                @isset($ck)
+                @isset($ss)
                 @include('auth/profile')
                 @endisset
             </div>
