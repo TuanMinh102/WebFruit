@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <a href="pusher">Go to chat</a>
     <div class="bao-noidung">
         <div class="container-admin">
             @include("admin/templates/menu")
