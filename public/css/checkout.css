@@ -10,7 +10,7 @@
 body {
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url("../images/bg5.jpg");
+    background-image: url("../images/bg7.jpg");
 }
 
 #content-checkout {
@@ -44,8 +44,9 @@ li a {
 }
 
 .active {
-    font-size: 20px;
+    font-size: 22px;
     color: #ffb700;
+    margin-left: 10px;
 }
 
 h1 {

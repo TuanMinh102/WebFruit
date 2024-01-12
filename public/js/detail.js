@@ -12,22 +12,10 @@ function getStar(n) {
     }
 }
 //////////////////////////////////////////
-function getCookie(name) {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split('; ');
 
-    for (const cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=');
-        if (cookieName === name) {
-            return cookieValue;
-        }
-    }
-
-    return null;
-}
 
 // Get the value of the "myCookie" cookie
-const myCookieValue = getCookie('id');
+
 
 // Log the value to the console
 // console.log('Value of myCookie:', myCookieValue);
@@ -71,7 +59,7 @@ function addcart(id) {
                     '<button type="button" class="close" data-dismiss="alert">x</button>' +
                     'Đã thêm thành công sản phẩm <b>' + data.name + '</b> vào ghỏ hàng.' +
                     '</div>';
-                $('#cart-popup').html(data.html);
+                $('#cart-popup').load(location.href + " #cart-popup2");
                 document.getElementById('lblCartCount').innerHTML = data.count;
             }
             $('.session-message').html(div);
@@ -122,24 +110,23 @@ function tang_giam(n, id, sl) {
             url: 'update' + id,
             data: data,
             success: function () {
+                $('.tongcong').load(location.href + " .tongcong2");
             }
         });
     }
 }
 // Xóa sản phẩm bằng ajax
 function delProductPopup(id) {
-    if (confirm('Xác nhận xóa sản phẩm này?') == true) {
-        $.ajax({
-            type: "get",
-            dataType: "html",
-            url: "delProduct" + id,
-            data: id,
-            success: function () {
-                var count = document.getElementById('lblCartCount').textContent;
-                count = parseInt(count);
-                document.getElementById('lblCartCount').innerHTML = count - 1;
-                $('#mycartpopup').load(location.href + ' #listcontainer');
-            }
-        });
-    }
+    $.ajax({
+        type: "get",
+        dataType: "html",
+        url: "delProduct" + id,
+        data: id,
+        success: function () {
+            var count = document.getElementById('lblCartCount').textContent;
+            count = parseInt(count);
+            document.getElementById('lblCartCount').innerHTML = count - 1;
+            $('#cart-popup').load(location.href + " #cart-popup2");
+        }
+    });
 }

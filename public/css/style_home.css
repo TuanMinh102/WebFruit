@@ -475,3 +475,20 @@ body {
     height: fit-content;
     border-radius: 3px;
 }
+
+.slick-left {
+    margin-top: 15%;
+    margin-left: 5%;
+    float: left;
+}
+
+.slick-right {
+    margin-top: 15%;
+    margin-right: 5%;
+    float: right;
+}
+
+.fa.slick-arrow {
+    font-size: 30px;
+    color: #66bb6a;
+}

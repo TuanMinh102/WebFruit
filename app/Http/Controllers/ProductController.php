@@ -12,8 +12,8 @@ class ProductController extends Controller
       // Chi Tiet San Pham
       public function chitiet()
       {
-            if(isset($_COOKIE['id'])){
-                $cart =(new CartController)->getCartByAccountId_query($_COOKIE['id']);
+            if(session()->has('user')){
+                $cart =(new CartController)->getCartByAccountId_query(session()->get('user'));
                 $count=$this->count_products();
                 $sl=null;
             }
@@ -32,7 +32,9 @@ class ProductController extends Controller
                 $gallery=DB::table('gallery')->where('MaTCay',1)->select('*')->get();
                 //
                 $comments=DB::table('review')->join('taikhoan','taikhoan.MaTaiKhoan','=','review.MaTk')->where('MaSp',1)->select('*')->get();
-          return view("detail/detail",compact('product','gallery','comments','cungloai','count','cart','sl'));
+                $total= (new CartController)->gettotal();
+                $this->updateViewProduct(1);
+          return view("detail/detail",compact('product','gallery','comments','cungloai','count','cart','sl','total'));
       }
   
      //phan loai theo the loai
@@ -70,7 +72,6 @@ class ProductController extends Controller
      // chi tiet san pham
      public function details($id)
      { 
-            
             $comments=DB::table('review')
             ->join('taikhoan','taikhoan.MaTaiKhoan','=','review.MaTk')
             ->where('MaSp',$id)
@@ -85,9 +86,9 @@ class ProductController extends Controller
             $cungloai =$this->getProductBySameCategory_query($maloai,$id);
             ////
             $gallery=DB::table('gallery')->where('MaTCay',$id)->select('*')->get();
-         if(isset($_COOKIE['id']))
+         if(session()->has('user'))
          {
-            $cart =(new CartController)->getCartByAccountId_query($_COOKIE['id']);
+            $cart =(new CartController)->getCartByAccountId_query(session()->get('user'));
             $count=$this->count_products();
             $sl=null;
         }
@@ -97,7 +98,9 @@ class ProductController extends Controller
             $sl=session()->get('sl',[]);
             $count=$this->count_products();  
         }
-            return view("detail/detail",compact('product','cungloai','gallery','comments','count','cart','sl'));
+            $total= (new CartController)->gettotal();
+            $this->updateViewProduct($id);
+            return view("detail/detail",compact('product','cungloai','gallery','comments','count','cart','sl','total'));
      }
        // Phan loai san pham
        public function Shopview(Request $request)
@@ -105,25 +108,162 @@ class ProductController extends Controller
             $routeName=$request->path();
             $cats = DB::table('loaitraicay')->select('*')->get();
             $brand = DB::table('nhacungcap')->select('*')->get();
+            $total=(new CartController)->gettotal();
           if($routeName=='basket')
             $products = $this->getProductByCategoryId_query_ToPaginate(3);
           else
             $products =$this->getAllProduct_query();
 
-           if(isset($_COOKIE['id']))
+           if(session()->has('user'))
            {
-                $cart = (new CartController)->getCartByAccountId_query($_COOKIE['id']);
+                $cart = (new CartController)->getCartByAccountId_query(session()->get('user'));
                 $count=$this->count_products();
-            return view('shop/shop', compact('cats', 'brand', 'products','count','cart'),['name'=>$routeName]);
+            return view('shop/shop', compact('cats', 'brand', 'products','count','cart','total'),['name'=>$routeName]);
             }
             else
             {
                 $cart = (new CartController)->getCartBySession_query();
                 $sl=session()->get('sl',[]);
                 $count=$this->count_products();
-            return view('shop/shop', compact('cats', 'brand', 'products','count','cart','sl'),['name'=>$routeName]);
+            return view('shop/shop', compact('cats', 'brand', 'products','count','cart','sl','total'),['name'=>$routeName]);
             }
        }
+       //loc san pham
+       public function locsanpham(Request $request)
+       {  
+            if ($request->ajax()) {
+                if($request->loai =='catagory' && $request->hang =='brands')
+                {
+                    $products = DB::table('traicay')
+                    ->leftJoin('banggia', function($join) {
+                        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                        ->where('NgayBatDau', '<=', Carbon::now())
+                        ->where('NgayKetThuc', '>=', Carbon::now());
+                    })
+                    ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
+                    ->whereBetween(
+                        DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END"),[1,$request->gia])
+                       ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END",'asc'))
+                       ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.*','banggia.*','donvi.*')
+                    ->paginate(8);
+                }
+                else if($request->loai !='catagory' && $request->hang =='brands')
+                {
+                    $products = DB::table('traicay')
+                    ->leftJoin('banggia', function($join) {
+                        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                        ->where('NgayBatDau', '<=', Carbon::now())
+                        ->where('NgayKetThuc', '>=', Carbon::now());
+                    })
+                    ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
+                    ->where('traicay.MaLoai',$request->loai)
+                    ->whereBetween(
+                        DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END"),[1,$request->gia])
+                       ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END",'asc'))
+                       ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.*','banggia.*','donvi.*')
+                    ->paginate(8);
+                }
+                else if($request->loai == 'catagory' && $request->hang !='brands')
+                {
+                    $products = DB::table('traicay')
+                    ->leftJoin('banggia', function($join) {
+                        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                        ->where('NgayBatDau', '<=', Carbon::now())
+                        ->where('NgayKetThuc', '>=', Carbon::now());
+                    })
+                    ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
+                    ->where('traicay.MaNcc',$request->hang)
+                    ->whereBetween(
+                        DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END"),[1,$request->gia])
+                       ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END",'asc'))
+                       ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.*','banggia.*','donvi.*')
+                    ->paginate(8);
+                }
+                else {
+                    $products = DB::table('traicay')
+                    ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
+                    ->where('traicay.MaLoai',$request->loai)
+                    ->where('traicay.MaNcc',$request->hang)
+                    ->leftJoin('banggia', function($join) {
+                        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                        ->where('NgayBatDau', '<=', Carbon::now())
+                        ->where('NgayKetThuc', '>=', Carbon::now());
+                    })
+                    ->whereBetween(
+                        DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END"),[1,$request->gia])
+                       ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+                       IS NOT NULL THEN banggia.GiaBan
+                       ELSE traicay.GiaGoc END",'asc'))
+                       ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.*','banggia.*','donvi.*')
+                    ->paginate(8);
+                }
+            return view('shop/data', compact('products'))->render();
+        }
+    }
+    public function locsanpham2(Request $request)
+    {
+        if ($request->ajax()) {
+            if($request->chedo!='normal')
+            {
+                if($request->chedo=='bestselling')
+                {
+                    $products = DB::table('traicay')
+                    ->join('ct_hoadon', 'traicay.MaTraiCay', '=', 'ct_hoadon.MaTraiCay')
+                    ->leftJoin('banggia', function($join) {
+                      $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                      ->where('NgayBatDau', '<=', Carbon::now())
+                      ->where('NgayKetThuc', '>=', Carbon::now());
+                  })
+                    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.TenTraiCay','traicay.MaTraiCay','traicay.Anh','traicay.GiaGoc','banggia.ChietKhau','banggia.GiaBan','donvi.TenDonVi',
+                     DB::raw('SUM(ct_hoadon.SoLuong) as totalQuantity'))
+                    ->groupBy('traicay.TenTraiCay','traicay.MaTraiCay','traicay.Anh','traicay.GiaGoc','banggia.ChietKhau','banggia.GiaBan','donvi.TenDonVi')
+                    ->orderBy('totalQuantity','desc')
+                    ->paginate(8);
+                }
+                else if($request->chedo=='sale')
+                {
+                    $products = DB::table('traicay')
+                    ->join('banggia', 'traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                    ->where('NgayBatDau', '<=', Carbon::now())
+                    ->where('NgayKetThuc', '>=', Carbon::now())
+                    ->where('ChietKhau','>',0)
+                    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->select('traicay.*','banggia.*','donvi.*')->paginate(8);
+                }
+                else{
+                    $products = DB::table('traicay')
+                    ->leftJoin('banggia', function($join) {
+                        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+                        ->where('NgayBatDau', '<=', Carbon::now())
+                        ->where('NgayKetThuc', '>=', Carbon::now());
+                    })
+                    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+                    ->orderBy('LuotXem','desc')
+                    ->select('traicay.*','banggia.*','donvi.*')->paginate(8);
+                }
+            }
+            return view('shop/data', compact('products'))->render();
+        }
+    }
        // tim kiem san pham bang tu khoa
        public function timkiem(Request $request)
        {  
@@ -192,9 +332,9 @@ class ProductController extends Controller
     public function count_products()
     {
     $count=0;
-    if(isset($_COOKIE['id']))
+    if(session()->has('user'))
     {
-         $products=DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->select('*')->get();
+         $products=DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->select('*')->get();
          $count=$products->count();
     }
     else{
@@ -231,7 +371,7 @@ class ProductController extends Controller
             } 
             DB::table('review')->insert(
                 array(
-                    'MaTk'=>$_COOKIE['id'],
+                    'MaTk'=>session()->get('user'),
                     'MaSp'=>$id,
                     'Comment'=>$_POST['textarea'.$id],
                     'ReviewIMG'=>$img,
@@ -245,13 +385,19 @@ class ProductController extends Controller
             ->update([
                 'DanhGia'=>'true',
             ]);
-            session()->get('mess');
-            session()->put('mess','Cảm ơn bạn đã phản hồi sản phẩm.');
+            session()->get('mess-true');
+            session()->put('mess-true','Cảm ơn bạn đã phản hồi sản phẩm.');
             return redirect('/gh');
     }
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////QUERY----HERE///////////////////////////
+
+
+public function updateViewProduct($id)
+{
+    DB::table('traicay')->where('MaTraiCay',$id)->increment('LuotXem',1);
+}
 
     public function getAllProduct_query()
     {

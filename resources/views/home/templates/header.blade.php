@@ -7,7 +7,7 @@
             </div>
             <div class="email-header">
                 <img class="mr-2" src="images/icon-gmail.png" alt="">
-                <span>Email: TDShopPanpage@gmail.com</span>
+                <span>Email: TDShopFanpage@gmail.com</span>
             </div>
         </div>
     </div>

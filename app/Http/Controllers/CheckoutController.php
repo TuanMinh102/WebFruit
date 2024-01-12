@@ -20,11 +20,11 @@ class CheckoutController extends Controller
   // lay ma cac san pham trong gio hang
   public function getProducts_arr()
   {  
-    if(isset($_COOKIE['id']))
+    if(session()->has('user'))
     {   
         $products = DB::table('traicay')
         ->join('giohang', 'traicay.MaTraiCay', '=', 'giohang.MaSanPham')
-        ->where('MaTaiKhoan',$_COOKIE['id'])
+        ->where('MaTaiKhoan',session()->get('user'))
         ->select('traicay.MaTraiCay','giohang.SoLuong as Sl')
         ->get();
         return $products;
@@ -33,11 +33,11 @@ class CheckoutController extends Controller
   // lay tong so luong cac san pham trong gio hang
   public function get_SingleTotal_price($id)
   {   $amount=0;
-    if(isset($_COOKIE['id']))
+    if(session()->has('user'))
     {   
         $product = DB::table('traicay')
         ->join('giohang', 'traicay.MaTraiCay', '=', 'giohang.MaSanPham')
-        ->where('MaTaiKhoan',$_COOKIE['id'])
+        ->where('MaTaiKhoan',session()->get('user'))
         ->where('giohang.MaSanPham','=',$id)
         ->leftJoin('banggia', function($join) {
           $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
@@ -57,11 +57,11 @@ class CheckoutController extends Controller
   // Gửi mail sau khi thanh toán
    public function SendMail()
    {
-    if(isset($_COOKIE['id']))
+    if(session()->has('user'))
     {
       $user=DB::table('ct_hoadon')
       ->join('hoadon','hoadon.MaHD','=','ct_hoadon.MaHD')
-      ->where('hoadon.MaTaiKhoan','=',$_COOKIE['id'])
+      ->where('hoadon.MaTaiKhoan','=',session()->get('user'))
       ->select('ct_hoadon.HoTen','ct_hoadon.Email')
       ->get();
       foreach($user as $row)
@@ -73,7 +73,7 @@ class CheckoutController extends Controller
        Mail::send('checkout/mailform',compact('name','mail'),function($email){
       $user2=DB::table('ct_hoadon')
       ->join('hoadon','hoadon.MaHD','=','ct_hoadon.MaHD')
-      ->where('hoadon.MaTaiKhoan','=',$_COOKIE['id'])
+      ->where('hoadon.MaTaiKhoan','=',session()->get('user'))
       ->select('ct_hoadon.HoTen','ct_hoadon.Email')
       ->get();
       foreach($user2 as $row2)
@@ -223,11 +223,11 @@ class CheckoutController extends Controller
       session()->put('empty-cart','true');
       return redirect("/tt");
     }
-    else if(isset($_COOKIE['id'])){
+    else if(session()->has('user')){
       $arr=[
         //hoa don
         'MaHD'=> $this->createID(),
-        'MaTaiKhoan'=>$_COOKIE['id'],
+        'MaTaiKhoan'=>session()->get('user'),
         'NgayLapHD'  => Carbon::now(), 
         'DiaChiGiaoHang'=>$_POST['address'],
         'Phone'=>$_POST['phone'],
@@ -296,7 +296,7 @@ class CheckoutController extends Controller
           $this->themHoaDon();
           session()->get('mess-true');
           session()->put('mess-true','Cảm ơn bạn đã mua hàng.');
-           return redirect('/tt');     
+           return redirect('/gh');     
        } else {
           session()->get('mess-false');
           session()->put('mess-false','Thanh toán thất bại!');

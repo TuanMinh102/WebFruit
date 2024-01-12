@@ -21,6 +21,7 @@ use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//day la demo cua toi
 Route::get('/home',[HomeController::class,"homeview"])->name('home');
 Route::get('/contact',[HomeController::class,"contactview"])->name('contact');
 Route::get('/',[HomeController::class,"welcomeview"]);
@@ -50,6 +51,8 @@ Route::get('/search',[ProductController::class,"timkiem"]);
 Route::get('/range',[ProductController::class,"RangePrice"]);
 Route::get('/PriceToPrice',[ProductController::class,"RangeBetween"]);
 Route::post('/upload',[ProductController::class,"upload"]);
+Route::get('/locsp',[ProductController::class,"locsanpham"]);
+Route::get('/locsp2',[ProductController::class,"locsanpham2"]);
 
 Route::get('/gh',[CartController::class,"getcart"]);
 Route::get('/gh{id}',[CartController::class,"addcart"]);
@@ -287,6 +290,8 @@ Route::get('/getctgioquaid{id}', [AdminController::class, "getctgioquaid"]);
 Route::post('/insertgioqua', [AdminController::class, "insertgioqua"])->name('insert.data.gioqua');
 Route::get('/deletegioqua{id}', [AdminController::class, "deletegioqua"]);
 Route::post('/update_gioqua', [AdminController::class, "updateGioQua"])->name('update.data.gioqua');
+Route::get('/add_input_gioqua/{id}',  [AdminController::class, "add_input_gioqua"]);
+Route::get('/xoa_input_gioqua/{id}/{id2}',  [AdminController::class, "xoa_input_gioqua"]);
 
 //Bảng giá
 Route::controller(AdminController::class)->group(function () {

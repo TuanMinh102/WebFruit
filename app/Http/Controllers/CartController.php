@@ -11,8 +11,8 @@ class CartController extends Controller
     // lay du lieu gio hang tu tai khoan
     public function getcart()
     {      
-        if(isset($_COOKIE['id'])){
-        $cart =$this->getCartByAccountId_query($_COOKIE['id']);
+        if(session()->has('user')){
+        $cart =$this->getCartByAccountId_query(session()->get('user'));
         return view("cart/cart",compact('cart'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
         }
         else 
@@ -25,10 +25,10 @@ class CartController extends Controller
   //xoa toan bo san pham khoi gio hang
     public function xoatoanbo()
     {
-        if(isset($_COOKIE['id']))
+        if(session()->has('user'))
         {  
                DB::table('giohang')
-                ->where('MaTaiKhoan',$_COOKIE['id'])
+                ->where('MaTaiKhoan',session()->get('user'))
                 ->delete();
         }
         else{
@@ -40,19 +40,27 @@ class CartController extends Controller
     public function addcart($id)
     { 
         $soluong=$this->getRemainAmountProduct($id);
-        if(isset($_COOKIE['id']))
+        if(session()->has('user'))
         {
-            $cart= DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham', $id)->select('*')->get();
+            $soluong2=$this->getAmountInCart($id,session()->get('user'));
+            $cart= DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->where('MaSanPham', $id)->select('*')->get();
             if($cart->count()>0)
-                DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham', $id)->increment('SoLuong', 0);
-             else
+            {
+                if($soluong>$soluong2)
+                    DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->where('MaSanPham', $id)->increment('SoLuong', 1);
+                else {
+                        $name= $this->getNameOfProduct($id);
+                        return response()->json(['name'=>$name,'flag'=>false]);
+                    }
+            }
+            else
               {
-                if($soluong >0)
+                if($soluong>0)
                 {
                      DB::table('giohang')->insert(
                     array(
                             'MaGioHang' => $this->createID(),
-                            'MaTaiKhoan'=>$_COOKIE['id'],
+                            'MaTaiKhoan'=>session()->get('user'),
                             'MaSanPham'=>$id,
                             'SoLuong'=> 1,
                     ));
@@ -62,31 +70,42 @@ class CartController extends Controller
                     return response()->json(['name'=>$name,'flag'=>false]);
                 }
               }
-              $count= DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->select('*')->get()->count();
-              $cart =$this->getCartByAccountId_query($_COOKIE['id']);
+              $count= DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->select('*')->get()->count();
+              $cart =$this->getCartByAccountId_query(session()->get('user'));
               $name= $this->getNameOfProduct($id);
-              $view=view('cart/cart-popup',compact('cart'))->render();
-            return response()->json(['html'=>$view,'count'=>$count,'name'=>$name,'flag'=>true]);
+            return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
         } 
         else{
             $cart=session()->get('cart',[]);
             $sl=session()->get('sl',[]);
-            if($soluong>0){
-                 $sl[$id]=isset($sl[$id]) ?$sl[$id]+0 : 1;
-                 $cart[$id]=$id;
-                 session()->put('cart',$cart);
-                 session()->put('sl',$sl);
+            if(isset($sl[$id])){
+                if($soluong>$sl[$id])
+                {
+                    $sl[$id]+=1;
+                    session()->put('sl',$sl);
+                }
+                else {
+                    $name= $this->getNameOfProduct($id);
+                    return response()->json(['name'=>$name,'flag'=>false]);
+                    }
             }
             else {
-                $name= $this->getNameOfProduct($id);
-                return response()->json(['name'=>$name,'flag'=>false]);
+                if($soluong>0){
+                    $sl[$id]=1;
+                    $cart[$id]=$id;
+                    session()->put('cart',$cart);
+                    session()->put('sl',$sl);
+                }
+                else {
+                     $name= $this->getNameOfProduct($id);
+                     return response()->json(['name'=>$name,'flag'=>false]);
+                }
             }
             $count= count($cart);
             $cart = $this->getCartBySession_query();
             $sl=session()->get('sl',[]);
             $name= $this->getNameOfProduct($id);
-            $view=view('cart/cart-popup',compact('cart','sl'))->render();
-          return response()->json(['html'=>$view,'count'=>$count,'name'=>$name,'flag'=>true]);
+          return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
         }
     }
 
@@ -96,10 +115,10 @@ class CartController extends Controller
        $soluong=$this->getRemainAmountProduct($id);
         if($request->SoLuong<=$soluong)
         {
-            if(isset($_COOKIE['id']))
+            if(session()->has('user'))
             {
                 DB::table('giohang')
-                ->where('MaTaiKhoan',$_COOKIE['id'])
+                ->where('MaTaiKhoan',session()->get('user'))
                 ->where('MaSanPham',$id)
                 ->update(['SoLuong'=>$request->SoLuong]);
             }          
@@ -115,9 +134,9 @@ class CartController extends Controller
 public  function gettotal()
 {    
   $sum=0;
- if(isset($_COOKIE['id']))
+ if(session()->has('user'))
  {   
-    $cart = $this->getCartByAccountId_query($_COOKIE['id']);
+    $cart = $this->getCartByAccountId_query(session()->get('user'));
     foreach($cart as $row)
     {
         if($row->GiaBan==null)
@@ -145,8 +164,8 @@ public  function gettotal()
 // // Xoa 1 san pham trong gio hang
 public function delProduct($id)
 {
-    if(isset($_COOKIE['id'])){
-    DB::table("giohang")->where("MaSanPham",$id)->where('MaTaiKhoan',$_COOKIE['id'])->delete();
+    if(session()->has('user')){
+    DB::table("giohang")->where("MaSanPham",$id)->where('MaTaiKhoan',session()->get('user'))->delete();
 }
     else{
         $cart = session()->get('cart', []);
@@ -160,11 +179,11 @@ public function delProduct($id)
 // Lay lich su hoa don cua tai khoan
 public function get_historyBill()
 {
- if(isset($_COOKIE['id']))
+ if(session()->has('user'))
  {
    $his=DB::table('hoadon')
    ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
-   ->where('MaTaiKhoan',$_COOKIE['id'])
+   ->where('MaTaiKhoan',session()->get('user'))
    ->select('hoadon.*','ct_hoadon.HoTen')
    ->distinct()->get();
  } 
@@ -179,7 +198,7 @@ public function get_detailBill(Request $request)
 {
     $detail=DB::table('hoadon')
     ->where('hoadon.MaHD','=',$request->id)
-    ->where('MaTaiKhoan',$_COOKIE['id'])
+    ->where('MaTaiKhoan',session()->get('user'))
     ->join('ct_hoadon', 'hoadon.MaHD', '=', 'ct_hoadon.MaHD')
     ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')
     ->leftJoin('banggia', function($join) {
@@ -212,6 +231,7 @@ public function reviewProduct(Request $request)
 public function getRemainAmountProduct($id)
 {
     $soluong=DB::table('traicay')->where('MaTraiCay',$id)->select('SoLuong')->get()->first();
+    if($soluong)
         return $soluong->SoLuong;
     return 0;
 }
@@ -219,8 +239,17 @@ public function getRemainAmountProduct($id)
 public function getNameOfProduct($id)
 {
     $name=DB::table('traicay')->where('MaTraiCay',$id)->select('TenTraiCay')->get()->first();
+    if($name)
         return $name->TenTraiCay;
     return '';
+}
+//
+public function getAmountInCart($id,$tk)
+{
+    $soluong=DB::table('giohang')->where('MaTaiKhoan',$tk)->where('MaSanPham',$id)->select('SoLuong')->get()->first();
+    if($soluong)
+        return $soluong->SoLuong;
+    return 0;
 }
 //
 public function getCartByAccountId_query($id)

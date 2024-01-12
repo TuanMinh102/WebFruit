@@ -7,66 +7,6 @@ use Carbon\Carbon;
 
 class HomeController extends Controller
 {
-  
-    
-  
-  //   public function homeview()
-  //   {
-  //     $loaisp=DB::table('loaitraicay')->select('*')->get();
-  //     $fruits=DB::table('traicay') 
-  //     ->leftJoin('banggia', function($join) {
-  //           $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-  //           ->where('NgayBatDau', '<=', Carbon::now())
-  //           ->where('NgayKetThuc', '>=', Carbon::now());
-  //       })
-  //       ->join('donvi','traicay.UnitID','donvi.MaDonVi')
-  //       ->select('*')->get();
-  //       /////////
-  //       $traicays = DB::table('traicay') 
-  //       ->leftJoin('banggia', function($join) {
-  //         $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-  //         ->where('NgayBatDau', '<=', Carbon::now())
-  //         ->where('NgayKetThuc', '>=', Carbon::now());
-  //     })
-  //     ->join('donvi','traicay.UnitID','donvi.MaDonVi')
-  //     ->select('traicay.*','banggia.*','donvi.*')->get();
-  //       //////
-  //       $album=DB::table('album')->select('*')->get();
-  //       $new=DB::table('news')->where('Type','like','%'.'bai viet'.'%')->select('*')->get();
-  //       if(isset($_COOKIE['id']))
-  //         $cookie=$_COOKIE['id'];
-  //       else
-  //         $cookie=0;
-  //    // $this->tonghopgiohang();
-  //       return view("home/home",compact('traicays','loaisp','fruits','album','new','cookie'));
-  //   }
-  //   public function tonghopgiohang()
-  //   {
-  //      $cart=session()->get('cart',[]);
-  //      $sl=session()->get('sl',[]);
-  //      if(count($cart)>0&&isset($_COOKIE['id'])){
-  //      foreach($cart as $possion)
-  //      {
-  //          $value=DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham',$possion)->select('*')->get();
-  //          if($value->count()>0)
-  //          {
-  //              DB::table('giohang')->where('MaTaiKhoan',$_COOKIE['id'])->where('MaSanPham',$possion)->increment('SoLuong', 1);
-  //          }
-  //          else{
-  //              DB::table('giohang')->insert(
-  //                  array(
-  //                          'MaGioHang' => (DB::table('giohang')->max('MaGioHang'))+1,
-  //                          'MaTaiKhoan'=>$_COOKIE['id'],
-  //                          'MaSanPham'=>$possion,
-  //                          'SoLuong'=> $sl[$possion],
-  //                  ));
-  //          }
-  //      }
-  //      session()->forget('cart');
-  //      session()->forget('sl');
-  //   }
-  // }
-  //
   public function welcomeview()
     {   
      return view('welcome');
@@ -116,16 +56,16 @@ class HomeController extends Controller
   {
     $cart = session()->get('cart', []);
     $sl = session()->get('sl', []);
-    if (count($cart) > 0 && isset($_COOKIE['id'])) {
+    if (count($cart) > 0 && session()->has('user')) {
       foreach ($cart as $possion) {
-        $value = DB::table('giohang')->where('MaTaiKhoan', $_COOKIE['id'])->where('MaSanPham', $possion)->select('*')->get();
+        $value = DB::table('giohang')->where('MaTaiKhoan', session()->get('user'))->where('MaSanPham', $possion)->select('*')->get();
         if ($value->count() > 0) {
-          DB::table('giohang')->where('MaTaiKhoan', $_COOKIE['id'])->where('MaSanPham', $possion)->increment('SoLuong', 1);
+          DB::table('giohang')->where('MaTaiKhoan', session()->get('user'))->where('MaSanPham', $possion)->increment('SoLuong', 1);
         } else {
           DB::table('giohang')->insert(
             array(
               'MaGioHang' => (DB::table('giohang')->max('MaGioHang')) + 1,
-              'MaTaiKhoan' => $_COOKIE['id'],
+              'MaTaiKhoan' => session()->get('user'),
               'MaSanPham' => $possion,
               'SoLuong' => $sl[$possion],
             )
@@ -142,14 +82,15 @@ class HomeController extends Controller
     $breadcrumbs = [
       ['link' => route('home'), 'name' => 'Home'],
     ];
-          $traicays = DB::table('traicay') 
-        ->leftJoin('banggia', function($join) {
-          $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-          ->where('NgayBatDau', '<=', Carbon::now())
-          ->where('NgayKetThuc', '>=', Carbon::now());
-      })
-      ->join('donvi','traicay.UnitID','donvi.MaDonVi')
-      ->select('traicay.*','banggia.*','donvi.*')->get();
+    $traicays = DB::table('traicay')
+    ->leftJoin('banggia', function($join) {
+        $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+        ->where('NgayBatDau', '<=', Carbon::now())
+        ->where('NgayKetThuc', '>=', Carbon::now());
+    })
+    ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+    ->orderBy('LuotXem','desc')
+    ->select('traicay.*','banggia.*','donvi.*')->get();
       $gioquas=DB::table('gioqua')->select('*')->get();
     $banners = DB::table('album')->where('Loai', 'banner')->select('*')->get();
     $sliders = DB::table('album')->where('Loai', 'slider')->select('*')->get();

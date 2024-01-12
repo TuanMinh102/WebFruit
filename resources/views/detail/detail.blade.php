@@ -87,6 +87,8 @@
                                 class="fa fa-caret-up" aria-hidden="true"></i></span>
                     </div>
                 </div>
+                <div><b>Lượt xem:</b> {{$row->LuotXem}}</div>
+                <hr>
                 <button name="addtocart" onclick="addcart({{$row->MaTraiCay}})" class="btn btn-success">
                     <i class="fas fa-shopping-bag mr-1"></i>
                     <span>Thêm vào giỏ hàng</span></button>
@@ -228,7 +230,9 @@
             <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
         </a>
         <div id="cart-popup">
-            @include('cart/cart-popup')
+            <div id="cart-popup2">
+                @include('cart/cart-popup')
+            </div>
         </div>
     </div>
     @include("footer2")

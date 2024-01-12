@@ -82,8 +82,6 @@
     <input type="hidden" name="data_arr" value="{{$jsonArray}}">
     <input type="hidden" name="mahd" value="{{$mahd}}">
 </form>
-
-<!-- onclick="demo(<?php print_r($jsonArray);?>)" -->
 <style>
 .review-table {
     width: 100%;

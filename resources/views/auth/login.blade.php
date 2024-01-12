@@ -49,12 +49,12 @@
             <?php session()->forget('mess-false'); ?>
             @endif
             <div id="form-container">
-                @empty($ck)
+                @empty($ss)
                 <div id="include">
                     @include('auth/login-form')
                 </div>
                 @endempty
-                @isset($ck)
+                @isset($ss)
                 @include('auth/profile')
                 @endisset
             </div>

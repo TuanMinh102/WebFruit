@@ -360,7 +360,7 @@ body {
 .filter-product {
     max-width: 1230px;
     margin: 0 auto;
-    padding: 15px;
+    padding: 20px;
     border: 1px solid #000;
     border-radius: 10px;
     background-size: cover;
@@ -396,7 +396,7 @@ body {
     -webkit-appearance: none;
     height: 15px;
     border-radius: 20px;
-    width: calc(100% - 40%);
+    width: calc(100% - 30%);
     background: #ffffff;
     outline: none;
     opacity: 0.85;
@@ -436,63 +436,6 @@ body {
     color: #ffab05;
 }
 
-.badge {
-    -webkit-border-radius: 9px;
-    -moz-border-radius: 9px;
-    border-radius: 9px;
-}
-
-.label-warning[href],
-.badge-warning[href] {
-    background-color: #c67605;
-}
-
-#lblCartCount {
-    font-size: 12px;
-    background: #ff0000;
-    position: absolute;
-    z-index: 2;
-    color: #fff;
-}
-
-#cart-popup {
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    width: 350px;
-    position: absolute;
-    right: 0px;
-    bottom: 100%;
-    height: 300px;
-    background-color: white;
-    overflow-y: auto;
-}
-
-.btn-cart-popup {
-    bottom: 130px;
-}
-
-.single-cart-popup {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 20px;
-}
-
-.substract-add input {
-    width: 35px;
-    text-align: center;
-    height: 20px;
-    border: none;
-}
-
-.substract-add button {
-    border: none;
-    width: 20px;
-    height: 20px;
-}
-
-.substract-add button:hover {
-    background-color: #c6ccc7;
-}
 
 /* input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {

@@ -2,7 +2,15 @@ var search_key = false;
 var search_price = false;
 var search_catagory = false;
 var search_brand = false;
-var search_PriceToPrice = false;
+var search_mode = false;
+//var search_PriceToPrice = false;
+//
+var search = $('#search').val();
+var price = $('#priceRange').val();
+var cat = $('#catagoryProduct').find(":selected").val();
+var brand = $('#brandsProduct').find(":selected").val();
+var mode = $('#mostviews').find(":selected").val();
+
 //Tìm kiếm sản phẩm bằng từ khóa
 $(document).ready(function () {
     $('#search').on('change keypress', function () {
@@ -10,14 +18,23 @@ $(document).ready(function () {
         search_price = false;
         search_catagory = false;
         search_brand = false;
-        search_PriceToPrice = false;
-        var search = $('#search').val();
+        //search_mode = false;
+        //search_PriceToPrice = false;
+        //
+        search = $(this).val();
+        price = $('#priceRange').val();
+        cat = $('#catagoryProduct').find(":selected").val();
+        brand = $('#brandsProduct').find(":selected").val();
+        //mode = $('#mostviews').find(":selected").val();
         var data2 = {
             'tukhoa': search,
+            'gia': price,
+            'loai': cat,
+            'hang': brand
         }
         $.ajax({
             type: 'get',
-            url: "/search",
+            url: "/locsp",
             data: data2,
             success: function (response) {
                 $('#item-lists').html(response);
@@ -27,13 +44,19 @@ $(document).ready(function () {
 });
 //Chuyển trang tìm kiếm từ khóa
 function searchBykey(page) {
-    var search = $('#search').val();
+    search = $('#search').val();
+    price = $('#priceRange').val();
+    cat = $('#catagoryProduct').find(":selected").val();
+    brand = $('#brandsProduct').find(":selected").val();
     var data2 = {
         'tukhoa': search,
+        'gia': price,
+        'loai': cat,
+        'hang': brand
     }
     $.ajax({
         type: 'get',
-        url: "/search?page=" + page,
+        url: "/locsp?page=" + page,
         data: data2,
         success: function (data) {
             $("#item-lists").html(data);
@@ -47,14 +70,22 @@ $(document).ready(function () {
         search_price = true;
         search_catagory = false;
         search_brand = false;
-        search_PriceToPrice = false;
-        var price = $('#priceRange').val();
+        //search_mode = false;
+        //search_PriceToPrice = false;
+        //
+        search = $('#search').val();
+        price = $(this).val();
+        cat = $('#catagoryProduct').find(":selected").val();
+        brand = $('#brandsProduct').find(":selected").val();
         var data2 = {
-            'price': price,
+            'tukhoa': search,
+            'gia': price,
+            'loai': cat,
+            'hang': brand
         }
         $.ajax({
             type: 'get',
-            url: "/range",
+            url: "/locsp",
             data: data2,
             success: function (response) {
                 $('#priceRange').prop('disabled', true);
@@ -66,13 +97,19 @@ $(document).ready(function () {
 });
 // Chuyển trang tìm kiếm giá bằng thanh kéo
 function searchByprice(page) {
-    var price = $('#priceRange').val();
+    search = $('#search').val();
+    price = $('#priceRange').val();
+    cat = $('#catagoryProduct').find(":selected").val();
+    brand = $('#brandsProduct').find(":selected").val();
     var data2 = {
-        'price': price,
+        'tukhoa': search,
+        'gia': price,
+        'loai': cat,
+        'hang': brand
     }
     $.ajax({
         type: 'get',
-        url: "/range?page=" + page,
+        url: "/locsp?page=" + page,
         data: data2,
         success: function (response) {
             $('#item-lists').html(response);
@@ -80,46 +117,46 @@ function searchByprice(page) {
     });
 }
 // Tìm kiếm bằng khoảng giá
-$(document).ready(function () {
-    $('input[type=radio][name=choice]').change(function () {
-        search_key = false;
-        search_price = false;
-        search_catagory = false;
-        search_brand = false;
-        search_PriceToPrice = true;
-        let radio = $('input[type=radio][name=choice]:checked');
-        const min = radio.data('min');
-        const max = radio.data('max');
-        $.ajax({
-            type: "get",
-            url: "PriceToPrice",
-            data: {
-                'min': min,
-                'max': max
-            },
-            success: function (res) {
-                $('#item-lists').html(res);
-            }
-        });
-    });
-});
-//Chuyển trang tìm kiếm bằng khoảng giá
-function searchByPriceToPrice(page) {
-    let radio = $('input[type=radio][name=choice]:checked');
-    const min = radio.data('min');
-    const max = radio.data('max');
-    $.ajax({
-        type: "get",
-        url: "PriceToPrice?page=" + page,
-        data: {
-            'min': min,
-            'max': max
-        },
-        success: function (res) {
-            $('#item-lists').html(res);
-        }
-    });
-}
+// $(document).ready(function () {
+//     $('input[type=radio][name=choice]').change(function () {
+//         search_key = false;
+//         search_price = false;
+//         search_catagory = false;
+//         search_brand = false;
+//         search_PriceToPrice = true;
+//         let radio = $('input[type=radio][name=choice]:checked');
+//         const min = radio.data('min');
+//         const max = radio.data('max');
+//         $.ajax({
+//             type: "get",
+//             url: "PriceToPrice",
+//             data: {
+//                 'min': min,
+//                 'max': max
+//             },
+//             success: function (res) {
+//                 $('#item-lists').html(res);
+//             }
+//         });
+//     });
+// });
+// //Chuyển trang tìm kiếm bằng khoảng giá
+// function searchByPriceToPrice(page) {
+//     let radio = $('input[type=radio][name=choice]:checked');
+//     const min = radio.data('min');
+//     const max = radio.data('max');
+//     $.ajax({
+//         type: "get",
+//         url: "PriceToPrice?page=" + page,
+//         data: {
+//             'min': min,
+//             'max': max
+//         },
+//         success: function (res) {
+//             $('#item-lists').html(res);
+//         }
+//     });
+// }
 //load trái cây theo loại
 $(document).ready(function () {
     $('#catagoryProduct').on('change select', function () {
@@ -127,11 +164,23 @@ $(document).ready(function () {
         search_price = false;
         search_catagory = true;
         search_brand = false;
-        search_PriceToPrice = false;
-        var id = $('#catagoryProduct').find(":selected").val();
+        //search_mode = false;
+        // search_PriceToPrice = false;
+        //
+        search = $('#search').val();
+        price = $('#priceRange').val();
+        cat = $(this).find(":selected").val();
+        brand = $('#brandsProduct').find(":selected").val();
+        var data2 = {
+            'tukhoa': search,
+            'gia': price,
+            'loai': cat,
+            'hang': brand
+        }
         $.ajax({
             type: 'get',
-            url: '/cats' + id,
+            url: '/locsp',
+            data: data2,
             success: function (response) {
                 $('#item-lists').html(response);
             }
@@ -140,10 +189,20 @@ $(document).ready(function () {
 });
 // Chuyển trang tìm kiếm theo loại
 function searchByCatagory(page) {
-    var id = $('#catagoryProduct').find(":selected").val();
+    search = $('#search').val();
+    price = $('#priceRange').val();
+    cat = $('#catagoryProduct').find(":selected").val();
+    brand = $('#brandsProduct').find(":selected").val();
+    var data2 = {
+        'tukhoa': search,
+        'gia': price,
+        'loai': cat,
+        'hang': brand
+    }
     $.ajax({
         type: 'get',
-        url: '/cats' + id + "?page=" + page,
+        url: '/locsp?page=' + page,
+        data: data2,
         success: function (response) {
             $('#item-lists').html(response);
         }
@@ -156,11 +215,23 @@ $(document).ready(function () {
         search_price = false;
         search_catagory = false;
         search_brand = true;
-        search_PriceToPrice = false;
-        var id = $('#brandsProduct').find(":selected").val();
+        //search_mode = false;
+        //search_PriceToPrice = false;
+        //
+        search = $('#search').val();
+        price = $('#priceRange').val();
+        cat = $('#catagoryProduct').find(":selected").val();
+        brand = $(this).find(":selected").val();
+        var data2 = {
+            'tukhoa': search,
+            'gia': price,
+            'loai': cat,
+            'hang': brand
+        }
         $.ajax({
             type: 'get',
-            url: '/brands' + id,
+            url: '/locsp',
+            data: data2,
             success: function (response) {
                 $('#item-lists').html(response);
             }
@@ -169,10 +240,75 @@ $(document).ready(function () {
 });
 //Chuyển trang tìm kiếm theo hãng
 function searchByBrand(page) {
-    var id = $('#brandsProduct').find(":selected").val();
+    search = $('#search').val();
+    price = $('#priceRange').val();
+    cat = $('#catagoryProduct').find(":selected").val();
+    brand = $('#brandsProduct').find(":selected").val();
+    var data2 = {
+        'tukhoa': search,
+        'gia': price,
+        'loai': cat,
+        'hang': brand
+    }
     $.ajax({
         type: 'get',
-        url: '/brands' + id + '?page=' + page,
+        url: '/locsp?page=' + page,
+        data: data2,
+        success: function (response) {
+            $('#item-lists').html(response);
+        }
+    });
+}
+// loc theo che do xem
+$(document).ready(function () {
+    $('#viewMode').on('change select', function () {
+        search_key = false;
+        search_price = false;
+        search_catagory = true;
+        search_brand = false;
+        // search_PriceToPrice = false;
+        search_mode = true;
+        //
+        // search = $('#search').val();
+        // price = $('#priceRange').val();
+        // cat = $('#catagoryProduct').find(":selected").val();
+        // brand = $('#brandsProduct').find(":selected").val();
+        mode = $(this).find(":selected").val();
+        var data2 = {
+            // 'tukhoa': search,
+            // 'gia': price,
+            // 'loai': cat,
+            // 'hang': brand,
+            'chedo': mode
+        }
+        $.ajax({
+            type: 'get',
+            url: '/locsp2',
+            data: data2,
+            success: function (response) {
+                $('#item-lists').html(response);
+            }
+        });
+    });
+});
+//chuyen trang theo che do xem
+function searchBymode(page) {
+    // search = $('#search').val();
+    // price = $('#priceRange').val();
+    // cat = $('#catagoryProduct').find(":selected").val();
+    // brand = $('#brandsProduct').find(":selected").val();
+    mode = $('#mostviews').find(":selected").val();
+    var data2 = {
+        // 'tukhoa': search,
+        // 'gia': price,
+        // 'loai': cat,
+        // 'hang': brand,
+        'chedo': mode
+    }
+    $.ajax({
+        type: 'get',
+        url: '/locsp2?page=' + page,
+        data: data2,
         success: function (response) {
             $('#item-lists').html(response);
         }
@@ -201,10 +337,15 @@ $(document).ready(function () {
             var page = $(this).attr("href").split("page=")[1];
             searchByBrand(page);
         }
-        else if (search_PriceToPrice == true) {
+        // else if (search_PriceToPrice == true) {
+        //     event.preventDefault();
+        //     var page = $(this).attr("href").split("page=")[1];
+        //     searchByPriceToPrice(page);
+        // }
+        else if (search_mode == true) {
             event.preventDefault();
             var page = $(this).attr("href").split("page=")[1];
-            searchByPriceToPrice(page);
+            searchBymode(page);
         }
     });
 });
@@ -230,7 +371,7 @@ function addcart(id) {
                     '<button type="button" class="close" data-dismiss="alert">x</button>' +
                     'Đã thêm thành công sản phẩm <b>' + data.name + '</b> vào ghỏ hàng.' +
                     '</div>';
-                $('#cart-popup').html(data.html);
+                $('#cart-popup').load(location.href + " #cart-popup2");
                 document.getElementById('lblCartCount').innerHTML = data.count;
             }
             $('.session-message').html(div);
@@ -270,24 +411,23 @@ function tang_giam(n, id, sl) {
             url: 'update' + id,
             data: data,
             success: function () {
+                $('.tongcong').load(location.href + " .tongcong2");
             }
         });
     }
 }
 // Xóa sản phẩm bằng ajax
 function delProductPopup(id) {
-    if (confirm('Xác nhận xóa sản phẩm này?') == true) {
-        $.ajax({
-            type: "get",
-            dataType: "html",
-            url: "delProduct" + id,
-            data: id,
-            success: function () {
-                var count = document.getElementById('lblCartCount').textContent;
-                count = parseInt(count);
-                document.getElementById('lblCartCount').innerHTML = count - 1;
-                $('#mycartpopup').load(location.href + ' #listcontainer');
-            }
-        });
-    }
+    $.ajax({
+        type: "get",
+        dataType: "html",
+        url: "delProduct" + id,
+        data: id,
+        success: function () {
+            var count = document.getElementById('lblCartCount').textContent;
+            count = parseInt(count);
+            document.getElementById('lblCartCount').innerHTML = count - 1;
+            $('#cart-popup').load(location.href + " #cart-popup2");
+        }
+    });
 }

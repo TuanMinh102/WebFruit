@@ -13,6 +13,9 @@ function tang_giam(n, id, sl) {
             '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
             '<button style="float:right" onclick="hideMess()">X</button></div>';
         $('.mess').html(mess);
+        setTimeout(() => {
+            document.getElementsByClassName('alert')[0].remove();
+        }, 3000);
     }
     else if (qty > 0 && qty <= sl) {
         document.getElementById('qty' + id).value = qty;
@@ -55,7 +58,7 @@ function delAllproduct() {
             dataType: "html",
             url: "delAll",
             data: '',
-            success: function (response) {
+            success: function () {
                 $('#result').load(location.href + ' #my');
                 $('#total-checkout').load(location.href + ' .summary-table');
             }
@@ -145,46 +148,10 @@ function setstar(id, n) {
     }
 }
 //
-function hideMess() {
-    document.getElementsByClassName('alert')[0].style.display = 'none';
+function RemoveMess() {
+    document.getElementsByClassName('alert')[0].remove();
 }
-//
-// function reviewProducts_insert(arr, mahd) {
-//     if (checkKeyword(arr) == false)
-//         alert('Nội dung có chứa từ nhạy cảm!');
-//     else if (checkNull(arr) == false)
-//         alert('Vui lòng nhập đầy đủ!');
-// }
-//
-// $(document).ready(function() {
-//     $('#uploadForm').on('submit', function() {
-//         var arr = document.getElementById('dataArr').value;
-//         for (var i = 0; i < arr.length; i++) {
-//             // var formData = new FormData();
-//             var fileInput = document.getElementById('file-upload1-' + arr[i]).files;
-//             var fileInput2 = document.getElementById('file-upload2-' + arr[i]).files;
-//             var idsp = document.getElementById('idsp' + arr[i]).value;
-//             formData.append('fileToUpload1-' + arr[i], fileInput[0]);
-//             //formData.append('fileToUpload2-'+arr[i], fileInput2[0]);
-//             formData.append('idsp', idsp);
-//             //formData.append('text', 'asdas');
-//             $.ajax({
-//                 url: "/upload",
-//                 type: "post",
-//                 data: formData,
-//                 contentType: false,
-//                 processData: false,
-//                 success: function(res) {
-//                     // var data = $.parseJSON(res);
-//                     // console.log(data.name);
-//                     // console.log(data.file);
-//                     // document.getElementById("detail-invoices").style.display = "none";
-//                     // document.getElementById("child").style.display = "none";
-//                 }
-//             });
-//         }
-//     });
-// })
+
 //   var cursor=document.getElementById("child");
 //   document.addEventListener("mousemove",function(e)
 //   {
