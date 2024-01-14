@@ -2,7 +2,8 @@
 <h3 class="text-center">Giỏ hàng</h3>
 <div style="margin-left:5px" class="tongcong">
     <div class="tongcong2">
-        Tổng cộng: <b>{{$total}}.000<u>đ</u></b>
+        Tổng cộng: <b>{{number_format($total, 0, ',', '.')}}.000
+            <u>đ</u></b>
     </div>
 </div>
 <div id="mycartpopup">

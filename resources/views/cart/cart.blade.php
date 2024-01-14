@@ -75,7 +75,8 @@
                                 </td>
                                 <td>
                                     @if($row->GiaBan===null)
-                                    <span class="product-price">{{$row->GiaGoc}}.000<u>đ</u></span>
+                                    <span
+                                        class="product-price">{{number_format($row->GiaGoc, 0, ',', '.')}}.000<u>đ</u></span>
                                     @else
                                     <span class="product-price">{{$row->GiaBan}}.000<u>đ</u></span>
                                     @endif
@@ -115,8 +116,10 @@
                     <h2 style="text-align:center;">Tổng Thanh Toán</h2>
                 </div>
                 <ul>
-                    <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                    <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
+                    <li><span>Tạm Tính:</span><span class="cost">
+                            {{number_format($total, 0, ',', '.')}}.000<u>đ</u></span></li>
+                    <li><span>Tổng:</span><span id="total" class="cost"> {{number_format($total, 0, ',', '.')}}.000
+                            <u>đ</u></span></li>
                 </ul>
                 <br><br>
                 <button class="bt" onclick="location.href='tt'">Thanh Toán</button>
@@ -146,7 +149,7 @@
                         @foreach($bill as $row)
                         <tr class="tr">
                             <td>{{$row->HoTen}}</td>
-                            <td>{{$row->ThanhTien}}.000<u>đ</u></td>
+                            <td>{{number_format($row->ThanhTien,0, ',', '.')}}.000<u>đ</u></td>
                             <td>{{$row->NgayLapHD}}</td>
                             <td>{{$row->DiaChiGiaoHang}}</td>
                             <td>{{$row->Phone}}</td>

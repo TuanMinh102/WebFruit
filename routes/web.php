@@ -79,12 +79,11 @@ Route::controller(CheckoutController::class)
 // Route::get('/send',[ChatController::class,"sendMessage"]);
 // Route::get('/getmsg',[ChatController::class,"getmsg"]);
 
-
 Route::get('/pusher',[PusherController::class,"index"]);
+Route::get('/chat_user{id}',[PusherController::class,"get_history_chat"]);
+Route::get('/chat_admin{id}',[PusherController::class,"get_history_chat2"]);
 Route::post('/broadcast',[PusherController::class,"broadcast"]);
 Route::post('/receive',[PusherController::class,"receive"]);
-Route::get('/pusher{id}',[PusherController::class,"get_history_chat"]);
-
 // Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 // Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 

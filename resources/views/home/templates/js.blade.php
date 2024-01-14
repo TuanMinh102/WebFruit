@@ -4,11 +4,11 @@
 <script src="owlcarousel2/owl.carousel.js"></script>
 <script src="bootstrap/bootstrap.js"></script>
 <script src="slick/slick.js"></script>
+<script src="js/app.js"></script>
 <script src="js/jquery.fancybox.js"></script>
 <script src="accset/fotorama/fotorama.js"></script>
 <script src="js/numscroller-1.0.js"></script>
 <script src="js/lazysizes.min.js"></script>
-<script src="js/app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script src="magiczoomplus/magiczoomplus.js"></script>
 

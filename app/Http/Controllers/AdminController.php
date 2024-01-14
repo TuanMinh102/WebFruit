@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Events\CheckOnline;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
@@ -54,9 +55,9 @@ class AdminController extends Controller
     public function logoutd(Request $request)
     {
         $flag = 0;
-
+        DB::table('taikhoan')->where('IsAdmin',1)->where('MaTaiKhoan',session()->get('admin'))->update(['TrangThai'=>0]);
+        event(new CheckOnline());
         session()->forget('admin');
-
         return view('/admin/templates/login-admin', ['flag' => $flag]);
     }
     public function gethometest(request $request)

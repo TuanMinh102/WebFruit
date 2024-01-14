@@ -123,12 +123,12 @@ class UserController extends Controller
                                'TrangThai'=> 0
                         ));
                         //
-                $chat= DB::table('chatbox')->insert(
-                        array(
-                        'chatID' => $id,
-                        'MaTK'=> $id,
-                    ));
-                if($dk && $chat){
+                // $chat= DB::table('chatbox')->insert(
+                //         array(
+                //         'chatID' => $id,
+                //         'MaTK'=> $id,
+                //     ));
+                if($dk){
                     session()->get('mess-true');
                     session()->put('mess-true','Đăng ký tài khoản thành công.');
                 }

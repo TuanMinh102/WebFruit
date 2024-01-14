@@ -41,20 +41,23 @@
                 <td>{{$row->TenTraiCay}}</td>
                 <td>{{$row->MaTraiCay}}</td>
                 <td>{{$row->SoLuong}}</td>
-                <td>{{$row->DonGia}}.000<u>đ</u> /<i>{{$row->TenDonVi}}</i></td>
-                <td>{{$row->DonGia*$row->SoLuong}}.000<u>đ</u></td>
+                <td>{{number_format($row->DonGia, 0, ',', '.')}}.000<u>đ</u> /<i>{{$row->TenDonVi}}</i></td>
+                <td>{{number_format($row->DonGia*$row->SoLuong,0, ',', '.')}}.000<u>đ</u></td>
+
             </tr>
             <?php $stt+=1; ?>
             @endforeach
             @foreach($detail as $row)
             <tr>
-                <td colspan="6" class="info-cost"><b>Tổng cộng: </b>{{$row->ThanhTien}}.000<u>đ</u></td>
+                <td colspan="6" class="info-cost"><b>Tổng cộng:
+                    </b>{{number_format($row->ThanhTien,0, ',', '.')}}.000<u>đ</u></td>
             </tr>
             <tr>
                 <td colspan="6" class="info-cost"><b>Phí giao hàng: </b>0.000<u>đ</u></td>
             </tr>
             <tr>
-                <td colspan="6" class="info-cost"><b>Thành tiền: </b>{{$row->ThanhTien}}.000<u>đ</u></td>
+                <td colspan="6" class="info-cost"><b>Thành tiền:
+                    </b>{{number_format($row->ThanhTien,0, ',', '.')}}.000<u>đ</u></td>
             </tr>
             @break
             @endforeach
