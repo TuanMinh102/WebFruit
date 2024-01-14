@@ -13,7 +13,7 @@
 
     <!-- CSS -->
     <link rel="icon" href="images/core-img/favicon.ico">
-    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="../css/chat.css">
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <!-- End CSS -->
@@ -21,8 +21,6 @@
 </head>
 
 <body>
-    <button onclick="status(1)">dang nhap</button>
-    <button onclick="status(0)">dang xuat</button>
     <div id="app" class="container chat">
         <!-- <h3 class=" text-center">Messaging | User: </h3> -->
         <h3 class=" text-center">Messaging | {{$name}}</h3>
@@ -33,18 +31,14 @@
                         @if($list!=null)
                         @foreach($list as $row)
                         <div class="chat_list" id="user{{$row->MaTaiKhoan}}"
-                            onclick="location.href='pusher{{$row->MaTaiKhoan}}'" style="cursor:pointer;">
+                            onclick="location.href='chat_user{{$row->MaTaiKhoan}}'" style="cursor:pointer;">
                             <div class="chat_people">
                                 <div class="chat_img"><img src="images/avatar/{{$row->Avatar}}" alt="sunil"></div>
                                 <div class="chat_ib">
                                     <h5>{{$row->TaiKhoan}}<span class="chat_date">Dec 25</span></h5>
-
                                     <div>
-                                        <span class="number mySpan{{$row->MaTaiKhoan}}">
-                                            {{$unread[$row->MaTaiKhoan]}}
-                                        </span>
+                                        <span class="number mySpan{{$row->MaTaiKhoan}}">0</span>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -56,7 +50,8 @@
                     <div id="container-history">
                         <div id="msg">
                             <div class="messages">
-                                @include('chat/ReceiveMessage',['message'=>"Hey! What's up!  👋",'time'=>now()])
+                                @include('chat/ReceiveMessage',['message'=>"Hey! What's up!
+                                 👋",'time'=>now()->subHours(5)])
                                 @if($chat!=null)
                                 @foreach($chat as $row)
                                 @if($row->IsUser==$type)
@@ -98,7 +93,7 @@ if (type == 1) {
     var SessionValue = @json(session('admin'));
 }
 
-Pusher.logToConsole = true;
+// Pusher.logToConsole = true;
 
 var pusher = new Pusher('951e298a4cf0d46d9655', {
     cluster: 'eu',
@@ -107,23 +102,8 @@ var pusher = new Pusher('951e298a4cf0d46d9655', {
 
 //var channel = pusher.subscribe('public');
 // nhận tin nhắn của người này
+
 var channel = pusher.subscribe(<?php echo $chater1?> + 'and' + <?php echo $chater2?>);
-
-function status(n) {
-    if (n == 1) {
-        channel.blind('pusher:member_added', function(member) {
-            console.log('Member added:', 'online');
-            // Xử lý logic khi có người dùng mới đăng nhập
-        });
-    } else {
-        channel.blind('pusher:member_added', function(member) {
-            console.log('Member added:', 'offline');
-            // Xử lý logic khi có người dùng mới đăng nhập
-        });
-    }
-}
-
-//Receive messages
 channel.bind('chat', function(data) {
     $.post("/receive", {
             _token: '{{csrf_token()}}',
@@ -132,12 +112,14 @@ channel.bind('chat', function(data) {
         .done(function(res) {
             $(".messages > .message").last().after(res);
             $("#msg").scrollTop($("#msg")[0].scrollHeight);
+            var number = parseInt($('.mySpan' + <?php echo $chater2?>).text());
+            $('.mySpan' + "<?php echo $chater2?>").text(number + 1 + '');
         });
 });
+
 //Broadcast messages
 $("form").submit(function(event) {
     event.preventDefault();
-
     $.ajax({
         url: "/broadcast",
         method: 'POST',
@@ -148,7 +130,7 @@ $("form").submit(function(event) {
             _token: '{{csrf_token()}}',
             message: $("form #message").val(),
             my: SessionValue,
-            chatwith: <?php echo $chater2; ?>,
+            chatwith: <?php echo $chater2?>,
             type: type,
         }
     }).done(function(res) {

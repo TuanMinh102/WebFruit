@@ -44,7 +44,7 @@
     <div class="san-phan-nb padding-45-50">
         <div class="wrap-content">
             <div class="title-mau1">
-                <h3>Sản phẩm nổi bật</h3>
+                <h3>Sản phẩm được xem nhiều</h3>
             </div>
             <div class="slick-sanpham text-center">
                 @foreach($traicays as $row)

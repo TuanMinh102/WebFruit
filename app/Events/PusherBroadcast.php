@@ -15,14 +15,12 @@ class PusherBroadcast implements ShouldBroadcast
     public string $message;
     public int $chater1;
     public int $chater2;
-    public string $status;
 
-    public function __construct(string $message,int $chater1,int $chater2,string $status)
+    public function __construct(string $message,int $chater1,int $chater2)
     {
         $this->message = $message;
         $this->chater1 = $chater1;
         $this->chater2 = $chater2;
-        $this->status = $status;
     }
     public function broadcastOn():Channel
     {

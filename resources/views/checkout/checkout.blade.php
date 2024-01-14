@@ -129,8 +129,10 @@
                 <h2 style="text-align:center;">Tổng Thanh Toán</h2>
             </div>
             <ul class="summary-table">
-                <li><span>Tạm Tính:</span><span class="cost"> ${{$total}}.000 VND</span></li>
-                <li><span>Tổng:</span><span id="total" class="cost"> ${{$total}}.000 VND</span></li>
+                <li><span>Tạm Tính:</span><span class="cost"> {{number_format($total, 0, ',', '.')}}.000<u>đ</u></span>
+                </li>
+                <li><span>Tổng:</span><span id="total" class="cost">
+                        {{number_format($total, 0, ',', '.')}}.000<u>đ</u></span></li>
             </ul>
             <div class="payment-method">
                 <!-- Cash on delivery -->

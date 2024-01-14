@@ -63,5 +63,14 @@
     </div>
 
 </body>
+<script>
+window.addEventListener('beforeunload', function(event) {
+    // Thực hiện các hành động trước khi tab hoặc trình duyệt đóng
+    var confirmationMessage = 'Bạn có chắc chắn muốn rời khỏi trang này?';
+    (event || window.event).returnValue = confirmationMessage;
+
+    return confirmationMessage;
+});
+</script>
 
 </html>
