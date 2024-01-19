@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\UserController;
 use Carbon\Carbon;
 class CartController extends Controller
 {
@@ -19,6 +18,22 @@ class CartController extends Controller
            $sl=session()->get('sl',[]);
            return view("cart/cart",compact('cart','sl'),['total'=>$this->gettotal(),'bill'=>$this->get_historyBill()]);
         }
+    }
+    // dem san pham trong gio hang
+    public function count_products()
+    {
+    $count=0;
+    if(session()->has('user'))
+    {
+         $products=DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->select('*')->get();
+         $count=$products->count();
+    }
+    else{
+        $cart=session()->get('cart',[]);
+        if(count($cart)>0)
+            $count=count($cart);
+    }
+    return $count;
     }
   //xoa toan bo san pham khoi gio hang
     public function xoatoanbo()
@@ -69,7 +84,7 @@ class CartController extends Controller
                     return response()->json(['name'=>$name,'flag'=>false]);
                 }
               }
-              $count= DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->select('*')->get()->count();
+              $count= $this->count_products();
               $cart =$this->getCartByAccountId_query(session()->get('user'));
               $name= $this->getNameOfProduct($id);
             return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
@@ -107,7 +122,79 @@ class CartController extends Controller
           return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
         }
     }
-
+    //
+    public function addcartdt(Request $request,$id)
+    { 
+        $soluong=$this->getRemainAmountProduct($id);
+        if(session()->has('user'))
+        {
+            $soluong2=$this->getAmountInCart($id,session()->get('user'));
+            $cart= DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->where('MaSanPham', $id)->select('*')->get();
+            if($cart->count()>0)
+            {
+                if($soluong>=($soluong2+$request->sl))
+                    DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->where('MaSanPham', $id)->increment('SoLuong',$request->sl);
+                else {
+                        $name= $this->getNameOfProduct($id);
+                        return response()->json(['name'=>$name,'flag'=>false]);
+                    }
+            }
+            else
+              {
+                if($soluong>0&&$soluong >=$request->sl)
+                {
+                     DB::table('giohang')->insert(
+                    array(
+                            'MaGioHang' => $this->createID(),
+                            'MaTaiKhoan'=>session()->get('user'),
+                            'MaSanPham'=>$id,
+                            'SoLuong'=> $request->sl,
+                            'NgayTao'=>Carbon::now(),
+                    ));
+                }
+                else {
+                    $name= $this->getNameOfProduct($id);
+                    return response()->json(['name'=>$name,'flag'=>false]);
+                }
+              }
+              $count= $this->count_products();
+              $cart =$this->getCartByAccountId_query(session()->get('user'));
+              $name= $this->getNameOfProduct($id);
+            return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
+        } 
+        else{
+            $cart=session()->get('cart',[]);
+            $sl=session()->get('sl',[]);
+            if(isset($sl[$id])){
+                if($soluong>=($request->sl+$sl[$id]))
+                {
+                    $sl[$id]+=$request->sl;
+                    session()->put('sl',$sl);
+                }
+                else {
+                    $name= $this->getNameOfProduct($id);
+                    return response()->json(['name'=>$name,'flag'=>false]);
+                    }
+            }
+            else {
+                if($soluong>0&&$soluong>=($request->sl)){
+                    $sl[$id]=$request->sl;
+                    $cart[$id]=$id;
+                    session()->put('cart',$cart);
+                    session()->put('sl',$sl);
+                }
+                else {
+                     $name= $this->getNameOfProduct($id);
+                     return response()->json(['name'=>$name,'flag'=>false]);
+                }
+            }
+            $count= count($cart);
+            $cart = $this->getCartBySession_query();
+            $sl=session()->get('sl',[]);
+            $name= $this->getNameOfProduct($id);
+          return response()->json(['count'=>$count,'name'=>$name,'flag'=>true]);
+        }
+    }
   //cap nhat gio hang
   public function capnhatgh(Request $request,$id)
     {   
@@ -169,7 +256,7 @@ public function delProduct($id)
     else{
         $cart = session()->get('cart', []);
         $sl = session()->get('sl', []);
-        unset($cart[$id]);
+        unset($cart[$id]); 
         unset($sl[$id]);
         session()->put('cart', $cart);
         session()->put('sl', $sl);
@@ -222,6 +309,7 @@ public function reviewProduct(Request $request)
     ->join('traicay','traicay.MaTraiCay','=','ct_hoadon.MaTraiCay')->select('*')->get();
     return view('cart/review_products',compact('list_products'));
 }
+
 ///////////////////////////////////////////////////////////////////
 //////////////////////QUERY---HERE/////////////////////////////////
 //
@@ -240,6 +328,7 @@ public function getNameOfProduct($id)
         return $name->TenTraiCay;
     return '';
 }
+
 //
 public function getAmountInCart($id,$tk)
 {

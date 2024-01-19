@@ -18,11 +18,11 @@ function getStar(n) {
 
 // Log the value to the console
 // console.log('Value of myCookie:', myCookieValue);
-$("#comment-input").focus(function () {
-    if (myCookieValue == null) {
-        location.href = "login";
-    }
-});
+// $("#comment-input").focus(function () {
+//     if (myCookieValue == null) {
+//         location.href = "login";
+//     }
+// });
 /////////////////////////////////////
 function checkKeyword(text) {
     var arr = ['lol', 'dm', 'fuck', 'cc', 'lon', 'cac', 'clm', 'cm', 'chet', 'mm', 'cho chet', 'me may',
@@ -42,6 +42,39 @@ function addcart(id) {
         dataType: "html",
         url: "gh" + id,
         data: id,
+        success: function (response) {
+            var data = $.parseJSON(response);
+            if (data.flag == false)
+                var div =
+                    '<div class="alert alert-warning">' +
+                    '<button type="button" class="close" data-dismiss="alert">x</button>' +
+                    'Sản phẩm <b>' + data.name + '</b> đã hết hàng.' +
+                    '</div>';
+            else {
+                var div =
+                    '<div class="alert alert-success">' +
+                    '<button type="button" class="close" data-dismiss="alert">x</button>' +
+                    'Đã thêm thành công sản phẩm <b>' + data.name + '</b> vào ghỏ hàng.' +
+                    '</div>';
+                $('#cart-popup').load(location.href + " #cart-popup2");
+                document.getElementById('lblCartCount').innerHTML = data.count;
+            }
+            $('.session-message').html(div);
+            document.getElementsByTagName("body").scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    });
+}
+//
+function addcartdt(id) {
+    data2 = {
+        'sl': $('#qtydt' + id).val()
+    };
+    $.ajax({
+        type: "get",
+        dataType: "html",
+        url: "dtgh" + id,
+        data: data2,
         success: function (response) {
             var data = $.parseJSON(response);
             if (data.flag == false)
@@ -109,6 +142,30 @@ function tang_giam(n, id, sl) {
                 $('.tongcong').load(location.href + " .tongcong2");
             }
         });
+    }
+}
+//
+//Tang giam so luong cua chi tiet trai cay
+function tang_giamdt(n, id, sl) {
+    var qty = document.getElementById('qtydt' + id).value;
+    qty = parseInt(qty);
+
+    if (n == 0) {
+        qty -= 1;
+    } else {
+        qty += 1;
+    }
+    if (qty > sl) {
+        var mess =
+            '<div class="alert alert-warning">' +
+            '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
+            '<button  type="button" class="close" data-dismiss="alert">x</button></div>';
+        $('.session-message').html(mess);
+        document.getElementsByTagName("body").scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    else if (qty > 0 && qty <= sl) {
+        document.getElementById('qtydt' + id).value = qty;
     }
 }
 // Xóa sản phẩm bằng ajax

@@ -7,7 +7,8 @@
             <div class="item-input">
                 <label class="form-label" for="inputImage">Image:</label>
                 <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)">
-                <img id="selectedImage" alt="Selected Image" src="/images/sanpham/{{$row->Anh}}" style="width: 150px; height: 150px; object-fit: cover;" alt="">
+                <img id="selectedImage" alt="Selected Image" src="/images/sanpham/{{$row->Anh}}"
+                    style="width: 150px; height: 150px; object-fit: cover;" alt="">
             </div>
         </div>
 
@@ -36,10 +37,6 @@
             <div class="item-input">
                 <span>Giá gốc:</span>
                 <input type='number' name="giagoc" value="{{$row->GiaGoc}}" min="1" required>
-            </div>
-            <div class="item-input">
-                <span>Số lượng:</span>
-                <input type='number' name="soluong" value="{{$row->SoLuong}}" min="1" required>
             </div>
             <div class="item-input">
                 <span>Đơn vi:</span>
@@ -93,41 +90,44 @@
         <div class="container-input data-gallery grid-5 padding-10 mt-3">
             @foreach($albums as $row3)
             <div>
-                <img src="/images/gallery/{{ $row3->Anh}}" style="width: 200px; height: 200px; object-fit: cover;" alt="">
-                <a class="xoa-du-lieu-btn" onclick="routeTodeletegallery('{{ $row3->MaGallery }}', '{{ $row3->Loai }}','{{$row->MaTraiCay}}')"><i class="fa-solid fa-trash"></i></a>
+                <img src="/images/gallery/{{ $row3->Anh}}" style="width: 200px; height: 200px; object-fit: cover;"
+                    alt="">
+                <a class="xoa-du-lieu-btn"
+                    onclick="routeTodeletegallery('{{ $row3->MaGallery }}', '{{ $row3->Loai }}','{{$row->MaTraiCay}}')"><i
+                        class="fa-solid fa-trash"></i></a>
             </div>
             @endforeach
         </div>
-        <button class="btn btn-success mt-4 mb-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4 mb-4" type="submit">Lưu</button>
     </form>
     @endforeach
 </div>
 <script>
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .then(editor => {
-            theEditor = editor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    $(document).ready(function() {
-        $('#updatebvForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            var noidung = theEditor.getData();
-            formData.append('noidung', noidung);
-            $.ajax({
-                method: 'POST',
-                url: '{{ route("update.data.sanpham") }}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
+ClassicEditor
+    .create(document.querySelector('#editor'))
+    .then(editor => {
+        theEditor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+$(document).ready(function() {
+    $('#updatebvForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var noidung = theEditor.getData();
+        formData.append('noidung', noidung);
+        $.ajax({
+            method: 'POST',
+            url: '{{ route("update.data.sanpham") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
+});
 </script>

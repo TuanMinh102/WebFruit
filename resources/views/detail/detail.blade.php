@@ -77,19 +77,17 @@
                 <div class="cart-btn d-flex mb-3 mt-3 align-items-center">
                     <span><b>Số lượng:</b></span>
                     <div class="quantity ml-2">
-                        <span class="qty-minus"
-                            onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 1 ) effect.value--;return false;"><i
-                                class="fa fa-caret-down" aria-hidden="true"></i></span>
-                        <input class="qty-text" id="qty" step="1" min="1" max="{{$row->SoLuong}}" name="quantity"
-                            value="1" disabled style="background-color:white;border: 1px solid black;color:black">
-                        <span class="qty-plus"
-                            onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i
-                                class="fa fa-caret-up" aria-hidden="true"></i></span>
+                        <div class="substract-add">
+                            @php $id=$row->MaTraiCay;$slc=$row->SoLuong; @endphp
+                            <button onclick="tang_giamdt(0,{{$row->MaTraiCay}},{{$row->SoLuong}});">-</button>
+                            <input min="1" value=1 id="qtydt{{$row->MaTraiCay}}" style="color:black">
+                            <button onclick="tang_giamdt(1,{{$row->MaTraiCay}},{{$row->SoLuong}});">+</button>
+                        </div>
                     </div>
                 </div>
                 <div><b>Lượt xem:</b> {{$row->LuotXem}}</div>
                 <hr>
-                <button name="addtocart" onclick="addcart({{$row->MaTraiCay}})" class="btn btn-success">
+                <button name="addtocart" onclick="addcartdt({{$row->MaTraiCay}})" class="btn btn-success">
                     <i class="fas fa-shopping-bag mr-1"></i>
                     <span>Thêm vào giỏ hàng</span></button>
                 <a class="btn btn-dark" href="gio-hang">
@@ -209,9 +207,22 @@
                         </div>
                         <div style="width:500px;word-wrap:break-word;">
                             <div> {{$row->Comment}}</div>
-                            @if($row->ReviewIMG!='')
-                            <div>{!!$row->ReviewIMG!!}</div>
-                            @endif
+                            <div style="display:flex;align-items:center;">
+                                @if($row->ReviewIMG!==NULL)
+                                <a class="fancybox" data-fancybox="gallery" href
+                                    data-src="images/danhgia/{{$row->ReviewIMG}}">
+                                    <img src="images/danhgia/{{$row->ReviewIMG}}" width=100 height=100
+                                        style="margin-left:5px">
+                                </a>
+                                @endif
+                                @if($row->ReviewIMG2!==NULL)
+                                <a class="fancybox" data-fancybox="gallery" href
+                                    data-src="images/danhgia/{{$row->ReviewIMG2}}">
+                                    <img src="images/danhgia/{{$row->ReviewIMG2}}" width=100 height=100
+                                        style="margin-left:5px">
+                                </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -249,40 +260,63 @@
     <script src="bootstrap/bootstrap.js"></script>
     @include('inputQuatity')
     <script>
-    //////////////////////////////////////////////
-    document.getElementById("comment-input").addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            var text = $('#comment-input').val();
-            var masp = <?php echo $idsp;?>;
-            var element = document.getElementById('comment-input');
-            if (text == '') {
-                element.style = "border-bottom:1px solid red";
-            } else {
-                if (checkKeyword(text) == false) {
-                    element.style = "border-bottom:1px solid red";
-                    alert('Nội dung không hợp lệ');
-                } else {
-                    element.style = "border-bottom:1px solid #989292";
-                    var data = {
-                        'text': text,
-                        'idsp': masp,
-                        'star': star,
-                    }
-                    $.ajax({
-                        type: 'get',
-                        url: "/review",
-                        data: data,
-                        success: function(response) {
-                            element.value = '';
-                            $('.container-comments').load(document.URL + ' .comments');
-                            $('.bao-qtysort').load(document.URL + ' .qty-sort');
-                        }
-                    });
-                }
-            }
+    var id = <?php echo $id; ?>;
+    var sl = <?php echo $slc; ?>;
+    $('#qtydt' + id).on('change keypress', function() {
+        var newqty = $(this).val();
+        if (newqty == '' && !$(this).is(':focus')) {
+            $(this).val(1);
+            newqty = 1;
+        } else if (newqty <= 0 && !$(this).is(':focus')) {
+            $(this).val(1);
+            newqty = 1;
+        } else if (sl < newqty && !$(this).is(':focus')) {
+            $(this).val(sl);
+            newqty = sl;
+            var mess =
+                '<div class="alert alert-warning">' +
+                '<i class="fa">&#xf071;</i> Số lượng hàng còn lại không đủ.' +
+                '<button  type="button" class="close" data-dismiss="alert">x</button></div>';
+            $('.session-message').html(mess);
+            setTimeout(() => {
+                document.getElementsByClassName('alert')[0].remove();
+            }, 3000);
         }
     });
+    //////////////////////////////////////////////
+    // document.getElementById("comment-input").addEventListener("keypress", function(event) {
+    //     if (event.key === "Enter") {
+    //         event.preventDefault();
+    //         var text = $('#comment-input').val();
+    //         var masp = <?php echo $idsp;?>;
+    //         var element = document.getElementById('comment-input');
+    //         if (text == '') {
+    //             element.style = "border-bottom:1px solid red";
+    //         } else {
+    //             if (checkKeyword(text) == false) {
+    //                 element.style = "border-bottom:1px solid red";
+    //                 alert('Nội dung không hợp lệ');
+    //             } else {
+    //                 element.style = "border-bottom:1px solid #989292";
+    //                 var data = {
+    //                     'text': text,
+    //                     'idsp': masp,
+    //                     'star': star,
+    //                 }
+    //                 $.ajax({
+    //                     type: 'get',
+    //                     url: "/review",
+    //                     data: data,
+    //                     success: function(response) {
+    //                         element.value = '';
+    //                         $('.container-comments').load(document.URL + ' .comments');
+    //                         $('.bao-qtysort').load(document.URL + ' .qty-sort');
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //     }
+    // });
     </script>
     <script src="js/detail.js"></script>
     <script src="magiczoomplus/magiczoomplus.js"></script>

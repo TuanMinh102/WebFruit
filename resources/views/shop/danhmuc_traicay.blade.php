@@ -10,25 +10,21 @@
     @include("home/templates/header")
     @include("home/templates/menu")
     @include("home/templates/breadcrumb")
-    <div class="session-message">
-
-    </div>
     <div class="bao-noidung">
         <div class="wrap-home">
             <div class="wrap-content">
                 <div class="noidung">
-                    @include("gioqua/gioqua_data")
+                    @include("shop/data")
                 </div>
             </div>
         </div>
     </div>
-    @include('footer2')
+    @include("home/templates/footer")
     @include("home/templates/js")
-    <script src="js/gioqua.js"></script>
     <script>
     function routeTogioqua(page) {
         $.ajax({
-            url: "/gioqua_home?page=" + page,
+            url: "/danhmuctraicay?" + <?php echo $id?> + "page=" + page,
             success: function(data) {
                 $(".noidung").html(data);
             },

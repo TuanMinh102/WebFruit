@@ -6,7 +6,8 @@
             <div class="item-input">
                 <span>Hình ảnh:</span>
                 <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)" required>
-                <img id="selectedImage" src="#" alt="Selected Image" style="display: none; width: 150px; height: 150px; object-fit: cover;">
+                <img id="selectedImage" src="#" alt="Selected Image"
+                    style="display: none; width: 150px; height: 150px; object-fit: cover;">
             </div>
         </div>
         <div class="container-input grid-3 padding-20 mb-3">
@@ -34,26 +35,26 @@
             </div>
             <input type="hidden" name="loai" value="{{$loais}}">
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#insertalbumForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                method: 'POST',
-                url: '{{ route("insert.data.album") }}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $(".noidung").html(response);
+$(document).ready(function() {
+    $('#insertalbumForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            method: 'POST',
+            url: '{{ route("insert.data.album") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
 
-                },
-            });
+            },
         });
     });
+});
 </script>

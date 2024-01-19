@@ -13,13 +13,13 @@ class ProductController extends Controller
       {
             if(session()->has('user')){
                 $cart =(new CartController)->getCartByAccountId_query(session()->get('user'));
-                $count=$this->count_products();
+                $count=(new CartController)->count_products();
                 $sl=null;
             }
             else{
                 $cart =(new CartController)->getCartBySession_query();
                 $sl=session()->get('sl',[]);
-                $count=$this->count_products();  
+                $count=(new CartController)->count_products();  
             }
                 $maloai=DB::table('traicay')->where('MaTraiCay',1)->select('traicay.MaLoai')->get()->first();
                 $maloai=$maloai->MaLoai;
@@ -36,38 +36,30 @@ class ProductController extends Controller
           return view("detail/detail",compact('product','gallery','comments','cungloai','count','cart','sl','total'));
       }
 
-     //phan loai theo the loai
-     public function Catogories(Request $request,$id)
-     { 
-        if($request->ajax())
-        {
-            if($id=='catagory')
-                $products =$this->getAllProduct_query();
-            else
-            $products = $this->getProductByCategoryId_query_ToPaginate($id);
-            return view('shop/data',compact('products'))->render();
-        }
-     }
-     //
-    //  public function loaiDanhMuc($id)
+    //  //phan loai theo the loai
+    //  public function Catogories(Request $request,$id)
     //  { 
+    //     if($request->ajax())
+    //     {
+    //         if($id=='catagory')
+    //             $products =$this->getAllProduct_query();
+    //         else
     //         $products = $this->getProductByCategoryId_query_ToPaginate($id);
-    //         $cats = DB::table('loaitraicay')->select('*')->get();
-    //         $brand = DB::table('nhacungcap')->select('*')->get();
-    //         return view('shop/shop',compact('products','cats','brand'))->render();
+    //         return view('shop/data',compact('products'))->render();
+    //     }
     //  }
-     // phan loai theo hang
-     public function Brands(Request $request,$id)
-     { 
-        if($request->ajax())
-        {
-            if($id=='brands')
-                $products =$this->getAllProduct_query();
-            else
-            $products = $this->getProductByBrandId_query_ToPaginate($id);
-            return view('shop/data',compact('products'))->render();
-        }
-     }
+    //  // phan loai theo hang
+    //  public function Brands(Request $request,$id)
+    //  { 
+    //     if($request->ajax())
+    //     {
+    //         if($id=='brands')
+    //             $products =$this->getAllProduct_query();
+    //         else
+    //         $products = $this->getProductByBrandId_query_ToPaginate($id);
+    //         return view('shop/data',compact('products'))->render();
+    //     }
+    //  }
      // chi tiet san pham
      public function details($id)
      { 
@@ -88,14 +80,14 @@ class ProductController extends Controller
          if(session()->has('user'))
          {
             $cart =(new CartController)->getCartByAccountId_query(session()->get('user'));
-            $count=$this->count_products();
+            $count=(new CartController)->count_products();
             $sl=null;
         }
         else
         {
             $cart = (new CartController)->getCartBySession_query();
             $sl=session()->get('sl',[]);
-            $count=$this->count_products();  
+            $count=(new CartController)->count_products();  
         }
             $total= (new CartController)->gettotal();
             $this->updateViewProduct($id);
@@ -116,14 +108,14 @@ class ProductController extends Controller
            if(session()->has('user'))
            {
                 $cart = (new CartController)->getCartByAccountId_query(session()->get('user'));
-                $count=$this->count_products();
+                $count=(new CartController)->count_products();
             return view('shop/shop', compact('cats', 'brand', 'products','count','cart','total'),['name'=>$routeName]);
             }
             else
             {
                 $cart = (new CartController)->getCartBySession_query();
                 $sl=session()->get('sl',[]);
-                $count=$this->count_products();
+                $count=(new CartController)->count_products();
             return view('shop/shop', compact('cats', 'brand', 'products','count','cart','sl','total'),['name'=>$routeName]);
             }
        }
@@ -264,89 +256,74 @@ class ProductController extends Controller
         }
     }
        // tim kiem san pham bang tu khoa
-       public function timkiem(Request $request)
-       {  
-            if ($request->ajax()) {
-                $products = DB::table('traicay')
-                ->leftJoin('banggia', function($join) {
-                    $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-                    ->where('NgayBatDau', '<=', Carbon::now())
-                    ->where('NgayKetThuc', '>=', Carbon::now());
-                })
-                ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
-                ->join('donvi','donvi.MaDonVi','traicay.UnitID')
-                ->select('traicay.*','banggia.*','donvi.*')
-                ->paginate(8);
-                return view('shop/data', compact('products'))->render();
-            }
-    }
-      // tim kiem san pham gia
-      public function RangePrice(Request $request)
-      {  
-           if ($request->ajax()) {
-               $products = DB::table('traicay')
-               ->leftJoin('banggia', function($join) {
-                $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-                ->where('NgayBatDau', '<=', Carbon::now())
-                ->where('NgayKetThuc', '>=', Carbon::now());
-            })
-               ->whereBetween(
-                DB::raw("CASE WHEN banggia.ChietKhau 
-               IS NOT NULL THEN banggia.GiaBan
-               ELSE traicay.GiaGoc END"),[1,$request->price])
-               ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
-               IS NOT NULL THEN banggia.GiaBan
-               ELSE traicay.GiaGoc END",'asc'))
-               ->join('donvi','donvi.MaDonVi','traicay.UnitID')
-               ->select('traicay.*','banggia.*','donvi.*')
-               ->paginate(8);
-               return view('shop/data', compact('products'))->render();
-           }
-   }
-   //
-   public function RangeBetween(Request $request)
-   {  
-        if ($request->ajax()) {
-            $products = DB::table('traicay')
-            ->leftJoin('banggia', function($join) {
-             $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
-             ->where('NgayBatDau', '<=', Carbon::now())
-             ->where('NgayKetThuc', '>=', Carbon::now());
-         })
-            ->whereBetween(
-             DB::raw("CASE WHEN banggia.ChietKhau 
-            IS NOT NULL THEN banggia.GiaBan
-            ELSE traicay.GiaGoc END"),[intval($request->min),intval($request->max)])
-            ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
-            IS NOT NULL THEN banggia.GiaBan
-            ELSE traicay.GiaGoc END",'asc'))
-            ->join('donvi','donvi.MaDonVi','traicay.UnitID')
-            ->select('traicay.*','banggia.*','donvi.*')
-            ->paginate(8);
-            return view('shop/data', compact('products'))->render();
-        }
-}
-// dem san pham trong gio hang
-    public function count_products()
-    {
-    $count=0;
-    if(session()->has('user'))
-    {
-         $products=DB::table('giohang')->where('MaTaiKhoan',session()->get('user'))->select('*')->get();
-         $count=$products->count();
-    }
-    else{
-        $cart=session()->get('cart',[]);
-        if(count($cart)>0)
-            $count=count($cart);
-    }
-    return $count;
-    }
+//        public function timkiem(Request $request)
+//        {  
+//             if ($request->ajax()) {
+//                 $products = DB::table('traicay')
+//                 ->leftJoin('banggia', function($join) {
+//                     $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+//                     ->where('NgayBatDau', '<=', Carbon::now())
+//                     ->where('NgayKetThuc', '>=', Carbon::now());
+//                 })
+//                 ->where('TenTraiCay','like','%'.($request->tukhoa).'%')
+//                 ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+//                 ->select('traicay.*','banggia.*','donvi.*')
+//                 ->paginate(8);
+//                 return view('shop/data', compact('products'))->render();
+//             }
+//     }
+//       // tim kiem san pham gia
+//       public function RangePrice(Request $request)
+//       {  
+//            if ($request->ajax()) {
+//                $products = DB::table('traicay')
+//                ->leftJoin('banggia', function($join) {
+//                 $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+//                 ->where('NgayBatDau', '<=', Carbon::now())
+//                 ->where('NgayKetThuc', '>=', Carbon::now());
+//             })
+//                ->whereBetween(
+//                 DB::raw("CASE WHEN banggia.ChietKhau 
+//                IS NOT NULL THEN banggia.GiaBan
+//                ELSE traicay.GiaGoc END"),[1,$request->price])
+//                ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+//                IS NOT NULL THEN banggia.GiaBan
+//                ELSE traicay.GiaGoc END",'asc'))
+//                ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+//                ->select('traicay.*','banggia.*','donvi.*')
+//                ->paginate(8);
+//                return view('shop/data', compact('products'))->render();
+//            }
+//    }
+//    //
+//    public function RangeBetween(Request $request)
+//    {  
+//         if ($request->ajax()) {
+//             $products = DB::table('traicay')
+//             ->leftJoin('banggia', function($join) {
+//              $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+//              ->where('NgayBatDau', '<=', Carbon::now())
+//              ->where('NgayKetThuc', '>=', Carbon::now());
+//          })
+//             ->whereBetween(
+//              DB::raw("CASE WHEN banggia.ChietKhau 
+//             IS NOT NULL THEN banggia.GiaBan
+//             ELSE traicay.GiaGoc END"),[intval($request->min),intval($request->max)])
+//             ->orderBy( DB::raw("CASE WHEN banggia.ChietKhau 
+//             IS NOT NULL THEN banggia.GiaBan
+//             ELSE traicay.GiaGoc END",'asc'))
+//             ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+//             ->select('traicay.*','banggia.*','donvi.*')
+//             ->paginate(8);
+//             return view('shop/data', compact('products'))->render();
+//         }
+//}
     //
     public function upload(Request $request)
     {
        $mahd = $_POST['mahd'];
-       $img='';
+       $img=NULL;
+       $img2=NULL;
         $dataArray = json_decode($request->input('data_arr'), true);
         for($i=0; $i< count($dataArray) ;$i++)
         {
@@ -355,17 +332,13 @@ class ProductController extends Controller
                 $image = $request->file('fileToUpload1-'.$id);
                 $imageName = $image->getClientOriginalName();
                 $image->move(public_path('images/danhgia/'), $imageName);
-                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='images/danhgia/".$imageName."'>
-                        <img src='images/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
-                      </a>";
+                $img=$imageName;
             } 
             if ($request->hasFile('fileToUpload2-'.$id)) {
                 $image = $request->file('fileToUpload2-'.$id);
                 $imageName =$image->getClientOriginalName();
                 $image->move(public_path('images/danhgia/'), $imageName);
-                $img.="<a class='fancybox' data-fancybox='gallery' href data-src='images/danhgia/".$imageName."'>
-                        <img src='images/danhgia/".$imageName."' width=100 height=100 style='margin-left:5px'>
-                       </a>";
+                $img2=$imageName;
             } 
             DB::table('review')->insert(
                 array(
@@ -373,11 +346,13 @@ class ProductController extends Controller
                     'MaSp'=>$id,
                     'Comment'=>$_POST['textarea'.$id],
                     'ReviewIMG'=>$img,
+                    'ReviewIMG2'=>$img2,
                     'Rating'=>intval($_POST['sao'.$id]),
                     'NgayThang'=>Carbon::now(),
                     'TinhTrang'=>'true',
                 ));
-                $img='';
+                $img=NULL;
+                $img2=NULL;
         }
             DB::table('hoadon')->where('MaHD','=',$mahd) 
             ->update([

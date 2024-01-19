@@ -28,6 +28,7 @@
                  <th>Ảnh</th>
                  <th>Tiêu đề</th>
                  <th>Ngày đăng</th>
+                 <th>Chi tiết</th>
                  <th>Tác vụ</th>
              </tr>
              @foreach($baiviets as $row)
@@ -42,6 +43,11 @@
                  <td>{{$row->TieuDe}}</td>
                  <td>{{$row->NgayDang}}</td>
                  <td>
+                     <a class="name-tintuctt" href="tintuc{{$row->MaBaiViet}}" title="{{$row->TieuDe}}">
+                         <span><i class="fa-solid fa-eye"></i></span>
+                     </a>
+                 </td>
+                 <td>
                      <a class="btn btn-danger"
                          href="javascript:routeTodeletebaiviet({{$row->MaBaiViet}},'{{$row->Loai}}')">
                          <i class="fas fa-ban"></i>
@@ -50,6 +56,7 @@
                          href="javascript:routeToctbaivietid({{$row->MaBaiViet}},'{{$row->Loai}}');">
                          <i class="fas fa-edit"></i>
                      </a>
+
                  </td>
              </tr>
              @endforeach

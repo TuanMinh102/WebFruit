@@ -13,7 +13,7 @@
             </div>
             <div class="item-input">
                 <span>Phone :</span>
-                <input type='phone' name="phone">
+                <input type='phone' pattern="[0]{1}[0-9]{3}[0-9]{3}[0-9]{3}" name="phone">
             </div>
             <div class="item-input">
                 <span>Số Fax :</span>
@@ -21,10 +21,10 @@
             </div>
             <div class="item-input">
                 <span>Địa chỉ mail :</span>
-                <input type='text' name="dcmail">
+                <input type='email' name="dcmail">
             </div>
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 <script>

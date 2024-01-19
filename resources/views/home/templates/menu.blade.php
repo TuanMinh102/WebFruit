@@ -14,7 +14,7 @@
                 <ul>
                     <?php foreach ($loaigqs as $row) { ?>
                     <li>
-                        <a href=""><?= $row->TenLoai ?></a>
+                        <a href="danhmucgioqua{{$row->MaLoai}}"><?= $row->TenLoai ?></a>
                     </li>
                     <?php } ?>
                 </ul>
@@ -28,7 +28,7 @@
                 <ul>
                     <?php foreach ($loaitcs as $row) { ?>
                     <li>
-                        <a href=""><?= $row->TenLoai ?></a>
+                        <a href="danhmuctraicay{{$row->MaLoai}}"><?= $row->TenLoai ?></a>
                     </li>
                     <?php } ?>
                 </ul>

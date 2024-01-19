@@ -47,7 +47,7 @@
             <div class=" item-input">
                 <input type="hidden" name="loai" value="{{$loais}}">
             </div>
-            <button class="btn btn-success mt-4" type="submit">Submit</button>
+            <button class="btn btn-success mt-4" type="submit">Lưu</button>
         </form>
     </div>
     @endforeach
@@ -76,7 +76,7 @@
                     <input type="text" name="hight" required>
                 </div>
             </div>
-            <button class="btn btn-success mt-4" type="submit">Submit</button>
+            <button class="btn btn-success mt-4" type="submit">Lưu</button>
         </form>
     </div>
     @endif

@@ -15,7 +15,7 @@
                  </div>
                  <input type="hidden" name="maloai" value="{{$row->MaLoai}}">
              </div>
-             <button class="btn btn-success mt-4" type="submit">Submit</button>
+             <button class="btn btn-success mt-4" type="submit">Lưu</button>
          </form>
      </div>
      @endforeach

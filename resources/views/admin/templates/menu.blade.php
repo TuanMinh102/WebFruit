@@ -47,9 +47,6 @@
                         <a href="baiviet-tintuc">Tin tức</a>
                     </li>
                     <li>
-                        <a href="baiviet-tieuchi">Tiêu chí</a>
-                    </li>
-                    <li>
                         <a href="baiviets-gioithieu">Giới thiệu</a>
                     </li>
                     <li>
@@ -88,5 +85,6 @@
                 <a class="" href="/account">Tài Khoản</a>
             </li>
         </ul>
+        <a href="pusher">Chuyển đến trò chuyện <i class="fa-solid fa-comment"></i></a>
     </div>
 </div>

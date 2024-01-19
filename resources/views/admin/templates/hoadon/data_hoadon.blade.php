@@ -1,17 +1,14 @@
  <div class="body-trangtinh">
-     <div class="thong-ke">
-         <a href="#" class="">Đang bán<span> (5)</span></a>
-         <a href="#" class="">Tồn kho<span> (7)</span></a>
-         <a href="#" class="">Hết hạn<span> (2)</span></a>
-     </div>
-     <div class="bo-loc">
-         <select name="lang" id="lang-select">
-             <option value="chọn">Chọn</option>
-             <option value="Đang bán">Đang bán</option>
-             <option value="Tồn kho">Tồn kho</option>
-             <option value="Hết hạn">Hết hạn</option>
-         </select>
-         <button class="btn btn-primary" type="submit">Áp dụng</button>
+     <div class="mt-2 mb-2">
+         @if(($thongbao)!='')
+
+         <div class="alert alert-success alert-dismissible fade show" role="alert">
+             <span><?= $thongbao ?></span>
+             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         @endif
      </div>
      <div class="bang">
          <table>
@@ -25,7 +22,6 @@
                  <th>Trạng thái</th>
                  <th>Thời gian</th>
                  <th>Chi tiết</th>
-                 <th>Tác vụ</th>
              </tr>
              @foreach($hoadons as $row)
              <tr>
@@ -42,7 +38,6 @@
                          Chi tiết
                      </a>
                  </td>
-                 <td><button class="btn btn-danger" type="submit"><i class="fas fa-ban"></i></button></td>
              </tr>
              @endforeach
          </table>

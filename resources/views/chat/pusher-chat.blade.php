@@ -116,7 +116,6 @@ channel.bind('chat', function(data) {
             $('.mySpan' + "<?php echo $chater2?>").text(number + 1 + '');
         });
 });
-
 //Broadcast messages
 $("form").submit(function(event) {
     event.preventDefault();

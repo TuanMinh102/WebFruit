@@ -38,7 +38,7 @@
                  <input type="hidden" name="MaAlbum" value="{{$row->MaAlbum}}">
                  <input type="hidden" name="loai" value="{{$row->Loai}}">
              </div>
-             <button class="btn btn-success mt-4" type="submit">Submit</button>
+             <button class="btn btn-success mt-4" type="submit">Lưu</button>
          </form>
      </div>
      @endforeach

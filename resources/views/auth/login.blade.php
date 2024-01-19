@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
     <link rel="stylesheet" href="bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="css/cart-popup.css" />
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" />
 

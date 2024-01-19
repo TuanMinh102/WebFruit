@@ -116,47 +116,6 @@ function searchByprice(page) {
         }
     });
 }
-// Tìm kiếm bằng khoảng giá
-// $(document).ready(function () {
-//     $('input[type=radio][name=choice]').change(function () {
-//         search_key = false;
-//         search_price = false;
-//         search_catagory = false;
-//         search_brand = false;
-//         search_PriceToPrice = true;
-//         let radio = $('input[type=radio][name=choice]:checked');
-//         const min = radio.data('min');
-//         const max = radio.data('max');
-//         $.ajax({
-//             type: "get",
-//             url: "PriceToPrice",
-//             data: {
-//                 'min': min,
-//                 'max': max
-//             },
-//             success: function (res) {
-//                 $('#item-lists').html(res);
-//             }
-//         });
-//     });
-// });
-// //Chuyển trang tìm kiếm bằng khoảng giá
-// function searchByPriceToPrice(page) {
-//     let radio = $('input[type=radio][name=choice]:checked');
-//     const min = radio.data('min');
-//     const max = radio.data('max');
-//     $.ajax({
-//         type: "get",
-//         url: "PriceToPrice?page=" + page,
-//         data: {
-//             'min': min,
-//             'max': max
-//         },
-//         success: function (res) {
-//             $('#item-lists').html(res);
-//         }
-//     });
-// }
 //load trái cây theo loại
 $(document).ready(function () {
     $('#catagoryProduct').on('change select', function () {

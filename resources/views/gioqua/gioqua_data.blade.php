@@ -16,8 +16,7 @@
                     </span>
                 </div>
                 <div class="cart mt-2">
-                    <a class="btn btn-success" href="javascript:addcart({{$row->MaGioQua}})" data-toggle="tooltip"
-                        data-placement="left" title="Add to Cart">Thêm giỏ hàng</a>
+                    <a class="text-decoration-none" target="_blank" href="pusher">Liên hệ</a>
                 </div>
             </div>
         </div>

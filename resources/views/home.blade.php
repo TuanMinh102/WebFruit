@@ -74,60 +74,8 @@
         <img src="images/album/{{$row->HinhAnh}}" alt="">
         @endforeach
     </div>
-    <div class="statistical-nb">
-        <div class="wrap-content ">
-            <div class="container-statistical text-center">
-                <div class="owl-carousel slider-thongke">
-                    <div class="item-statistical text-split ">
-                        <img src="images/tk.png" alt="">
-                        <div class="statistical-name">
-                            <span>+</span>
-                            <a class='numscroller text-decoration-none' data-min='1' data-max='1000' data-delay='100'
-                                data-increment='10' title="">1000</a>
-                        </div>
-                        <div class="desc-statistical">
-                            <span>Nhân viên</span>
-                        </div>
-                    </div>
-                    <div class="item-statistical text-split ">
-                        <img src="images/tk2.png" alt="">
-                        <div class="statistical-name">
-                            <span>+</span>
-                            <a class='numscroller text-decoration-none' data-min='1' data-max='1000' data-delay='50'
-                                data-increment='10' title="">1000</a>
-                        </div>
-                        <div class="desc-statistical">
-                            <span>Nhân viên</span>
-                        </div>
-                    </div>
-                    <div class="item-statistical text-split ">
-                        <img src="images/tk4.png" alt="">
-                        <div class="statistical-name">
-                            <span>+</span>
-                            <a class='numscroller text-decoration-none' data-min='1' data-max='1000' data-delay='50'
-                                data-increment='10' title="">1000</a>
-                        </div>
-                        <div class="desc-statistical">
-                            <span>Nhân viên</span>
-                        </div>
-                    </div>
-                    <div class="item-statistical text-split ">
-                        <img src="images/tk3.png" alt="">
-                        <div class="statistical-name">
-                            <span>+</span>
-                            <a class='numscroller text-decoration-none' data-min='1' data-max='1000' data-delay='50'
-                                data-increment='10' title="">1000</a>
-                        </div>
-                        <div class="desc-statistical">
-                            <span>Nhân viên</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="tag-dm-sanpham">
+    <div class="tag-dm-sanpham padding-45-50">
         <div class="wrap-content">
             <div class="title-mau1">
                 <h3>Danh mục sản phẩm</h3>
