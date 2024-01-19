@@ -51,13 +51,16 @@
     </div>
 
 </div>
+<div class="btn-cart-popup btn-frame">
+    <a class="text-decoration-none" id="cart-icon" href="gh">
+        <div class="animated infinite zoomIn kenit-alo-circle"></div>
+        <div class="animated infinite pulse kenit-alo-circle-fill"></div>
+        <span class='badge badge-warning' id='lblCartCount'>{{$count}}</span>
+        <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
+    </a>
+</div>
 <a class="btn-zalo btn-frame text-decoration-none" target="_blank" href="pusher">
     <div class="animated infinite zoomIn kenit-alo-circle"></div>
     <div class="animated infinite pulse kenit-alo-circle-fill"></div>
     <i><img src="images/chat.png" alt=""></i>
-</a>
-<a class="btn-phone btn-frame text-decoration-none" href="tel:<?= preg_replace('/[^0-9]/', '', "0981965197"); ?>">
-    <div class="animated infinite zoomIn kenit-alo-circle"></div>
-    <div class="animated infinite pulse kenit-alo-circle-fill"></div>
-    <i><img src="images/hl.png" alt=""></i>
 </a>

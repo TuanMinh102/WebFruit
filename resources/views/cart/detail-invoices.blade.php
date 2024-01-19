@@ -11,7 +11,7 @@
     </div>
 </div>
 <div style="text-align:center">
-    <h3>CHI TIẾT HÓA ĐƠN</h3>
+    <h3>THÔNG TIN THANH TOÁN</h3>
 </div>
 
 <div style="margin-left:10px">

@@ -37,7 +37,6 @@ class PusherController extends Controller
             DB::table('taikhoan')->where('IsAdmin',1)->where('MaTaiKhoan',session()->get('admin'))->update(['TrangThai'=>1]);
             event(new CheckOnline());
             ///////////
-          
             $name='Username';
             return view('chat/pusher-chat',compact('chat','list','chater1','chater2','name'),['type'=>$type]);
          }
@@ -66,7 +65,6 @@ class PusherController extends Controller
       
         $list=DB::table('taikhoan')->where('IsAdmin','=',0)->select('*')->get();  
         ////////////
-    
         $name=DB::table('taikhoan')->where('MaTaiKhoan',$id)->select('TaiKhoan')->get()->first();
         $name=$name->TaiKhoan;
        // event(new CheckAdminJoinGroupChat(session()->get('admin'),$id));

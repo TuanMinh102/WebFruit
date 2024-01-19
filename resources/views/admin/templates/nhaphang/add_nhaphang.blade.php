@@ -24,23 +24,23 @@
             <div class="noidung-add">
 
             </div>
-            <button class="btn btn-success mt-4" type="submit">Submit</button>
+            <button class="btn btn-success mt-4" type="submit">Lưu</button>
         </form>
 
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $("#nhapHangForm").submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: "insertnhaphang",
-                type: "get",
-                data: $(this).serialize(),
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
+$(document).ready(function() {
+    $("#nhapHangForm").submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "insertnhaphang",
+            type: "get",
+            data: $(this).serialize(),
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
+});
 </script>

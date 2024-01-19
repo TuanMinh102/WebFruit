@@ -1,9 +1,9 @@
 <footer class="">
     <div class="ft1">
         <div class="discribe">
-            <p>GET UPDATE</p>
+            <p>Đăng ký ngay</p>
             <b><i>Đăng ký để nhận giảm giá sốc!</i></b>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            <p>Đây là lựa chọn hàng đầu của bạn.</p>
         </div>
         <div class="email">
             <input type="email" id="email-footer" placeholder="Email Address"><input type="submit" id="go" value="Đi">
@@ -66,8 +66,8 @@
         </div>
 
     </div>
-
 </footer>
+
 <style>
 .ft1 {
     height: 140px;
@@ -116,8 +116,8 @@
 #go {
     background-color: #1c5f51;
     color: white;
-    height: 33px;
-    width: 33px;
+    height: 35px;
+    width: 30px;
 }
 
 .contact {

@@ -17,22 +17,22 @@
                 <div class="top grid-4 padding-20 pb-5">
                     <div class="tag-noidung">
                         <h3 class="tieude">Đơn hàng thành công</h3>
-                        <span class="number">6</span>
+                        <span class="number">{{$donhangthanhcong}}</span>
                         <span class="desc">Đơn giao dịch thành công</span>
                     </div>
                     <div class="tag-noidung">
-                        <h3 class="tieude">Đang xử lý</h3>
-                        <span class="number">7</span>
+                        <h3 class="tieude">Đơn hàng đang xử lý</h3>
+                        <span class="number">{{$donhangxuly}}</span>
                         <span class="desc">Số lượng đơn hàng xử lý</span>
                     </div>
                     <div class="tag-noidung">
-                        <h3 class="tieude">Doanh số</h3>
-                        <span class="number">4000000VND</span>
-                        <span class="desc">Doanh số hệ thống</span>
+                        <h3 class="tieude">Doanh thu</h3>
+                        <span class="number">{{number_format($doanhthu,0, ',', '.')}}.000<u>đ</u></span>
+                        <span class="desc">Doanh thu hệ thống</span>
                     </div>
                     <div class="tag-noidung">
                         <h3 class="tieude">Đơn hàng hủy</h3>
-                        <span class="number">1</span>
+                        <span class="number">{{$donhanghuy}}</span>
                         <span class="desc">Số đơn bị hủy</span>
                     </div>
                 </div>

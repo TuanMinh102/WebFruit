@@ -7,7 +7,7 @@ $(document).ready(function () {
         infinite: false,
         autoplay: false,
         autoplaySpeed: 1000,
-        arrows: false,
+        arrows: true,
     });
     $(".list-desc-sliders").slick({
         slidesToShow: 4,

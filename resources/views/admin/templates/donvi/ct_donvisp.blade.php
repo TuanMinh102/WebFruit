@@ -8,7 +8,7 @@
                 <input type='text' name="tendonvi" required>
             </div>
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 <script>

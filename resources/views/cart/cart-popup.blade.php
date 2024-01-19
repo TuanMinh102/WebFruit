@@ -36,4 +36,4 @@
     </div>
     @endforeach
 </div>
-<button class="gotocart" onclick="window.location.href='gh'">Chuyển đến giỏ hàng</button>
+<button class="gotocart" onclick="window.location.href='gh'">Xem giỏ hàng</button>

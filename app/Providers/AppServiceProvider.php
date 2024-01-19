@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 
-class AppServiceProvider extends ServiceProvider
+
+
+
+class AppServiceProvider extends ServiceProvider 
 {
     /**
      * Register any application services.
@@ -28,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         $logos = DB::table('album')->where('Loai', 'logo')->select('*')->get();
         $loaitcs = DB::table('loaitraicay')->select('*')->get();
         $loaigqs= DB::table('loaigioqua')->select('*')->get();
-        View::composer(['baiviet.tintuc', 'gioqua.gioqua_ct', 'baiviet.ct_gioithieu','gioqua.gioqua', 'shop.shop','detail.detail', 'baiviet.ct_tintuc','contact.lienhe','auth.login'], function ($view) use ($logos, $loaitcs,$loaigqs) {
+        View::composer(['home','shop.danhmuc_traicay','baiviet.tintuc', 'gioqua.gioqua_ct', 'baiviet.ct_gioithieu','gioqua.gioqua', 'shop.shop','detail.detail', 'baiviet.ct_tintuc','contact.lienhe','auth.login'], function ($view) use ($logos, $loaitcs,$loaigqs) {
             $view->with('logos', $logos)->with('loaitcs', $loaitcs)->with('loaigqs', $loaigqs);
         });
     }

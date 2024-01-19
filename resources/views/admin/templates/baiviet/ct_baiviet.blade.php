@@ -43,7 +43,7 @@
             <span>Nội dung :</span>
             <textarea name="" id="editor" class="" cols="30" rows="10"></textarea>
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 <script>

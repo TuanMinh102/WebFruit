@@ -70,33 +70,35 @@
                         <input type="number" name="nhaphangs[{{$key+1}}][GiaNhap]" value="{{$row3->GiaNhap}}" required>
                     </div>
                 </div>
-                <a class="xoa-du-lieu-btn" onclick="routeTodeletespnhaphang('{{$row->MaLo}}', '{{ $row3->MaTraiCay }}')"><i class="fa-solid fa-trash"></i></a>
+                <a class="xoa-du-lieu-btn"
+                    onclick="routeTodeletespnhaphang('{{$row->MaLo}}', '{{ $row3->MaTraiCay }}')"><i
+                        class="fa-solid fa-trash"></i></a>
                 @endforeach
             </div>
-            <button class="btn btn-success mt-4" type="submit">Submit</button>
+            <button class="btn btn-success mt-4" type="submit">Lưu</button>
         </form>
     </div>
     @endforeach
 </div>
 <script>
-    $(document).ready(function() {
-        $('#nhacungcapSelect').on('change', function() {
-            var selectedValue = $(this).val();
-            $('#nhacungcapSelect option').removeAttr('selected');
-            $('#nhacungcapSelect option[value="' + selectedValue + '"]').attr('selected', 'selected');
+$(document).ready(function() {
+    $('#nhacungcapSelect').on('change', function() {
+        var selectedValue = $(this).val();
+        $('#nhacungcapSelect option').removeAttr('selected');
+        $('#nhacungcapSelect option[value="' + selectedValue + '"]').attr('selected', 'selected');
+    });
+});
+$(document).ready(function() {
+    $("#nhapHangForm").submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "capnhatnhaphang",
+            type: "get",
+            data: $(this).serialize(),
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
-    $(document).ready(function() {
-        $("#nhapHangForm").submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: "capnhatnhaphang",
-                type: "get",
-                data: $(this).serialize(),
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
-        });
-    });
+});
 </script>

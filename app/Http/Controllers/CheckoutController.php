@@ -184,7 +184,8 @@ class CheckoutController extends Controller
                   'Phone'=> $arr['Phone'],
                   'ThanhTien'=> $arr["ThanhTien"],
                   'TinhTrang'=>  $arr['TinhTrang'],
-                  'DanhGia'=> $arr['DanhGia']
+                  'DanhGia'=> $arr['DanhGia'],
+                  'PhuongThucTT'=>'Ví điện tử paypal'
              ));
         foreach($this->getProducts_arr() as $row)
         {
@@ -204,7 +205,7 @@ class CheckoutController extends Controller
          $this->SendMail();
          session()->forget('myArray');
    }
-   // Thanh toán bằng paypal
+   // Thanh toán 
    public function handlePayment(Request $request)
    {
     if((new CartController)->gettotal()==0)
@@ -215,7 +216,50 @@ class CheckoutController extends Controller
       session()->put('empty-cart','true');
       return redirect("/tt");
     }
-    else if(session()->has('user')){
+    // thanh toan bang tien mat
+    else if(session()->has('user')&&$_POST['phuongthuc']=='tienmat'){
+      $mahd=$this->createID();
+       $hoadon= DB::table('hoadon')->insert(
+          array(
+            'MaHD'=> $mahd,
+            'MaTaiKhoan'=>session()->get('user'),
+            'NgayLapHD'  => Carbon::now(), 
+            'DiaChiGiaoHang'=>$_POST['address'],
+            'Phone'=>$_POST['phone'],
+            'ThanhTien'=>(new CartController)->gettotal(),
+            'TinhTrang'=>'Đang xử lý',
+            'DanhGia'=>'true',
+            'PhuongThucTT'=>'Tiền mặt'
+          ));
+      foreach($this->getProducts_arr() as $row)
+      {
+     $ct_hoadon= DB::table('ct_hoadon')->insert(
+      array(
+            'MaHD' => $mahd,
+            'MaTraiCay'  =>$row->MaTraiCay, 
+            'SoLuong' => $row->Sl,
+            'DonGia'=> $this->getProductPrice($row->MaTraiCay),
+            'TongGia'=> $this->get_SingleTotal_price($row->MaTraiCay),
+            'HoTen'=>$_POST['first_name']." ".$_POST['last_name'],
+            'Email'=>$_POST['email'],
+            'Note'=>$_POST['comment'],
+      ));
+      }
+      if($hoadon && $ct_hoadon)
+      {
+        (new CartController)->xoatoanbo();
+        $this->SendMail();
+        session()->get('mess-true');
+        session()->put('mess-true','Cảm ơn bạn đã mua hàng.');
+      }
+      else {
+        session()->get('mess-false');
+        session()->put('mess-false','Thanh toán thất bại.');
+      }
+      return redirect('/gh');
+    }
+    // thanh toan paypal
+    else if(session()->has('user')&&$_POST['phuongthuc']=='vidientu'){
       $arr=[
         //hoa don
         'MaHD'=> $this->createID(),
@@ -224,7 +268,7 @@ class CheckoutController extends Controller
         'DiaChiGiaoHang'=>$_POST['address'],
         'Phone'=>$_POST['phone'],
         'ThanhTien'=>(new CartController)->gettotal(),
-        'TinhTrang'=>'Đang Chờ',
+        'TinhTrang'=>'Đang xử lý',
         'DanhGia'=>'true',
         //chi tiet hoa don
         'HoTen'=>$_POST['first_name']." ".$_POST['last_name'],

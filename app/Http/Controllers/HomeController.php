@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Controllers\CartController;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -15,7 +16,8 @@ class HomeController extends Controller
   public function contactview()
   {
     $contact=DB::table('baiviet')->where('Loai','lienhe')->where('TinhTrang',1)->select('*')->get();
-    return view('contact/lienhe',compact('contact'));
+    $count=(new CartController)->count_products();
+    return view('contact/lienhe',compact('contact','count'));
   }
   //
   public function sendFeedback(Request $request)
@@ -99,8 +101,45 @@ class HomeController extends Controller
     $loaitcs = DB::table('loaitraicay')->select('*')->get();
     $loaigqs = DB::table('loaigioqua')->select('*')->get();
     $album = DB::table('album')->select('*')->get();
-    return view("home", compact('traicays','gioquas', 'loaitcs','loaigqs', 'album', 'sliders', 'logos', 'banners', 'tintucs', 'breadcrumbs'));
+    $tieuchi=DB::table('baiviet')->where('Loai', 'tieuchi')->where('TinhTrang', 1)->select('*')->get();
+    $count=(new CartController)->count_products();
+    return view("home", compact('traicays','gioquas', 'loaitcs','loaigqs', 'album', 'sliders', 'logos', 'banners', 'tintucs', 'breadcrumbs','count','tieuchi'));
   }
+    //
+    public function getdanhmuctraicay($id)
+    { 
+      $name= DB::table('loaitraicay')->where('MaLoai',$id)->select('TenLoai')->first()->TenLoai;
+      $breadcrumbs = [
+        ['link' => route('home'), 'name' => 'Home'],
+        ['link' => route('shop'), 'name' => 'Trái Cây'],
+        ['link' => route('danhmuctraicay',$id), 'name' => $name],
+      ];
+           $products =DB::table('traicay')
+           ->leftJoin('banggia', function($join) {
+               $join->on('traicay.MaTraiCay', '=', 'banggia.MaSanPham')
+               ->where('NgayBatDau', '<=', Carbon::now())
+               ->where('NgayKetThuc', '>=', Carbon::now());
+           })
+           ->where('traicay.MaLoai', '=', $id)
+           ->join('donvi','donvi.MaDonVi','traicay.UnitID')
+           ->select('traicay.*','banggia.*','donvi.*')->paginate(8);
+           $count=(new CartController)->count_products();
+           return view('shop/danhmuc_traicay',compact('products','id','breadcrumbs','count'));
+    }
+    //
+    public function getdanhmucgioqua($id)
+    { 
+      $name= DB::table('loaigioqua')->where('MaLoai',$id)->select('TenLoai')->first()->TenLoai;
+      $breadcrumbs = [
+        ['link' => route('home'), 'name' => 'Home'],
+        ['link' => route('gioqua_home'), 'name' => 'Giỏ quà'],
+        ['link' => route('danhmucgioqua',$id), 'name' => $name],
+      ];
+      $gioquas = DB::table('gioqua')->where('TinhTrang', 1)->where('MaLoaiGQ',$id)->select('*')->paginate(12);
+      $count=(new CartController)->count_products();
+      return view('gioqua/gioqua', compact('gioquas', 'breadcrumbs','count'));
+    }
+    //
   public function getgioqua_home(request $request)
   {
     $breadcrumbs = [
@@ -113,6 +152,7 @@ class HomeController extends Controller
     }
     return view('gioqua/gioqua', compact('gioquas', 'breadcrumbs'));
   } 
+  //
   public function getgioqua_home_ct(request $request,$id)
   {
     $gioquas = DB::table('gioqua')->where('TinhTrang', 1)->where('MaGioQua', $id)->select('*')->get();
@@ -121,7 +161,7 @@ class HomeController extends Controller
         ['link' => route('home'), 'name' => 'Home'],
         ['link' => route('gioqua_home'), 'name' => 'Giỏ Quà'],
         ['link' => route('ct_gioqua_home', $id), 'name' => $row->TenGioQua],
-      ];
+      ];break;
     }
     $gallery=DB::table('gallery')->where('MaGQ', $id)->select('*')->get();
     $comments = DB::table('review')->join('taikhoan', 'taikhoan.MaTaiKhoan', '=', 'review.MaTk')->where('MaGQ', $id)->select('*')->get();
@@ -130,7 +170,6 @@ class HomeController extends Controller
   }
   public function ct_tintuc($id)
   {
-
     $tintucs = DB::table('baiviet')->where('Loai', 'tintuc')->where('TinhTrang', 1)->where('MaBaiViet', $id)->select('*')->get();
     foreach ($tintucs as $row) {
       $breadcrumbs = [
@@ -140,7 +179,8 @@ class HomeController extends Controller
       ];
     }
     $tintuccls = DB::table('baiviet')->where('Loai', 'tintuc')->where('TinhTrang', 1)->where('MaBaiViet', '!=', $id)->select('*')->get();
-    return view('baiviet/ct_tintuc', compact('tintucs', 'tintuccls', 'breadcrumbs'));
+    $count=(new CartController)->count_products();
+    return view('baiviet/ct_tintuc', compact('tintucs', 'tintuccls', 'breadcrumbs','count'));
   }
   public function viewtintuc()
   {
@@ -149,7 +189,8 @@ class HomeController extends Controller
       ['link' => route('tintuc'), 'name' => 'Tin tức'],
     ];
     $tintucs = DB::table('baiviet')->where('Loai', 'tintuc')->where('TinhTrang', 1)->select('*')->get();
-    return view('baiviet/tintuc', compact('tintucs', 'breadcrumbs'));
+    $count=(new CartController)->count_products();
+    return view('baiviet/tintuc', compact('tintucs', 'breadcrumbs','count'));
   }
   public function danhmuctc($id)
   {
@@ -183,7 +224,8 @@ class HomeController extends Controller
       ['link' => route('gioithieu'), 'name' => 'Giới thiệu'],
     ];
     $gioithieus = DB::table('baiviet')->where('Loai', 'gioithieu')->where('TinhTrang', 1)->select('*')->get();
-    return view('baiviet/ct_gioithieu', compact('gioithieus', 'breadcrumbs'));
+    $count=(new CartController)->count_products();
+    return view('baiviet/ct_gioithieu', compact('gioithieus', 'breadcrumbs','count'));
   }
 
 }

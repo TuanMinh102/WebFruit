@@ -921,109 +921,11 @@ body {
 /* Zalo */
 .btn-zalo {
     bottom: 315px;
+    top: 80% !important;
 }
 
 /* Phone */
-.btn-phone {
-    bottom: 230px;
-}
 
-/* Button Frame */
-.btn-frame {
-    display: block;
-    width: 50px;
-    height: 50px;
-    position: fixed;
-    right: 20px;
-    z-index: 100;
-    cursor: pointer;
-}
-
-.btn-frame i {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #1182fc;
-    position: relative;
-    z-index: 1;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-}
-
-.btn-frame i img {
-    vertical-align: middle;
-    width: 70%;
-}
-
-.btn-frame .animated.infinite {
-    -webkit-animation-iteration-count: infinite;
-    animation-iteration-count: infinite;
-}
-
-.btn-frame .kenit-alo-circle {
-    width: 60px;
-    height: 60px;
-    top: -5px;
-    right: -5px;
-    position: absolute;
-    background-color: transparent;
-    border-radius: 100%;
-    border: 2px solid rgba(7, 41, 103, 0.8);
-    opacity: 0.1;
-    border-color: #1182fc;
-    opacity: 0.5;
-}
-
-.btn-frame .zoomIn {
-    -webkit-animation-name: zoomIn;
-    animation-name: zoomIn;
-}
-
-.btn-frame .animated {
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-}
-
-.btn-frame .kenit-alo-circle-fill {
-    width: 70px;
-    height: 70px;
-    top: -10px;
-    right: -10px;
-    position: absolute;
-    border-radius: 100%;
-    border: 2px solid transparent;
-    background-color: rgba(7, 41, 103, 0.35);
-    opacity: 0.4;
-}
-
-.btn-frame .pulse {
-    -webkit-animation-name: pulse;
-    animation-name: pulse;
-}
-
-/* Transition All */
-.transition,
-.control-owl button,
-.carousel-comment-media .carousel-control a span,
-.menu ul li a.has-child:after,
-.menu ul li ul,
-.menu ul li:hover>ul,
-.scale-img img,
-.scale-img:hover>img,
-.btn-frame .kenit-alo-circle-fill,
-.support-online .kenit-alo-circle-fill {
-    -webkit-transition: 0.3s all;
-    transition: 0.3s all;
-}
 
 /* style giá» quĂ  */
 .price-gioqua {
@@ -1383,14 +1285,13 @@ a.name-tintuctt:hover {
 
 /* Danh má»¥c sáº£n pháº©m */
 .tag-menusp {
-    display: flex;
-    justify-content: center;
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .tag-menusp .loai-tag {
     text-transform: capitalize;
-    margin: 0 10px;
+    margin: 10px;
 }
 
 /* style breadcrumb */

@@ -7,7 +7,11 @@
     <title>Contact</title>
     <link rel="stylesheet" type="text/css" href="css/home.css" />
     <link rel="stylesheet" type="text/css" href="css/contact.css" />
-    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.min.css" />
+    <link rel="stylesheet" href="bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="css/cart-popup.css" />
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.fancybox.css" />
 </head>
 
 <body>
@@ -18,7 +22,11 @@
             <div>
                 <h1>Liên Hệ</h1>
             </div>
-            <div class="route"><a>Trang chủ </a><a class='arrow right'></a><a class="active"> Liên hệ</a></div>
+            <div class="route">
+                <a href="home" style="color:black">Trang chủ </a>
+                <a class='arrow right'></a>
+                <a class="active" href="contact">Liên hệ</a>
+            </div>
         </div>
         @foreach($contact as $row)
         <div class="container-noidung">
@@ -45,6 +53,19 @@
         </div>
     </div>
     @endforeach
+    <div class="btn-cart-popup btn-frame">
+        <a class="text-decoration-none" id="cart-icon" href="gh">
+            <div class="animated infinite zoomIn kenit-alo-circle"></div>
+            <div class="animated infinite pulse kenit-alo-circle-fill"></div>
+            <span class='badge badge-warning' id='lblCartCount'>{{$count}}</span>
+            <i class="fa" style="font-size:24px;color:black;background-color:#4eecb5;">&#xf07a;</i>
+        </a>
+    </div>
+    <a class="btn-zalo btn-frame text-decoration-none" target="_blank" href="pusher">
+        <div class="animated infinite zoomIn kenit-alo-circle"></div>
+        <div class="animated infinite pulse kenit-alo-circle-fill"></div>
+        <i><img src="images/chat.png" alt=""></i>
+    </a>
     @include('footer2')
     <script src="js/jquery.min.js"></script>
     <script>

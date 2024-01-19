@@ -15,7 +15,7 @@
                  </div>
                  <div class="item-input">
                      <span>Phone :</span>
-                     <input type='text' name="phone" value="{{$row->Phone}}">
+                     <input type='text' name="phone" value="{{$row->Phone}}" pattern="[0]{1}[0-9]{3}[0-9]{3}[0-9]{3}">
                  </div>
                  <div class="item-input">
                      <span>Số Fax :</span>
@@ -23,11 +23,11 @@
                  </div>
                  <div class="item-input">
                      <span>Địa chỉ mail :</span>
-                     <input type='text' name="dcmail" value="{{$row->DcMail}}">
+                     <input type='email' name="dcmail" value="{{$row->DcMail}}">
                  </div>
                  <input type="hidden" name="mancc" value="{{$row->MaNcc}}">
              </div>
-             <button class="btn btn-success mt-4" type="submit">Submit</button>
+             <button class="btn btn-success mt-4" type="submit">Lưu</button>
          </form>
      </div>
      @endforeach

@@ -27,7 +27,9 @@
                  <th>#</th>
                  <th>Hình ảnh</th>
                  <th>Tên giỏ quà</th>
+                 <th>Giá bán</th>
                  <th>Mô tả</th>
+                 <th>Chi tiết</th>
                  <th>Tác vụ</th>
              </tr>
              @foreach($gioquas as $row)
@@ -36,10 +38,17 @@
                      <input type="checkbox" name="" value="" />
                  </td>
                  <td>{{$row->MaGioQua}}</td>
-                 <td><img src="images/gioqua/{{$row->Anh}}" style="width: 50px; height: 50px; object-fit: cover;" alt="">
+                 <td><img src="images/gioqua/{{$row->Anh}}" style="width: 50px; height: 50px; object-fit: cover;"
+                         alt="">
                  </td>
                  <td>{{$row->TenGioQua}}</td>
+                 <td>{{number_format($row->GiaBan, 0, ',', '.')}}.000<u>đ</u></td>
                  <td>{{$row->MoTaGQ}}</td>
+                 <td>
+                     <a class="name-tintuctt" href="getgioqua_home_ct{{$row->MaGioQua}}" title="{{$row->TenGioQua}}">
+                         <span><i class="fa-solid fa-eye"></i></span>
+                     </a>
+                 </td>
                  <td>
                      <a class="btn btn-danger" href="javascript:routeTodeletegioqua({{$row->MaGioQua}});">
                          <i class="fas fa-ban"></i>

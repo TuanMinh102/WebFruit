@@ -21,12 +21,35 @@ class AdminController extends Controller
             $namhientai = Carbon::now()->year;
             $mangdoanhthu = [];
             for ($month = 1; $month <= 12; $month++) {
-                $mangdoanhthu[$month] = DB::table('thongke')->whereYear('Date', $namhientai)->whereMonth('Date', $month)->sum('TongDoanhThu');
+                $tongdoanhthu=DB::table('hoadon')
+                ->whereYear('hoadon.NgayLapHD',$namhientai)->whereMonth('hoadon.NgayLapHD',$month)->select('*')->sum('ThanhTien');
+                //
+                $chiphi=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->whereYear('hoadon.NgayLapHD',$namhientai)
+                ->whereMonth('hoadon.NgayLapHD',$month)
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                 $tongdoanhthu-=$chiphi;
+                if($tongdoanhthu<0)
+                $tongdoanhthu=0;
+                $mangdoanhthu[$month] =$tongdoanhthu;
             }
             $type="bar";
-            return view("home_admin", compact('traicays', 'mangdoanhthu','type'));
+            $donhangthanhcong=DB::table('hoadon')->where('TinhTrang','Hoàn thành')->select('*')->count();
+                $donhangxuly=DB::table('hoadon')->where('TinhTrang','Đang xử lý')->select('*')->count();
+                $donhanghuy=DB::table('hoadon')->where('TinhTrang','Đơn hàng hủy')->select('*')->count();
+                $doanhthu=DB::table('hoadon')->select('*')->sum('ThanhTien');
+                $chiphi2=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                $doanhthu-=$chiphi2;
+                if($doanhthu<0) $doanhthu=0;
+            return view("home_admin", compact('traicays','mangdoanhthu','type','donhangthanhcong','donhanghuy','donhangxuly','doanhthu'));
         }
-       
         return view('/admin/templates/login-admin');
     }
     public function login(Request $request)
@@ -42,12 +65,36 @@ class AdminController extends Controller
                 session()->forget('user');
                 $traicays = DB::table('traicay')->paginate(5);
                 $namhientai = Carbon::now()->year;
-                $mangdoanhthu = [];
-                for ($month = 1; $month <= 12; $month++) {
-                    $mangdoanhthu[$month] = DB::table('thongke')->whereYear('Date', $namhientai)->whereMonth('Date', $month)->sum('TongDoanhThu');
-                }
+            $mangdoanhthu = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $tongdoanhthu=DB::table('hoadon')
+                ->whereYear('hoadon.NgayLapHD',$namhientai)->whereMonth('hoadon.NgayLapHD',$month)->select('*')->sum('ThanhTien');
+                //
+                $chiphi=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->whereYear('hoadon.NgayLapHD',$namhientai)
+                ->whereMonth('hoadon.NgayLapHD',$month)
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                $tongdoanhthu-=$chiphi;
+                if($tongdoanhthu<0)
+                $tongdoanhthu=0;
+                $mangdoanhthu[$month] =$tongdoanhthu;
+            }
                 $type='bar';
-                return view("home_admin", compact('traicays', 'mangdoanhthu','type'));
+                $donhangthanhcong=DB::table('hoadon')->where('TinhTrang','Hoàn thành')->select('*')->count();
+                $donhangxuly=DB::table('hoadon')->where('TinhTrang','Đang xử lý')->select('*')->count();
+                $donhanghuy=DB::table('hoadon')->where('TinhTrang','Đơn hàng hủy')->select('*')->count();
+                $doanhthu=DB::table('hoadon')->select('*')->sum('ThanhTien');
+                $chiphi2=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                $doanhthu-=$chiphi2;
+                if($doanhthu<0) $doanhthu=0;
+                return view("home_admin", compact('traicays','mangdoanhthu','type','donhangthanhcong','donhanghuy','donhangxuly','doanhthu'));
             }
         }
         return view('/admin/templates/login-admin', ['flag' => $flag]);
@@ -77,291 +124,293 @@ class AdminController extends Controller
     {
         return view("/admin/templates/ct_donhang");
     }
-    //trái cây
-    public function sanphamview()
-    {
-        $thongbao = '';
-        $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
-        return view('/admin/templates/traicay/sanpham', compact('traicays', 'thongbao'));
-    }
-    public function getsanpham(request $request)
-    {
-        $thongbao = '';
-        if ($request->ajax()) {
-            $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
-            return view('/admin/templates/traicay/data_sanpham', compact('traicays', 'thongbao'))->render();
-        }
-    }
-    public function getctsanpham(request $request)
-    {
-        $loaitraicays = DB::table('loaitraicay')->select('*')->get();
-        $nhacungcaps = DB::table('nhacungcap')->select('*')->get();
-        $donvis = DB::table('donvi')->select('*')->get();
-        return view("/admin/templates/traicay/ct_sanpham", compact('loaitraicays', 'donvis', 'nhacungcaps'));
-    }
-    public function getctsanphamid(request $request, $id)
-    {
-        $loaitraicays = DB::table('loaitraicay')->select('*')->get();
-        $donvis = DB::table('donvi')->select('*')->get();
-        $nhacungcaps = DB::table('nhacungcap')->select('*')->get();
-        $traicays = DB::table('traicay')->where('MaTraiCay', $id)->select('*')->get();
-        $albums = DB::table('gallery')->where('MaTCay', $id)->where('Loai', 'san-pham')->select('*')->get();
-        return view("admin/templates/traicay/ct_sanpham2", compact('traicays', 'loaitraicays', 'albums', 'donvis', 'nhacungcaps'));
-    }
-    public function insertsp(request $request)
-    {
-
-        $thongbao = '';
-        $with = $request->input('with');
-        $hight = $request->input('hight');
-        if ($with == null) {
-            $with = 600;
-        }
-        if ($hight == null) {
-            $hight = 600;
-        }
-        try {
-            $max =  (DB::table('traicay')->max('MaTraiCay'));
-            $traicaysi = DB::table('traicay')->select('*')->get();
-            if ($max == 0) {
-                $code = 1;
-            } else {
-                for ($i = 1; $i <= $max; $i++) {
-
-                    $lang = false;
-                    foreach ($traicaysi as $value) {
-
-                        if ($i == $value->MaTraiCay) {
-                            $lang = true;
-                            break;
-                        }
-                    }
-                    if ($i == $max) {
-                        $i = $max + 1;
-                        $lang = false;
-                    }
-                    if ($lang == false) {
-                        $code = $i;
-                        break;
-                    }
-                }
-            }
-
-            $request->validate([
-
-                'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
-
-            ]);
-            $name = $request->file('image')->getClientOriginalName();
-            $imageName = $name;
-            $request->image->move(public_path('images/sanpham'), $imageName);
-            $imagePath = 'images/sanpham/' . $imageName;
-            $resizedImage = Image::make(public_path($imagePath))
-                ->resize($with, $hight)
-                ->save();
-            $traicayi = DB::table('traicay')->insert(
-                array(
-                    'MaTraiCay' => $code,
-                    'TenTraiCay' => $request->input('tentraicay'),
-                    'MoTa' => $request->input('MoTa'),
-                    'UnitID' => $request->input('donvi'),
-                    'GiaGoc' => $request->input('giagoc'),
-                    'SoLuong' =>  $request->input('soluong'),
-                    'MaLoai' => $request->input('loai'),
-                    'MaNcc' => $request->input('nhacungcap'),
-                    'Anh' => $imageName,
-                    'TinhTrang' => $request->input('tinhtrang'),
-                    'NoiDung' => $request->noidung,
-                )
-            );
-            if ($request->hasFile('images')) {
-                $images = $request->file('images');
-
-                foreach ($images as $image) {
-
-                    $max =  (DB::table('gallery')->max('MaGallery'));
-                    $galleryi = DB::table('gallery')->select('*')->get();
-                    if ($max == 0) {
-                        $code1 = 1;
-                    } else {
-                        for ($i = 1; $i <= $max; $i++) {
-
-                            $lang = false;
-                            foreach ($galleryi as $value) {
-
-                                if ($i == $value->MaGallery) {
-                                    $lang = true;
-                                    break;
-                                }
-                            }
-                            if ($i == $max) {
-                                $i = $max + 1;
-                                $lang = false;
-                            }
-                            if ($lang == false) {
-                                $code1 = $i;
-                                break;
-                            }
-                        }
-                    }
-
-                    $imageName = $image->getClientOriginalName();
-                    $imagePath = $image->move(public_path('images/gallery'), $imageName);
-                    $imagePath2 = 'images/gallery/' . $imageName;
-                    $resizedImage = Image::make(public_path($imagePath2))
-                        ->resize($with, $hight)
-                        ->save();
-                    DB::table('gallery')->insert([
-                        'MaTCay' => $code,
-                        'Anh' =>  $imageName,
-                        'Loai' => 'san-pham',
-                        'MaGallery' => $code1,
-                    ]);
-                }
-            }
-            $thongbao = 'Thêm trái cây thành công !';
-            $flag = 0;
-        } catch (\Exception $e) {
-            $thongbao = 'Thêm trái cây thất bại !';
-            $flag = 1;
-        }
-
-        $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
-        return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'));
-    }
-    public function capnhatsp(request $request)
-    {
-        $thongbao = '';
-        $with = $request->input('with');
-        $hight = $request->input('hight');
-        if ($with == null) {
-            $with = 600;
-        }
-        if ($hight == null) {
-            $hight = 600;
-        }
-        try {
-
-            if ($request->hasFile('image')) {
-                $request->validate([
-                    'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
-
-                ]);
-                $name = $request->file('image')->getClientOriginalName();
-                $imageName = $name;
-                $request->image->move(public_path('images/sanpham'), $imageName);
-                $imagePath = 'images/sanpham/' . $imageName;
-                $resizedImage = Image::make(public_path($imagePath))
-                    ->resize($with, $hight)
-                    ->save();
-                $traicayi = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->update(
-                    [
-                        'TenTraiCay' => $request->input('tentraicay'),
-                        'MoTa' => $request->input('MoTa'),
-                        'GiaGoc' => $request->input('giagoc'),
-                        'SoLuong' =>  $request->input('soluong'),
-                        'MaLoai' => $request->input('loai'),
-                        'UnitID' => $request->input('donvi'),
-                        'Anh' => $imageName,
-                        'MaNcc' => $request->input('nhacungcap'),
-                        'TinhTrang' => $request->input('tinhtrang'),
-                        'NoiDung' => $request->noidung,
-                    ]
-                );
-            } else {
-                $traicayi = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->update(
-                    [
-                        'TenTraiCay' => $request->input('tentraicay'),
-                        'MoTa' => $request->input('MoTa'),
-                        'GiaGoc' => $request->input('giagoc'),
-                        'SoLuong' =>  $request->input('soluong'),
-                        'UnitID' => $request->input('donvi'),
-                        'MaLoai' => $request->input('loai'),
-                        'MaNcc' => $request->input('nhacungcap'),
-                        'TinhTrang' => $request->input('tinhtrang'),
-                        'NoiDung' => $request->noidung,
-                    ]
-                );
-                if ($request->input('with') != null &&  $request->input('hight') != null) {
-                    $traicay2 = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->select('*')->get();
-                    foreach ($traicay2 as $image) {
-                        $imageName = $image->Anh;
-                        $imagePath = 'images/sanpham/' . $imageName;
-                        $resizedImage = Image::make(public_path($imagePath))
-                            ->resize($with, $hight)
-                            ->save();
-                    }
-                }
-            }
-            if ($request->hasFile('images')) {
-                $images = $request->file('images');
-                foreach ($images as $image) {
-                    $max =  (DB::table('gallery')->max('MaGallery'));
-                    $galleryi = DB::table('gallery')->select('*')->get();
-                    if ($max == 0) {
-                        $code1 = 1;
-                    } else {
-                        for ($i = 1; $i <= $max; $i++) {
-
-                            $lang = false;
-                            foreach ($galleryi as $value) {
-
-                                if ($i == $value->MaGallery) {
-                                    $lang = true;
-                                    break;
-                                }
-                            }
-                            if ($i == $max) {
-                                $i = $max + 1;
-                                $lang = false;
-                            }
-                            if ($lang == false) {
-                                $code1 = $i;
-                                break;
-                            }
-                        }
-                    }
-                    $imageName = $image->getClientOriginalName();
-                    $imagePath = $image->move(public_path('images/gallery'), $imageName);
-                    $imagePath2 = 'images/gallery/' . $imageName;
-                    $resizedImage = Image::make(public_path($imagePath2))
-                        ->resize($with, $hight)
-                        ->save();
-                    DB::table('gallery')->insert([
-                        'MaTCay' => $request->input('MaTraiCay'),
-                        'Anh' =>  $imageName,
-                        'Loai' => 'san-pham',
-                        'MaGallery' => $code1,
-                    ]);
-                }
-            }
-            $thongbao = 'Cập nhật trái cây thành công !';
-            $flag = 0;
-        } catch (\Exception $e) {
-            $thongbao = 'Cập nhật trái cây thất bại !';
-            $flag = 1;
-        }
-
-        $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
-        return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'));
-    }
-    public function deletesp(request $request, $id)
-    {
-        $thongbao = '';
-        try {
-            if ($request->ajax()) {
-                DB::table('gallery')->where('MaTCay', $id)->delete();
-                DB::table('traicay')->where('MaTraiCay', $id)->delete();
-                $thongbao = 'Xóa trái cây thành công !';
-                $flag = 0;
-            }
-        } catch (\Exception $e) {
-            $thongbao = 'Xóa trái cây thất bại  !';
-            $flag = 1;
-        }
-        $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
-        return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'))->render();
-    }
+     //trái cây
+     public function sanphamview()
+     {
+         $thongbao = '';
+         $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
+         return view('/admin/templates/traicay/sanpham', compact('traicays', 'thongbao'));
+     }
+     public function getsanpham(request $request)
+     {
+         $thongbao = '';
+         if ($request->ajax()) {
+             $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
+             return view('/admin/templates/traicay/data_sanpham', compact('traicays', 'thongbao'))->render();
+         }
+     }
+     public function getctsanpham(request $request)
+     {
+         $loaitraicays = DB::table('loaitraicay')->select('*')->get();
+         $nhacungcaps = DB::table('nhacungcap')->select('*')->get();
+         $donvis = DB::table('donvi')->select('*')->get();
+         return view("/admin/templates/traicay/ct_sanpham", compact('loaitraicays', 'donvis', 'nhacungcaps'));
+     }
+     public function getctsanphamid(request $request, $id)
+     {
+         $loaitraicays = DB::table('loaitraicay')->select('*')->get();
+         $donvis = DB::table('donvi')->select('*')->get();
+         $nhacungcaps = DB::table('nhacungcap')->select('*')->get();
+         $traicays = DB::table('traicay')->where('MaTraiCay', $id)->select('*')->get();
+         $albums = DB::table('gallery')->where('MaTCay', $id)->where('Loai', 'trai-cay')->select('*')->get();
+         return view("admin/templates/traicay/ct_sanpham2", compact('traicays', 'loaitraicays', 'albums', 'donvis', 'nhacungcaps'));
+     }
+     public function insertsp(request $request)
+     {
+         $thongbao = '';
+         $with = $request->input('with');
+         $hight = $request->input('hight');
+         if ($with == null) {
+             $with = 600;
+         }
+         if ($hight == null) {
+             $hight = 600;
+         }
+         try {
+             $max =  (DB::table('traicay')->max('MaTraiCay'));
+             $traicaysi = DB::table('traicay')->select('*')->get();
+             if ($max == 0) {
+                 $code = 1;
+             } else {
+                 for ($i = 1; $i <= $max; $i++) {
+ 
+                     $lang = false;
+                     foreach ($traicaysi as $value) {
+ 
+                         if ($i == $value->MaTraiCay) {
+                             $lang = true;
+                             break;
+                         }
+                     }
+                     if ($i == $max) {
+                         $i = $max + 1;
+                         $lang = false;
+                     }
+                     if ($lang == false) {
+                         $code = $i;
+                         break;
+                     }
+                 }
+             }
+ 
+             $request->validate([
+ 
+                 'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
+ 
+             ]);
+             $name = $request->file('image')->getClientOriginalName();
+             $imageName = $name;
+             $request->image->move(public_path('images/sanpham'), $imageName);
+             $imagePath = 'images/sanpham/' . $imageName;
+             $resizedImage = Image::make(public_path($imagePath))
+                 ->resize($with, $hight)
+                 ->save();
+             $traicayi = DB::table('traicay')->insert(
+                 array(
+                     'MaTraiCay' => $code,
+                     'TenTraiCay' => $request->input('tentraicay'),
+                     'MoTa' => $request->input('MoTa'),
+                     'UnitID' => $request->input('donvi'),
+                     'GiaGoc' => $request->input('giagoc'),
+                     'SoLuong' =>  0,
+                     'MaLoai' => $request->input('loai'),
+                     'MaNcc' => $request->input('nhacungcap'),
+                     'Anh' => $imageName,
+                     'TinhTrang' => $request->input('tinhtrang'),
+                     'NoiDung' => $request->noidung,
+                 )
+             );
+             if ($request->hasFile('images')) {
+                 $images = $request->file('images');
+ 
+                 foreach ($images as $image) {
+ 
+                     $max =  (DB::table('gallery')->max('MaGallery'));
+                     $galleryi = DB::table('gallery')->select('*')->get();
+                     if ($max == 0) {
+                         $code1 = 1;
+                     } else {
+                         for ($i = 1; $i <= $max; $i++) {
+ 
+                             $lang = false;
+                             foreach ($galleryi as $value) {
+ 
+                                 if ($i == $value->MaGallery) {
+                                     $lang = true;
+                                     break;
+                                 }
+                             }
+                             if ($i == $max) {
+                                 $i = $max + 1;
+                                 $lang = false;
+                             }
+                             if ($lang == false) {
+                                 $code1 = $i;
+                                 break;
+                             }
+                         }
+                     }
+ 
+                     $imageName = $image->getClientOriginalName();
+                     $imagePath = $image->move(public_path('images/gallery'), $imageName);
+                     $imagePath2 = 'images/gallery/' . $imageName;
+                     $resizedImage = Image::make(public_path($imagePath2))
+                         ->resize($with, $hight)
+                         ->save();
+                     DB::table('gallery')->insert([
+                         'MaTCay' => $code,
+                         'Anh' =>  $imageName,
+                         'Loai' => 'trai-cay',
+                         'MaGallery' => $code1,
+                     ]);
+                 }
+             }
+             $thongbao = 'Thêm trái cây thành công !';
+             $flag = 0;
+ 
+         } catch (\Exception $e) {
+             $thongbao = 'Thêm trái cây thất bại !';
+             $flag = 1;
+         }
+ 
+         $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
+         return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'));
+     }
+     public function capnhatsp(request $request)
+     {
+         $thongbao = '';
+         $with = $request->input('with');
+         $hight = $request->input('hight');
+         if ($with == null) {
+             $with = 600;
+         }
+         if ($hight == null) {
+             $hight = 600;
+         }
+         try {
+ 
+             if ($request->hasFile('image')) {
+                 $request->validate([
+                     'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
+ 
+                 ]);
+                 $name = $request->file('image')->getClientOriginalName();
+                 $imageName = $name;
+                 $request->image->move(public_path('images/sanpham'), $imageName);
+                 $imagePath = 'images/sanpham/' . $imageName;
+                 $resizedImage = Image::make(public_path($imagePath))
+                     ->resize($with, $hight)
+                     ->save();
+                 $traicayi = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->update(
+                     [
+                         'TenTraiCay' => $request->input('tentraicay'),
+                         'MoTa' => $request->input('MoTa'),
+                         'GiaGoc' => $request->input('giagoc'),
+                         'MaLoai' => $request->input('loai'),
+                         'UnitID' => $request->input('donvi'),
+                         'Anh' => $imageName,
+                         'MaNcc' => $request->input('nhacungcap'),
+                         'TinhTrang' => $request->input('tinhtrang'),
+                         'NoiDung' => $request->noidung,
+                     ]
+                 );
+             } else {
+                 $traicayi = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->update(
+                     [
+                         'TenTraiCay' => $request->input('tentraicay'),
+                         'MoTa' => $request->input('MoTa'),
+                         'GiaGoc' => $request->input('giagoc'),
+                         'UnitID' => $request->input('donvi'),
+                         'MaLoai' => $request->input('loai'),
+                         'MaNcc' => $request->input('nhacungcap'),
+                         'TinhTrang' => $request->input('tinhtrang'),
+                         'NoiDung' => $request->noidung,
+                     ]
+                 );
+                 if ($request->input('with') != null &&  $request->input('hight') != null) {
+                     $traicay2 = DB::table('traicay')->where('MaTraiCay', $request->input('MaTraiCay'))->select('*')->get();
+                     foreach ($traicay2 as $image) {
+                         $imageName = $image->Anh;
+                         $imagePath = 'images/sanpham/' . $imageName;
+                         $resizedImage = Image::make(public_path($imagePath))
+                             ->resize($with, $hight)
+                             ->save();
+                     }
+                 }
+             }
+             if ($request->hasFile('images')) {
+                 $images = $request->file('images');
+                 foreach ($images as $image) {
+                     $max =  (DB::table('gallery')->max('MaGallery'));
+                     $galleryi = DB::table('gallery')->select('*')->get();
+                     if ($max == 0) {
+                         $code1 = 1;
+                     } else {
+                         for ($i = 1; $i <= $max; $i++) {
+ 
+                             $lang = false;
+                             foreach ($galleryi as $value) {
+ 
+                                 if ($i == $value->MaGallery) {
+                                     $lang = true;
+                                     break;
+                                 }
+                             }
+                             if ($i == $max) {
+                                 $i = $max + 1;
+                                 $lang = false;
+                             }
+                             if ($lang == false) {
+                                 $code1 = $i;
+                                 break;
+                             }
+                         }
+                     }
+                     $imageName = $image->getClientOriginalName();
+                     $imagePath = $image->move(public_path('images/gallery'), $imageName);
+                     $imagePath2 = 'images/gallery/' . $imageName;
+                     $resizedImage = Image::make(public_path($imagePath2))
+                         ->resize($with, $hight)
+                         ->save();
+ 
+ 
+                
+                     DB::table('gallery')->insert([
+                         'MaTCay' => $request->input('MaTraiCay'),
+                         'Anh' =>  $imageName,
+                         'Loai' => 'trai-cay',
+                         'MaGallery' => $code1,
+                     ]);
+                 }
+             }
+             $thongbao = 'Cập nhật trái cây thành công !';
+             $flag = 0;
+         } catch (\Exception $e) {
+             $thongbao = 'Cập nhật trái cây thất bại !';
+             $flag = 1;
+         }
+ 
+         $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
+         return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'));
+     }
+     public function deletesp(request $request, $id)
+     {
+         $thongbao = '';
+         try {
+             if ($request->ajax()) {
+                 DB::table('gallery')->where('MaTCay', $id)->delete();
+                 DB::table('traicay')->where('MaTraiCay', $id)->delete();
+                 $thongbao = 'Xóa trái cây thành công !';
+                 $flag = 0;
+             }
+         } catch (\Exception $e) {
+             $thongbao = 'Xóa trái cây thất bại  !';
+             $flag = 1;
+         }
+         $traicays = DB::table('traicay')->join('loaitraicay', 'loaitraicay.MaLoai', '=', 'traicay.MaLoai')->select('*')->paginate(5);
+         return view("/admin/templates/traicay/data_sanpham", compact('traicays', 'flag', 'thongbao'))->render();
+     }
+ 
 
 
    /* Hóa đơn */
@@ -369,8 +418,9 @@ class AdminController extends Controller
    {
        $hoadons = DB::table('hoadon')
        ->join('taikhoan', 'taikhoan.MaTaiKhoan', '=', 'hoadon.MaTaiKhoan')
-       ->select('*')->paginate(5);
-       return view('/admin/templates/hoadon/hoadon', compact('hoadons'));
+       ->select('*')->orderBy('hoadon.NgayLapHD', 'desc')->paginate(5);
+       $thongbao="";
+       return view('/admin/templates/hoadon/hoadon', compact('hoadons','thongbao'));
    }
 
    public function gethoadon(request $request)
@@ -379,8 +429,9 @@ class AdminController extends Controller
            $hoadons = DB::table('hoadon')
            ->join('taikhoan', 'taikhoan.MaTaiKhoan', '=', 'hoadon.MaTaiKhoan')
 
-           ->select('*')->paginate(5);
-           return view('/admin/templates/hoadon/data_hoadon', compact('hoadons'))->render();
+           ->select('*')->orderBy('hoadon.NgayLapHD', 'desc')->paginate(5);
+           $thongbao="";
+           return view('/admin/templates/hoadon/data_hoadon', compact('hoadons','thongbao'))->render();
        }
    }
    public function getcthoadonid(request $request, $id)
@@ -436,28 +487,75 @@ class AdminController extends Controller
                'TinhTrang' => $tinhTrang,
                'DanhGia'=>$danhgia,
        ]);
+       if($tinhTrang)
+       {
+            $thongbao="Cập nhật đơn hang thành công";
+       }
+       $hoadons = DB::table('hoadon')
+       ->join('taikhoan', 'taikhoan.MaTaiKhoan', '=', 'hoadon.MaTaiKhoan')
+
+       ->select('*')->orderBy('hoadon.NgayLapHD', 'desc')->paginate(5);
+       return view('/admin/templates/hoadon/data_hoadon', compact('hoadons','thongbao'))->render();
     }
 
    //biểu đồ
    public function getdashboard(request $request)
    {
-       $namhientai = Carbon::now()->year;
-       $mangdoanhthu = [];
-       for ($month = 1; $month <= 12; $month++) {
-           $mangdoanhthu[$month] = DB::table('thongke')->whereYear('Date', $namhientai)->whereMonth('Date', $month)->sum('TongDoanhThu');
-       }
+    $namhientai = Carbon::now()->year;
+    $mangdoanhthu = [];
+    for ($month = 1; $month <= 12; $month++) {
+        $tongdoanhthu=DB::table('hoadon')
+        ->whereYear('hoadon.NgayLapHD',$namhientai)->whereMonth('hoadon.NgayLapHD',$month)->select('*')->sum('ThanhTien');
+        //
+        $chiphi=DB::table('hoadon')
+        ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+        ->whereYear('hoadon.NgayLapHD',$namhientai)
+        ->whereMonth('hoadon.NgayLapHD',$month)
+        ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+        ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+        ->first()->totalCost;
+        $tongdoanhthu-=$chiphi;
+        if($tongdoanhthu<0)
+        $tongdoanhthu=0;
+        $mangdoanhthu[$month] =$tongdoanhthu;
+    }
        $type= 'bar';
-       return view("/admin/templates/dashboard", compact('mangdoanhthu','type'));
+       $donhangthanhcong=DB::table('hoadon')->where('TinhTrang','Hoàn thành')->select('*')->count();
+                $donhangxuly=DB::table('hoadon')->where('TinhTrang','Đang xử lý')->select('*')->count();
+                $donhanghuy=DB::table('hoadon')->where('TinhTrang','Đơn hàng hủy')->select('*')->count();
+                $doanhthu=DB::table('hoadon')->select('*')->sum('ThanhTien');
+                $chiphi2=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                $doanhthu-=$chiphi2;
+                if($doanhthu<0) $doanhthu=0;
+       return view("/admin/templates/dashboard", compact('type','mangdoanhthu','doanhthu','donhanghuy','donhangthanhcong','donhangxuly'));
    }
   
    public function selectchart(request $request)
    {
-       $mangdoanhthu = [];
-       for ($month = 1; $month <= 12; $month++) {
-           $mangdoanhthu[$month] = DB::table('thongke')->whereYear('Date', $request->year)->whereMonth('Date', $month)->sum('TongDoanhThu');
-       }
+   
+            $mangdoanhthu = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $tongdoanhthu=DB::table('hoadon')
+                ->whereYear('hoadon.NgayLapHD',$request->year)->whereMonth('hoadon.NgayLapHD',$month)->select('*')->sum('ThanhTien');
+                //
+                $chiphi=DB::table('hoadon')
+                ->join('ct_hoadon','hoadon.MaHD','ct_hoadon.MaHD')
+                ->whereYear('hoadon.NgayLapHD',$request->year)
+                ->whereMonth('hoadon.NgayLapHD',$month)
+                ->join('nhaphang','nhaphang.MaTraiCay','ct_hoadon.MaTraiCay')
+                ->select(DB::raw('SUM(nhaphang.GiaNhap * ct_hoadon.SoLuong) AS totalCost'))
+                ->first()->totalCost;
+                $tongdoanhthu-=$chiphi;
+                if($tongdoanhthu<0)
+                $tongdoanhthu=0;
+                $mangdoanhthu[$month] =$tongdoanhthu;
+            }
        $type= $request->type;
-       return view("/admin/templates/dashboard_data", compact('mangdoanhthu','type'));
+       return view("/admin/templates/dashboard_data", compact('type','mangdoanhthu'));
    }
 
 
@@ -492,6 +590,7 @@ class AdminController extends Controller
 
 
     //Nhập hàng
+
 
     public function nhaphangview()
     {
@@ -568,7 +667,7 @@ class AdminController extends Controller
             if ($request->input('nhaphangs')) {
                 foreach ($nhaphangs as $nhaphang) {
                     $max =  (DB::table('nhaphang')->max('MaNhapHang'));
-                    $nhaphangs3 = DB::table('nhaphang')->select('*')->get();
+$nhaphangs3 = DB::table('nhaphang')->select('*')->get();
                     if ($max == 0) {
                         $code = 1;
                     } else {
@@ -606,6 +705,7 @@ class AdminController extends Controller
                                 'GiaNhap' => $nhaphang['GiaNhap'],
                                 'MaNhaCungCap' => $nhacungcap,
                             ]);
+             
                     } else {
                         $data = [
                             'MaLoNhap' => $code2,
@@ -615,9 +715,14 @@ class AdminController extends Controller
                             'MaNhaCungCap' => $nhacungcap,
                             'MaNhapHang' => $code,
                         ];
-
+            
                         DB::table('nhaphang')->insert($data);
                     }
+                    DB::table('traicay')
+                    ->where('MaTraiCay', $nhaphang['MaTraiCay'])
+                    ->update([
+                        'SoLuong' => DB::raw('SoLuong + ' . $nhaphang['SoLuong']),
+                    ]);
                 }
             }
             $thongbao = 'Thêm Lô nhập thành công !';
@@ -632,7 +737,7 @@ class AdminController extends Controller
     public function capnhatnhaphang(Request $request)
     {
         $nhaphangs = $request->input('nhaphangs');
-        $nhacungcap = $request->input('nhacungcap');
+$nhacungcap = $request->input('nhacungcap');
         try {
             $code2 = $request->input('malo');
             DB::table('lo_nhap')
@@ -691,10 +796,16 @@ class AdminController extends Controller
                         ];
 
                         DB::table('nhaphang')->insert($data);
+                 
                     }
+                    DB::table('traicay')
+                    ->where('MaTraiCay', $nhaphang['MaTraiCay'])
+                    ->update([
+                        'SoLuong' => DB::raw('SoLuong + ' . $nhaphang['SoLuong']),
+                    ]);
                 }
             }
-            $thongbao = 'Cập nhật nhập hàng thành công!';
+$thongbao = 'Cập nhật nhập hàng thành công!';
             $flag = 0;
         } catch (\Exception $e) {
             $thongbao = 'Cập nhật nhập hàng thất bại!';
@@ -1108,7 +1219,7 @@ class AdminController extends Controller
                         'MaTaiKhoan' => $code,
                         'Avatar' => $imageName,
                         'TaiKhoan' => $request->input('taikhoan'),
-                        'MatKhau' => $request->input('matkhau'),
+                        'MatKhau' => md5($request->input('matkhau')),
                         'Email' => $request->input('email'),
                         'Phone' => $request->input('phone'),
                         'DiaChi' => $request->input('diachi'),
@@ -1161,7 +1272,7 @@ class AdminController extends Controller
                     [
                         'Avatar' => $imageName,
                         'TaiKhoan' => $request->input('taikhoan'),
-                        'MatKhau' => $request->input('matkhau'),
+                        'MatKhau' => md5($request->input('matkhau')),
                         'Email' => $request->input('email'),
                         'Phone' => $request->input('phone'),
                         'TrangThai' => $request->input('trangthai'),
@@ -1174,7 +1285,7 @@ class AdminController extends Controller
                 $accounti = DB::table('taikhoan')->where('MaTaiKhoan', $request->input('mataikhoan'))->update(
                     [
                         'TaiKhoan' => $request->input('taikhoan'),
-                        'MatKhau' => $request->input('matkhau'),
+                        'MatKhau' => md5($request->input('matkhau')),
                         'Email' => $request->input('email'),
                         'Phone' => $request->input('phone'),
                         'DiaChi' => $request->input('diachi'),
@@ -1197,7 +1308,7 @@ class AdminController extends Controller
     public function deletegallery(request $request, $id, $loai, $idsp)
     {
         $deleted = DB::table('gallery')->where('MaGallery', $id)->where('Loai', $loai)->delete();
-        if ($loai == 'san-pham') {
+        if ($loai == 'trai-cay') {
             $albums1 = DB::table('gallery')->where('MaTCay', $idsp)->where('Loai', $loai)->select('*')->get();
         } else {
             $albums1 = DB::table('gallery')->where('MaGQ', $idsp)->where('Loai', $loai)->select('*')->get();
@@ -1913,329 +2024,329 @@ class AdminController extends Controller
 
 
 
-    /* Giỏ quà */
-    public function add_input_gioqua(request $request, $id)
-    {
-        $traicays = DB::table('traicay')->where('MaTraiCay', $id)->get();
-        return view('/admin/templates/gioqua/data_add_input_GQ', compact('traicays'));
-    }
-    public function gioquaview()
-    {
-        $gioquas = DB::table('gioqua')->paginate(5);
-        $thongbao = '';
-        return view('/admin/templates/gioqua/gioqua', compact('gioquas', 'thongbao'));
-    }
+   /* Giỏ quà */
+   public function add_input_gioqua(request $request, $id)
+   {
+       $traicays = DB::table('traicay')->where('MaTraiCay', $id)->get();
+       return view('/admin/templates/gioqua/data_add_input_GQ', compact('traicays'));
+   }
+   public function gioquaview()
+   {
+       $gioquas = DB::table('gioqua')->paginate(5);
+       $thongbao = '';
+       return view('/admin/templates/gioqua/gioqua', compact('gioquas', 'thongbao'));
+   }
 
-    public function getgioqua(request $request)
-    {
-        if ($request->ajax()) {
-            $thongbao = '';
-            $gioquas = DB::table('gioqua')->paginate(5);
-            return view('/admin/templates/gioqua/data_gioqua', compact('gioquas', 'thongbao'))->render();
-        }
-    }
-    public function getctgioqua(request $request)
-    {
-        $traicays = DB::table('traicay')->select('*')->get();
-        $loaigioquas = DB::table('loaigioqua')->select('*')->get();
-        return view("/admin/templates/gioqua/ct_gioqua", compact('traicays', 'loaigioquas'));
-    }
-    public function getctgioquaid(request $request, $id)
-    {
-        $gioqua = DB::table('gioqua')->where('MaGioQua', $id)->first();
-        $traicays = DB::table('traicay')->select('*')->get();
-        $traicaygqs = DB::table('gioqua_traicay')->where('gioqua_id', $id)
-            ->join('traicay', 'traicay.MaTraiCay', '=', 'gioqua_traicay.traiCay_id')->get();
-        $albums = DB::table('gallery')->where('MaGQ', $id)->where('Loai', 'gio-qua')->select('*')->get();
-        $gioquas = DB::table('gioqua')->where('MaGioQua', $id)->select('*')->get();
-        $loaigioquas = DB::table('loaigioqua')->select('*')->get();
-        return view("admin/templates/gioqua/ct_gioqua2", compact('gioquas', 'traicays', 'traicaygqs', 'albums', 'loaigioquas'));
-    }
-    public function xoa_input_gioqua(request $request, $id, $id2)
-    {
-        DB::table('gioqua_traicay')->where('gioqua_id', $id)->where('traicay_id', $id2)->delete();
-        $gioqua = DB::table('gioqua')->where('MaGioQua', $id)->first();
-        $traicays = DB::table('traicay')->select('*')->get();
-        $traicaygqs = DB::table('gioqua_traicay')->where('gioqua_id', $id)
-            ->join('traicay', 'traicay.MaTraiCay', '=', 'gioqua_traicay.traiCay_id')->get();
-        $albums = DB::table('gallery')->where('MaGQ', $id)->where('Loai', 'gio-qua')->select('*')->get();
-        $gioquas = DB::table('gioqua')->where('MaGioQua', $id)->select('*')->get();
-        $loaigioquas = DB::table('loaigioqua')->select('*')->get();
-        return view("admin/templates/gioqua/ct_gioqua2", compact('gioquas', 'traicays', 'traicaygqs', 'albums', 'loaigioquas'));
-    }
-    public function insertgioqua(request $request)
-    {
-        $with = $request->input('with');
-        $hight = $request->input('hight');
-        try {
-            if ($request->hasFile('image')) {
-                $max =  (DB::table('gioqua')->max('MaGioQua'));
-                $code = 0;
-                $gioquasi = DB::table('gioqua')->select('*')->get();
-                if ($max == 0) {
-                    $code = 1;
-                } else {
-                    for ($i = 1; $i <= $max; $i++) {
+   public function getgioqua(request $request)
+   {
+       if ($request->ajax()) {
+           $thongbao = '';
+           $gioquas = DB::table('gioqua')->paginate(5);
+           return view('/admin/templates/gioqua/data_gioqua', compact('gioquas', 'thongbao'))->render();
+       }
+   }
+   public function getctgioqua(request $request)
+   {
+       $traicays = DB::table('traicay')->select('*')->get();
+       $loaigioquas = DB::table('loaigioqua')->select('*')->get();
+       return view("/admin/templates/gioqua/ct_gioqua", compact('traicays', 'loaigioquas'));
+   }
+   public function getctgioquaid(request $request, $id)
+   {
+       $gioqua = DB::table('gioqua')->where('MaGioQua', $id)->first();
+       $traicays = DB::table('traicay')->select('*')->get();
+       $traicaygqs = DB::table('gioqua_traicay')->where('gioqua_id', $id)
+           ->join('traicay', 'traicay.MaTraiCay', '=', 'gioqua_traicay.traiCay_id')->get();
+       $albums = DB::table('gallery')->where('MaGQ', $id)->where('Loai', 'gio-qua')->select('*')->get();
+       $gioquas = DB::table('gioqua')->where('MaGioQua', $id)->select('*')->get();
+       $loaigioquas = DB::table('loaigioqua')->select('*')->get();
+       return view("admin/templates/gioqua/ct_gioqua2", compact('gioquas', 'traicays', 'traicaygqs', 'albums', 'loaigioquas'));
+   }
+   public function xoa_input_gioqua(request $request, $id, $id2)
+   {
+       DB::table('gioqua_traicay')->where('gioqua_id', $id)->where('traicay_id', $id2)->delete();
+       $gioqua = DB::table('gioqua')->where('MaGioQua', $id)->first();
+       $traicays = DB::table('traicay')->select('*')->get();
+       $traicaygqs = DB::table('gioqua_traicay')->where('gioqua_id', $id)
+           ->join('traicay', 'traicay.MaTraiCay', '=', 'gioqua_traicay.traiCay_id')->get();
+       $albums = DB::table('gallery')->where('MaGQ', $id)->where('Loai', 'gio-qua')->select('*')->get();
+       $gioquas = DB::table('gioqua')->where('MaGioQua', $id)->select('*')->get();
+       $loaigioquas = DB::table('loaigioqua')->select('*')->get();
+       return view("admin/templates/gioqua/ct_gioqua2", compact('gioquas', 'traicays', 'traicaygqs', 'albums', 'loaigioquas'));
+   }
+   public function insertgioqua(request $request)
+   {
+       $with = $request->input('with');
+       $hight = $request->input('hight');
+       try {
+           if ($request->hasFile('image')) {
+               $max =  (DB::table('gioqua')->max('MaGioQua'));
+               $code = 0;
+$gioquasi = DB::table('gioqua')->select('*')->get();
+               if ($max == 0) {
+                   $code = 1;
+               } else {
+                   for ($i = 1; $i <= $max; $i++) {
 
-                        $lang = false;
-                        foreach ($gioquasi as $value) {
+                       $lang = false;
+                       foreach ($gioquasi as $value) {
 
-                            if ($i == $value->MaGioQua) {
-                                $lang = true;
-                                break;
-                            }
-                        }
-                        if ($i == $max) {
-                            $i = $max + 1;
-                            $lang = false;
-                        }
-                        if ($lang == false) {
-                            $code = $i;
-                            break;
-                        }
-                    }
-                }
+                           if ($i == $value->MaGioQua) {
+                               $lang = true;
+                               break;
+                           }
+                       }
+                       if ($i == $max) {
+                           $i = $max + 1;
+                           $lang = false;
+                       }
+                       if ($lang == false) {
+                           $code = $i;
+                           break;
+                       }
+                   }
+               }
 
-                $request->validate([
+               $request->validate([
 
-                    'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
+                   'image' => 'required|image|mimes:jpeg,webp,png,jpg,gif,svg|max:2048',
 
-                ]);
-                $name = $request->file('image')->getClientOriginalName();
-                $imageName = $name;
-                $request->image->move(public_path('images/gioqua'), $imageName);
-                $imagePath = 'images/gioqua/' . $imageName;
-                $resizedImage = Image::make(public_path($imagePath))
-                    ->resize($with, $hight)
-                    ->save();
-                $gioquai = DB::table('gioqua')->insert(
-                    array(
-                        'MaGioQua' => $code,
-                        'TenGioQua' => $request->input('TenGioQua'),
-                        'MoTaGQ' => $request->input('MotaGQ'),
-                        'NgayTao' => now(),
-                        'GiaBan' => $request->input('GiaBan'),
-                        'SoLuong' => $request->input('soluong'),
-                        'TinhTrang' => $request->input('tinhtrang'),
-                        'MaLoaiGQ' => $request->input('loaigioqua'),
-                        'Anh' => $imageName,
-                    )
-                );
-                if ($request->has('traiCay')) {
-                    $traiCayData = [];
-                    foreach ($request->input('traiCay') as $traiCayId => $traiCayInfo) {
-                        $quantity = $traiCayInfo['quantity'];
+               ]);
+               $name = $request->file('image')->getClientOriginalName();
+               $imageName = $name;
+               $request->image->move(public_path('images/gioqua'), $imageName);
+               $imagePath = 'images/gioqua/' . $imageName;
+               $resizedImage = Image::make(public_path($imagePath))
+                   ->resize($with, $hight)
+                   ->save();
+               $gioquai = DB::table('gioqua')->insert(
+                   array(
+                       'MaGioQua' => $code,
+                       'TenGioQua' => $request->input('TenGioQua'),
+                       'MoTaGQ' => $request->input('MotaGQ'),
+                       'NgayTao' => now(),
+                       'GiaBan' => $request->input('GiaBan'),
+                       'SoLuong' => $request->input('soluong'),
+                       'TinhTrang' => $request->input('tinhtrang'),
+                       'MaLoaiGQ' => $request->input('loaigioqua'),
+                       'Anh' => $imageName,
+                   )
+               );
+               if ($request->has('traiCay')) {
+                   $traiCayData = [];
+                   foreach ($request->input('traiCay') as $traiCayId => $traiCayInfo) {
+                       $quantity = $traiCayInfo['quantity'];
 
-                        if ($quantity > 0) {
-                            $traiCayData[] = [
-                                'gioqua_id' => $code,
-                                'traiCay_id' => $traiCayId,
-                                'quantity' => $quantity,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ];
-                        }
-                    }
-                    if (!empty($traiCayData)) {
-                        DB::table('gioqua_traiCay')->insert($traiCayData);
-                    }
-                }
-                if ($request->hasFile('images')) {
-                    $images = $request->file('images');
+                       if ($quantity > 0) {
+                           $traiCayData[] = [
+                               'gioqua_id' => $code,
+                               'traiCay_id' => $traiCayId,
+                               'quantity' => $quantity,
+                               'created_at' => now(),
+                               'updated_at' => now(),
+                           ];
+                       }
+                   }
+                   if (!empty($traiCayData)) {
+                       DB::table('gioqua_traiCay')->insert($traiCayData);
+                   }
+               }
+               if ($request->hasFile('images')) {
+$images = $request->file('images');
 
-                    foreach ($images as $image) {
+                   foreach ($images as $image) {
 
-                        $max =  (DB::table('gallery')->max('MaGallery'));
-                        $galleryi = DB::table('gallery')->select('*')->get();
-                        if ($max == 0) {
-                            $code1 = 1;
-                        } else {
-                            for ($i = 1; $i <= $max; $i++) {
+                       $max =  (DB::table('gallery')->max('MaGallery'));
+                       $galleryi = DB::table('gallery')->select('*')->get();
+                       if ($max == 0) {
+                           $code1 = 1;
+                       } else {
+                           for ($i = 1; $i <= $max; $i++) {
 
-                                $lang = false;
-                                foreach ($galleryi as $value) {
+                               $lang = false;
+                               foreach ($galleryi as $value) {
 
-                                    if ($i == $value->MaGallery) {
-                                        $lang = true;
-                                        break;
-                                    }
-                                }
-                                if ($i == $max) {
-                                    $i = $max + 1;
-                                    $lang = false;
-                                }
-                                if ($lang == false) {
-                                    $code1 = $i;
-                                    break;
-                                }
-                            }
-                        }
+                                   if ($i == $value->MaGallery) {
+                                       $lang = true;
+                                       break;
+                                   }
+                               }
+                               if ($i == $max) {
+                                   $i = $max + 1;
+                                   $lang = false;
+                               }
+                               if ($lang == false) {
+                                   $code1 = $i;
+                                   break;
+                               }
+                           }
+                       }
 
-                        $imageName = $image->getClientOriginalName();
-                        $imagePath = $image->move(public_path('images/gallery'), $imageName);
-                        $imagePath2 = 'images/gallery/' . $imageName;
-                        $resizedImage = Image::make(public_path($imagePath2))
-                            ->resize($with, $hight)
-                            ->save();
-                        DB::table('gallery')->insert([
-                            'MaGQ' => $code,
-                            'Anh' =>  $imageName,
-                            'Loai' => 'gio-qua',
-                            'MaGallery' => $code1,
-                        ]);
-                    }
-                }
-                $thongbao = 'Thêm giỏ quà thành công';
-                $flag = 0;
-            }
-        } catch (\Exception $e) {
-            $thongbao = 'Thêm giỏ quà thất bại';
-            $flag = 1;
-        }
-        $gioquas = DB::table('gioqua')->paginate(5);
-        return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
-    }
+                       $imageName = $image->getClientOriginalName();
+                       $imagePath = $image->move(public_path('images/gallery'), $imageName);
+                       $imagePath2 = 'images/gallery/' . $imageName;
+                       $resizedImage = Image::make(public_path($imagePath2))
+                           ->resize($with, $hight)
+                           ->save();
+                       DB::table('gallery')->insert([
+                           'MaGQ' => $code,
+                           'Anh' =>  $imageName,
+                           'Loai' => 'gio-qua',
+                           'MaGallery' => $code1,
+                       ]);
+                   }
+               }
+               $thongbao = 'Thêm giỏ quà thành công';
+               $flag = 0;
+           }
+       } catch (\Exception $e) {
+           $thongbao = 'Thêm giỏ quà thất bại';
+           $flag = 1;
+       }
+       $gioquas = DB::table('gioqua')->paginate(5);
+       return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
+   }
 
-    public function deletegioqua(request $request, $id)
-    {
-        $thongbao = '';
-        try {
-            DB::table('gioqua')->where('MaGioQua', $id)->delete();
-            DB::table('gioqua_traicay')->where('gioqua_id', $id)->delete();
-            $thongbao = 'Xóa giỏ quà thành công';
-            $flag = 0;
-        } catch (\Exception $e) {
-            $thongbao = 'Xóa giỏ quà thất bại';
-            $flag = 1;
-        }
-        $gioquas = DB::table('gioqua')->paginate(5);
-        return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
-    }
-    public function updateGioQua(Request $request)
-    {
-        $with = $request->input('with');
-        $hight = $request->input('hight');
-        try {
-            $gioquaId = $request->input('MaGioQua');
+   public function deletegioqua(request $request, $id)
+   {
+       $thongbao = '';
+       try {
+           DB::table('gioqua')->where('MaGioQua', $id)->delete();
+           DB::table('gioqua_traicay')->where('gioqua_id', $id)->delete();
+           $thongbao = 'Xóa giỏ quà thành công';
+           $flag = 0;
+       } catch (\Exception $e) {
+           $thongbao = 'Xóa giỏ quà thất bại';
+           $flag = 1;
+       }
+       $gioquas = DB::table('gioqua')->paginate(5);
+       return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
+   }
+   public function updateGioQua(Request $request)
+   {
+       $with = $request->input('with');
+$hight = $request->input('hight');
+       try {
+           $gioquaId = $request->input('MaGioQua');
 
-            if ($request->hasFile('image')) {
-                $imageName = $request->file('image')->getClientOriginalName();
-                $request->image->move(public_path('images/gioqua'), $imageName);
-                $imagePath = 'images/gioqua/' . $imageName;
-                $resizedImage = Image::make(public_path($imagePath))
-                    ->resize($with, $hight)
-                    ->save();
-                DB::table('gioqua')
-                    ->where('MaGioQua', $gioquaId)
-                    ->update([
-                        'TenGioQua' => $request->input('TenGioQua'),
-                        'MoTaGQ' => $request->input('MoTaGQ'),
-                        'GiaBan' => $request->input('GiaBan'),
-                        'TinhTrang' => $request->input('tinhtrang'),
-                        'MaLoaiGQ' => $request->input('loaigioqua'),
-                        'SoLuong' => $request->input('soluong'),
-                        'Anh' =>   $imageName,
-                    ]);
-            } else {
-                if ($with != null && $hight != null) {
-                    $gioqua2 = DB::table('gioqua')->where('MaGioQua', $request->input('MaGioQua'))->select('*')->get();
-                    foreach ($gioqua2 as $image) {
-                        $imageName = $image->Anh;
-                        $imagePath = 'images/gioqua/' . $imageName;
-                        $resizedImage = Image::make(public_path($imagePath))
-                            ->resize($with, $hight)
-                            ->save();
-                    }
-                }
-                DB::table('gioqua')
-                    ->where('MaGioQua', $gioquaId)
-                    ->update([
-                        'TenGioQua' => $request->input('TenGioQua'),
-                        'MoTaGQ' => $request->input('MoTaGQ'),
-                        'GiaBan' => $request->input('GiaBan'),
-                        'MaLoaiGQ' => $request->input('loaigioqua'),
-                        'TinhTrang' => $request->input('tinhtrang'),
-                        'SoLuong' => $request->input('soluong'),
-                    ]);
-            }
-            DB::table('gioqua_traiCay')->where('gioqua_id', $gioquaId)->delete();
+           if ($request->hasFile('image')) {
+               $imageName = $request->file('image')->getClientOriginalName();
+               $request->image->move(public_path('images/gioqua'), $imageName);
+               $imagePath = 'images/gioqua/' . $imageName;
+               $resizedImage = Image::make(public_path($imagePath))
+                   ->resize($with, $hight)
+                   ->save();
+               DB::table('gioqua')
+                   ->where('MaGioQua', $gioquaId)
+                   ->update([
+                       'TenGioQua' => $request->input('TenGioQua'),
+                       'MoTaGQ' => $request->input('MoTaGQ'),
+                       'GiaBan' => $request->input('GiaBan'),
+                       'TinhTrang' => $request->input('tinhtrang'),
+                       'MaLoaiGQ' => $request->input('loaigioqua'),
+                       'SoLuong' => $request->input('soluong'),
+                       'Anh' =>   $imageName,
+                   ]);
+           } else {
+               if ($with != null && $hight != null) {
+                   $gioqua2 = DB::table('gioqua')->where('MaGioQua', $request->input('MaGioQua'))->select('*')->get();
+                   foreach ($gioqua2 as $image) {
+                       $imageName = $image->Anh;
+                       $imagePath = 'images/gioqua/' . $imageName;
+                       $resizedImage = Image::make(public_path($imagePath))
+                           ->resize($with, $hight)
+                           ->save();
+                   }
+               }
+               DB::table('gioqua')
+                   ->where('MaGioQua', $gioquaId)
+                   ->update([
+                       'TenGioQua' => $request->input('TenGioQua'),
+                       'MoTaGQ' => $request->input('MoTaGQ'),
+                       'GiaBan' => $request->input('GiaBan'),
+                       'MaLoaiGQ' => $request->input('loaigioqua'),
+                       'TinhTrang' => $request->input('tinhtrang'),
+                       'SoLuong' => $request->input('soluong'),
+                   ]);
+           }
+           DB::table('gioqua_traiCay')->where('gioqua_id', $gioquaId)->delete();
 
-            if ($request->has('traiCay')) {
-                $traiCayData = [];
-                foreach ($request->input('traiCay') as $traiCayId => $traiCayInfo) {
-                    $quantity = $traiCayInfo['quantity'];
+           if ($request->has('traiCay')) {
+               $traiCayData = [];
+               foreach ($request->input('traiCay') as $traiCayId => $traiCayInfo) {
+                   $quantity = $traiCayInfo['quantity'];
 
-                    if ($quantity > 0) {
-                        $traiCayData[] = [
-                            'gioqua_id' => $gioquaId,
-                            'traiCay_id' => $traiCayId,
-                            'quantity' => $quantity,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
-                    }
-                }
-                if (!empty($traiCayData)) {
-                    DB::table('gioqua_traiCay')->insert($traiCayData);
-                }
-            }
-            if ($request->hasFile('images')) {
-                $images = $request->file('images');
+                   if ($quantity > 0) {
+                       $traiCayData[] = [
+                           'gioqua_id' => $gioquaId,
+                           'traiCay_id' => $traiCayId,
+                           'quantity' => $quantity,
+                           'created_at' => now(),
+                           'updated_at' => now(),
+                       ];
+                   }
+               }
+if (!empty($traiCayData)) {
+                   DB::table('gioqua_traiCay')->insert($traiCayData);
+               }
+           }
+           if ($request->hasFile('images')) {
+               $images = $request->file('images');
 
-                foreach ($images as $image) {
+               foreach ($images as $image) {
 
-                    $max =  (DB::table('gallery')->max('MaGallery'));
-                    $galleryi = DB::table('gallery')->select('*')->get();
-                    if ($max == 0) {
-                        $code1 = 1;
-                    } else {
-                        for ($i = 1; $i <= $max; $i++) {
+                   $max =  (DB::table('gallery')->max('MaGallery'));
+                   $galleryi = DB::table('gallery')->select('*')->get();
+                   if ($max == 0) {
+                       $code1 = 1;
+                   } else {
+                       for ($i = 1; $i <= $max; $i++) {
 
-                            $lang = false;
-                            foreach ($galleryi as $value) {
+                           $lang = false;
+                           foreach ($galleryi as $value) {
 
-                                if ($i == $value->MaGallery) {
-                                    $lang = true;
-                                    break;
-                                }
-                            }
-                            if ($i == $max) {
-                                $i = $max + 1;
-                                $lang = false;
-                            }
-                            if ($lang == false) {
-                                $code1 = $i;
-                                break;
-                            }
-                        }
-                    }
+                               if ($i == $value->MaGallery) {
+                                   $lang = true;
+                                   break;
+                               }
+                           }
+                           if ($i == $max) {
+                               $i = $max + 1;
+                               $lang = false;
+                           }
+                           if ($lang == false) {
+                               $code1 = $i;
+                               break;
+                           }
+                       }
+                   }
 
-                    $imageName = $image->getClientOriginalName();
-                    if ($with != null && $hight != null) {
-                        $imagePath = $image->move(public_path('images/gallery'), $imageName);
-                        $imagePath2 = 'images/gallery/' . $imageName;
-                        $resizedImage = Image::make(public_path($imagePath2))
-                            ->resize($with, $hight)
-                            ->save();
-                    }
-                    DB::table('gallery')->insert([
-                        'MaGQ' => $request->input('MaGioQua'),
-                        'Anh' =>  $imageName,
-                        'Loai' => 'gio-qua',
-                        'MaGallery' => $code1,
-                    ]);
-                }
-            }
-            $thongbao = 'Cập nhật giỏ quà thành công';
-            $flag = 0;
-        } catch (\Exception $e) {
-            $thongbao = 'Cập nhật giỏ quà thất bại';
-            $flag = 1;
-        }
+                   $imageName = $image->getClientOriginalName();
+                   if ($with != null && $hight != null) {
+                       $imagePath = $image->move(public_path('images/gallery'), $imageName);
+                       $imagePath2 = 'images/gallery/' . $imageName;
+                       $resizedImage = Image::make(public_path($imagePath2))
+                           ->resize($with, $hight)
+                           ->save();
+                   }
+                   DB::table('gallery')->insert([
+                       'MaGQ' => $request->input('MaGioQua'),
+                       'Anh' =>  $imageName,
+                       'Loai' => 'gio-qua',
+                       'MaGallery' => $code1,
+                   ]);
+               }
+           }
+           $thongbao = 'Cập nhật giỏ quà thành công';
+           $flag = 0;
+       } catch (\Exception $e) {
+           $thongbao = 'Cập nhật giỏ quà thất bại';
+           $flag = 1;
+       }
 
-        $gioquas = DB::table('gioqua')->paginate(5);
-        return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
-    }
+       $gioquas = DB::table('gioqua')->paginate(5);
+       return view("/admin/templates/gioqua/data_gioqua", compact('gioquas', 'flag', 'thongbao'));
+   }
 
  /* Bảng giá */
  public function banggiaview()

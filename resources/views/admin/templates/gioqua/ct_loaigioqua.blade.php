@@ -1,5 +1,6 @@
 <div class="container mt-3 mb-3">
-    <form id="insertloaigioquaForm" action="{{ route('insert.data.loaigioqua') }}" method="POST" enctype="multipart/form-data">
+    <form id="insertloaigioquaForm" action="{{ route('insert.data.loaigioqua') }}" method="POST"
+        enctype="multipart/form-data">
         @csrf
         <div class="container-input grid-3 padding-20">
             <div class="item-input">
@@ -11,25 +12,25 @@
                 <input type='text' name="mota">
             </div>
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#insertloaigioquaForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                type: 'POST',
-                url: '{{ route("insert.data.loaigioqua") }}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
+$(document).ready(function() {
+    $('#insertloaigioquaForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("insert.data.loaigioqua") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
+});
 </script>

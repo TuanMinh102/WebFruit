@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\CartController;
 class UserController extends Controller
 {
     public function loadForm(Request $request)
@@ -15,15 +16,16 @@ class UserController extends Controller
      // View dang nhap
      public function loginview()
      {
+        $count=(new CartController)->count_products();
         if(session()->has('user')){
                 $info=DB::table('taikhoan')->where('MaTaiKhoan',session()->get('user'))->select('*');
                 $info = $info->get();
-                return view("auth/login",['ss'=>session()->get('user')],compact('info'));
+                return view("auth/login",['ss'=>session()->get('user')],compact('info','count'));
         }
         else {
                 $info=DB::table('taikhoan')->where('MaTaiKhoan',0)->select('*');
                 $info = $info->get();
-                return view("auth/login",compact('info'));
+                return view("auth/login",compact('info','count'));
         }
      }
      //Dang xuat

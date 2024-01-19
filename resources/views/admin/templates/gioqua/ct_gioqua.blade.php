@@ -1,12 +1,11 @@
 <div class="container mt-3 mb-3">
     <form id="insertgioquaForm" action="{{ route('insert.data.gioqua') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <div class="container-input mt-3">
-            <div class="item-input">
-                <label class="form-label" for="inputImage">Image:</label>
-                <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)">
-                <img id="selectedImage" alt="Selected Image" src="/images/gioqua/{{$row->Anh}}" style="width: 150px; height: 150px; object-fit: cover;" alt="">
-            </div>
+        <div class="mb-3">
+            <span>Hình ảnh:</span>
+            <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)" required>
+            <img id="selectedImage" src="#" alt="Selected Image"
+                style="display: none; width: 150px; height: 150px; object-fit: cover;">
         </div>
         <div class="container-input grid-3 padding-20">
             <div class="item-input">
@@ -61,6 +60,7 @@
                 <input type="file" name="images[]" onchange="displaySelectedImage2(event)" id="imageInput2" multiple>
             </div>
         </div>
+        <div class="mt-3 container-input data-gallery grid-5 padding-10"></div>
         <div class="item-input grid-4 mt-3">
             <div class="item-input">
                 <span>Chọn loại trái cây:</span>
@@ -76,65 +76,66 @@
         </div>
         <div id="data_input_GQ" class="grid-4 mt-3">
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 
 <style>
-    .item-input {
-        margin-bottom: 10px;
-    }
+.item-input {
+    margin-bottom: 10px;
+}
 
-    input[type="checkbox"] {
-        display: inline-block;
-        margin-right: 5px;
-    }
+input[type="checkbox"] {
+    display: inline-block;
+    margin-right: 5px;
+}
 
-    label {
-        display: inline-block;
-    }
+label {
+    display: inline-block;
+}
 </style>
 <script>
-    $(document).ready(function() {
-        $('.hien_from').on('click', function() {
-            var id = $('#loaiTraiCay').val();
-            $.ajax({
-                type: 'GET',
-                url: '/add_input_gioqua/' + id,
-                success: function(response) {
-                    var formId = 'form_' + id;
-                    if ($('#' + formId).length === 0) {
-                        var formHtml = '<div class="input_gioqua" id="' + formId + '">' + response + '</div>';
-                        $("#data_input_GQ").append(formHtml);
-                    } else {
-                        alert('Form đã tồn tại.');
-                    }
-                },
-            });
+$(document).ready(function() {
+    $('.hien_from').on('click', function() {
+        var id = $('#loaiTraiCay').val();
+        $.ajax({
+            type: 'GET',
+            url: '/add_input_gioqua/' + id,
+            success: function(response) {
+                var formId = 'form_' + id;
+                if ($('#' + formId).length === 0) {
+                    var formHtml = '<div class="input_gioqua" id="' + formId + '">' +
+                        response + '</div>';
+                    $("#data_input_GQ").append(formHtml);
+                } else {
+                    alert('Form đã tồn tại.');
+                }
+            },
         });
     });
+});
 
-    $(document).ready(function() {
-        $(document).on('click', '.delete-form', function() {
-            var formId = $(this).data('formid');
-            $('#form_' + formId).remove();
+$(document).ready(function() {
+    $(document).on('click', '.delete-form', function() {
+        var formId = $(this).data('formid');
+        $('#form_' + formId).remove();
+    });
+});
+$(document).ready(function() {
+    $('#insertgioquaForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("insert.data.gioqua") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
-    $(document).ready(function() {
-        $('#insertgioquaForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                type: 'POST',
-                url: '{{ route("insert.data.gioqua") }}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
-        });
-    });
+});
 </script>

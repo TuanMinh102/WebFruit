@@ -1,12 +1,14 @@
  <div class="container mt-3 mb-3">
      @foreach($accounts as $row)
-     <form id="updateaccountForm" action="{{ route('update.data.account') }}" method="POST" enctype="multipart/form-data">
+     <form id="updateaccountForm" action="{{ route('update.data.account') }}" method="POST"
+         enctype="multipart/form-data">
          @csrf
          <div class="container-input mt-3">
              <div class="item-input mt-3">
                  <label class="form-label" for="inputImage">Image:</label>
                  <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)">
-                 <img id="selectedImage" alt="Selected Image" src="/images/avatar/{{$row->Avatar}}" style="width: 150px; height: 150px; object-fit: cover;" alt="">
+                 <img id="selectedImage" alt="Selected Image" src="/images/avatar/{{$row->Avatar}}"
+                     style="width: 150px; height: 150px; object-fit: cover;" alt="">
              </div>
          </div>
          <div class="container-input grid-3 padding-20">
@@ -20,11 +22,11 @@
              </div>
              <div class="item-input">
                  <span>Email:</span>
-                 <input type='text' name="email" value="{{$row->Email}}">
+                 <input type='email' name="email" value="{{$row->Email}}">
              </div>
              <div class="item-input">
                  <span>Phone:</span>
-                 <input type='number' name="phone" value="{{$row->Phone}}">
+                 <input type='text' pattern="[0]{1}[0-9]{3}[0-9]{3}[0-9]{3}" name="phone" value="{{$row->Phone}}">
              </div>
              <div class="item-input">
                  <span>Địa chỉ:</span>
@@ -55,26 +57,26 @@
              </div>
              <input type="hidden" name="mataikhoan" value="{{$row->MaTaiKhoan}}">
          </div>
-         <button class="btn btn-success mt-4" type="submit">Submit</button>
+         <button class="btn btn-success mt-4" type="submit">Lưu</button>
      </form>
      @endforeach
  </div>
  <script>
-     $(document).ready(function() {
-         $('#updateaccountForm').on('submit', function(e) {
-             e.preventDefault();
-             var formData = new FormData(this);
-             $.ajax({
-                 type: 'POST',
-                 url: '{{ route("update.data.account") }}',
-                 data: formData,
-                 cache: false,
-                 contentType: false,
-                 processData: false,
-                 success: function(response) {
-                     $(".noidung").html(response);
-                 },
-             });
-         });
-     });
+$(document).ready(function() {
+    $('#updateaccountForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("update.data.account") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
+            },
+        });
+    });
+});
  </script>

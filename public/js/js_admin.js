@@ -368,7 +368,6 @@ function routeTodeletespnhaphang(id, id2) {
                 text: "Đồng ý",
                 btnClass: "btn-blue",
                 action: function () {
-                    alert(id + '/' + id2);
                     $.ajax({
                         type: "get",
                         dataType: "html",

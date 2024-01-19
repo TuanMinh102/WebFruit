@@ -17,8 +17,8 @@
             <span>{{$row->Phone}}</span>
         </div>
         <div class="tt-vanchuyen">
-            <h3>Thông tin vận chuyển</h3>
-            <span>- thanh toán tại nhà</span>
+            <h3>Phương thức thanh toán</h3>
+            <span>{{$row->PhuongThucTT}}</span>
         </div>
         <div class="tinh-trang-don">
             <h3>Tình trạng đơn hàng</h3>
@@ -34,7 +34,8 @@
                         </option>
                     </select>
                     <input type="hidden" name="mahd" value="{{$row->MaHD}}">
-                    <button class="btn btn-primary" type="submit">Cập nhật đơn hàng</button>
+                    <button class="btn btn-primary" @if($row->TinhTrang == 'Hoàn thành') disabled @endif
+                        type="submit">Cập nhật đơn hàng</button>
                 </div>
             </form>
         </div>
@@ -76,7 +77,7 @@
         <h3 class="m-0">Giá trị đơn</h3>
     </div>
     <div class="gia-tri-don">
-        <span>Tổng đơn hàng: {{$row->ThanhTien}}.000<u>đ</u></span>
+        <span>Tổng đơn hàng: <b>{{number_format($row->ThanhTien, 0, ',', '.')}}.000<u>đ</u></b></span>
     </div>
     @endforeach
 </div>
@@ -93,7 +94,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(response) {
-                window.location.href = "hoadon";
+                $(".noidung").html(response);
             },
         });
     });

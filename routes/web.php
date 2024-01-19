@@ -40,21 +40,22 @@ Route::get('/setOTPnull',[UserController::class,"setOtpIsNull"]);
 Route::get('/reloadOTP',[UserController::class,"resendOTP"]);
 
 
+// Route::get('/cats{id}',[ProductController::class,"Catogories"]);
+// Route::get('/brands{id}',[ProductController::class,"Brands"]);
+// Route::get('/search',[ProductController::class,"timkiem"]);
+// Route::get('/range',[ProductController::class,"RangePrice"]);
+// Route::get('/PriceToPrice',[ProductController::class,"RangeBetween"]);
 Route::get('/shop',[ProductController::class,"Shopview"])->name('shop');
 Route::get('/ct',[ProductController::class,"chitiet"]);
-Route::get('/cats{id}',[ProductController::class,"Catogories"]);
-Route::get('/category{id}',[ProductController::class,"loaiDanhMuc"]);
-Route::get('/brands{id}',[ProductController::class,"Brands"]);
 Route::get('/ct{id}',[ProductController::class,"details"]);
-Route::get('/search',[ProductController::class,"timkiem"]);
-Route::get('/range',[ProductController::class,"RangePrice"]);
-Route::get('/PriceToPrice',[ProductController::class,"RangeBetween"]);
 Route::post('/upload',[ProductController::class,"upload"]);
 Route::get('/locsp',[ProductController::class,"locsanpham"]);
 Route::get('/locsp2',[ProductController::class,"locsanpham2"]);
 
+
 Route::get('/gh',[CartController::class,"getcart"]);
 Route::get('/gh{id}',[CartController::class,"addcart"]);
+Route::get('/dtgh{id}',[CartController::class,"addcartdt"]);
 Route::get('/delAll',[CartController::class,"xoatoanbo"]);
 Route::get('/update{id}',[CartController::class,"capnhatgh"]);
 Route::get('/delProduct{id}',[CartController::class,"delProduct"]);
@@ -93,9 +94,11 @@ Route::post('/receive',[PusherController::class,"receive"]);
 
 //admin
 Route::get('/admin', [AdminController::class, "adminview"]);
-Route::post('/login-admin', [AdminController::class, "login"]);
+Route::match(['get', 'post'], '/login-admin', [AdminController::class, "login"])->name('login.admin');
 Route::post('/logoutad', [AdminController::class, "logoutd"])->name('logout');
 //
+Route::get('/danhmuctraicay{id}', [HomeController::class, "getdanhmuctraicay"])->name('danhmuctraicay');
+Route::get('/danhmucgioqua{id}', [HomeController::class, "getdanhmucgioqua"])->name('danhmucgioqua');
 Route::get('/gioqua_home', [HomeController::class, "getgioqua_home"])->name('gioqua_home');
 Route::get('/getgioqua_home_ct{id}', [HomeController::class, "getgioqua_home_ct"])->name('ct_gioqua_home');
 //tin tức
@@ -103,7 +106,9 @@ Route::get('/tintuc{id}', [HomeController::class, "ct_tintuc"])->name('ct_tintuc
 Route::get('/tintuc', [HomeController::class, "viewtintuc"])->name('tintuc');
 //Giới thiệu
 Route::get('/gioithieu', [HomeController::class, "viewgioithieu"])->name('gioithieu');
-
+//tag danh mục sản phẩm 
+Route::get('/danhmucsp/tc{id}', [HomeController::class, "danhmuctc"]);
+Route::get('/danhmucsp/gq{id}', [HomeController::class, "danhmucgq"]);
 //
 Route::get('/gethometest2', [AdminController::class, "gethometest2"]);
 Route::get('/gethometest', [AdminController::class, "gethometest"]);
@@ -117,15 +122,9 @@ Route::get('/deletesp{id}', [AdminController::class, "deletesp"]);
 Route::get('/welcome', [AdminController::class, "welcome"]);
 Route::get('/uploadimg', [AdminController::class, "upload_img"]);
 
-Route::controller(AdminController::class)->group(function () {
-    Route::get('image-upload', 'index');
-    Route::post('image-upload', 'store')->name('image.store');
-});
 
 
-Route::get('/hienpage', [AdminController::class, "hienpage"]);
-
-
+Route::middleware(['admin-auth'])->group(function () {
 Route::controller(AdminController::class)->group(function () {
     Route::get('admin', 'adminview');
     Route::get('admin/ajax', 'getsanpham');
@@ -170,7 +169,7 @@ Route::get('/insertnhaphang', [AdminController::class, "insertnhaphang"]);
 Route::get('/capnhatnhaphang', [AdminController::class, "capnhatnhaphang"]);
 
 Route::get('/deletenhaphang{id}', [AdminController::class, "deletenhaphang"]);
-Route::get('/xoaspnhaphang{id}{id2}', [AdminController::class, "deletespnhaphang"]);
+Route::get('/xoaspnhaphang{id}/{id2}', [AdminController::class, "deletespnhaphang"]);
 
 
 //Tài khoản
@@ -273,9 +272,7 @@ Route::post('/insertdonvisp', [AdminController::class, "insertdonvisp"])->name('
 Route::get('/deletedonvisp{id}', [AdminController::class, "deletedonvisp"]);
 Route::post('/update_donvisp', [AdminController::class, "updatedonvisp"])->name('update.data.donvisp');
 
-//tag danh mục sản phẩm 
-Route::get('/danhmucsp/tc{id}', [HomeController::class, "danhmuctc"]);
-Route::get('/danhmucsp/gq{id}', [HomeController::class, "danhmucgq"]);
+
 
 
 //Giỏ quà
@@ -301,3 +298,4 @@ Route::get('/getctbanggiaid{id}', [AdminController::class, "getctbanggiaid"]);
 Route::post('/insertbanggia', [AdminController::class, "insertbanggia"])->name('insert.data.banggia');
 Route::get('/deletebanggia{id}', [AdminController::class, "deletebanggia"]);
 Route::post('/update_banggia', [AdminController::class, "updatebanggia"])->name('update.data.banggia');
+});

@@ -31,6 +31,7 @@
                  <th>Giá</th>
                  <th>Danh mục</th>
                  <th>Số lượng</th>
+                 <th>Chi tiết</th>
                  <th>Tác vụ</th>
              </tr>
              @foreach($traicays as $row)
@@ -39,14 +40,20 @@
                      <input type="checkbox" name="" value="" />
                  </td>
                  <td>{{$row->MaTraiCay}}</td>
-                 <td><img src="images/sanpham/{{$row->Anh}}" style="width: 50px; height: 50px; object-fit: cover;" alt="">
+                 <td><img src="images/sanpham/{{$row->Anh}}" style="width: 50px; height: 50px; object-fit: cover;"
+                         alt="">
                  </td>
                  <td>{{$row->TenTraiCay}}</td>
-                 <td>{{$row->GiaGoc}}</td>
+                 <td>{{number_format($row->GiaGoc, 0, ',', '.')}}.000<u>đ</u></td>
 
                  <td>{{$row->TenLoai}}</td>
                  <td>
                      {{$row->SoLuong}}
+                 </td>
+                 <td>
+                     <a class="name-tintuctt" href="ct{{$row->MaTraiCay}}" title="{{$row->TenTraiCay}}">
+                         <span><i class="fa-solid fa-eye"></i></span>
+                     </a>
                  </td>
                  <td>
                      <a class="btn btn-danger" href="javascript:routeTodeletesanpham({{$row->MaTraiCay}});">

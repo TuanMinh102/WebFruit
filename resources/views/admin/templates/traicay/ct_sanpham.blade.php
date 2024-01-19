@@ -4,7 +4,8 @@
         <div class="mb-3">
             <span>Hình ảnh:</span>
             <input type="file" name="image" id="imageInput" onchange="displaySelectedImage(event)" required>
-            <img id="selectedImage" src="#" alt="Selected Image" style="display: none; width: 150px; height: 150px; object-fit: cover;">
+            <img id="selectedImage" src="#" alt="Selected Image"
+                style="display: none; width: 150px; height: 150px; object-fit: cover;">
         </div>
         <div class="container-input grid-3 padding-20">
             <div class="item-input">
@@ -32,10 +33,6 @@
             <div class="item-input">
                 <span>Giá Gốc:</span>
                 <input type='number' name="giagoc" min="0" required>
-            </div>
-            <div class="item-input">
-                <span>Số lượng:</span>
-                <input type='number' name="soluong" min="0" required>
             </div>
             <div class="item-input">
                 <span>Đơn vi:</span>
@@ -81,36 +78,36 @@
             <span>Nội dung :</span>
             <textarea name="" id="editor" class="" cols="30" rows="10"></textarea>
         </div>
-        <button class="btn btn-success mt-4" type="submit">Submit</button>
+        <button class="btn btn-success mt-4" type="submit">Lưu</button>
     </form>
 </div>
 
 <script>
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .then(editor => {
-            theEditor = editor;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    $(document).ready(function() {
-        $('#insertbvForm').on('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            var noidung = theEditor.getData();
-            formData.append('noidung', noidung);
-            $.ajax({
-                method: 'POST',
-                url: '{{ route("insert.data.sanpham") }}',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    $(".noidung").html(response);
-                },
-            });
+ClassicEditor
+    .create(document.querySelector('#editor'))
+    .then(editor => {
+        theEditor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+$(document).ready(function() {
+    $('#insertbvForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var noidung = theEditor.getData();
+        formData.append('noidung', noidung);
+        $.ajax({
+            method: 'POST',
+            url: '{{ route("insert.data.sanpham") }}',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".noidung").html(response);
+            },
         });
     });
+});
 </script>
